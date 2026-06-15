@@ -1023,6 +1023,16 @@ body.is-lit .marquee__track {
   color: var(--accent);
 }
 
+.site-footer__admin {
+  opacity: 0.45;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+}
+
+.site-footer__admin:hover {
+  opacity: 0.85;
+}
+
 /* Responsive */
 @media (max-width: 900px) {
   .site-header {
