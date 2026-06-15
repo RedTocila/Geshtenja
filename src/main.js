@@ -165,7 +165,8 @@ function closeVideoModal() {
   modal.classList.remove("is-open");
 }
 
-const CLOUD_NUDGE_MS = 5000;
+const CLOUD_WHITE_MS = 5000;
+const CLOUD_RED_MS = 3000;
 let cloudNudgeTimer = null;
 let cloudIsUrgent = false;
 
@@ -193,17 +194,20 @@ function clearCloudNudgeTimer() {
   }
 }
 
-function scheduleCloudNudge() {
+function scheduleCloudLoop() {
   clearCloudNudgeTimer();
   if (isLit) return;
+  const delay = cloudIsUrgent ? CLOUD_RED_MS : CLOUD_WHITE_MS;
   cloudNudgeTimer = setTimeout(() => {
-    if (!isLit) setCloudUrgent(true);
-  }, CLOUD_NUDGE_MS);
+    if (isLit) return;
+    setCloudUrgent(!cloudIsUrgent);
+    scheduleCloudLoop();
+  }, delay);
 }
 
 function resetCloudNudge() {
   setCloudUrgent(false);
-  scheduleCloudNudge();
+  scheduleCloudLoop();
 }
 
 function setLit(lit) {
@@ -216,7 +220,7 @@ function setLit(lit) {
     clearCloudNudgeTimer();
     setCloudUrgent(false);
   } else {
-    scheduleCloudNudge();
+    scheduleCloudLoop();
   }
 }
 
@@ -481,7 +485,7 @@ async function init() {
 
   initMobileNav();
   mountWhatsAppFab();
-  scheduleCloudNudge();
+  scheduleCloudLoop();
 
   document.querySelectorAll(".section__header").forEach((el) => {
     el.style.opacity = "0";
