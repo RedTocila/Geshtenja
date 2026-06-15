@@ -19,12 +19,16 @@
           <form id="loginForm" class="admin-form">
             <label>
               <span>Email</span>
-              <input type="email" name="email" required autocomplete="username" />
+              <input type="email" name="email" required autocomplete="username" placeholder="alfredpasha69@gmail.com" />
             </label>
             <label>
               <span>Password</span>
-              <input type="password" name="password" required autocomplete="current-password" />
+              <div class="admin-password-field">
+                <input type="password" name="password" id="loginPassword" required autocomplete="current-password" />
+                <button type="button" class="admin-password-toggle" id="togglePassword" aria-pressed="false">Show password</button>
+              </div>
             </label>
+            <p class="admin-status" id="loginStatus"></p>
             <p class="admin-error" id="loginError" hidden></p>
             <button type="submit" class="admin-btn admin-btn--primary">Sign in</button>
           </form>

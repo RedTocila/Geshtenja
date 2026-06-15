@@ -4,6 +4,9 @@ const loginPanel = document.getElementById("loginPanel");
 const dashboardPanel = document.getElementById("dashboardPanel");
 const loginForm = document.getElementById("loginForm");
 const loginError = document.getElementById("loginError");
+const loginStatus = document.getElementById("loginStatus");
+const loginPassword = document.getElementById("loginPassword");
+const togglePassword = document.getElementById("togglePassword");
 const adminEmail = document.getElementById("adminEmail");
 const logoutBtn = document.getElementById("logoutBtn");
 
@@ -33,6 +36,42 @@ function showError(el, message) {
   el.hidden = false;
   el.textContent = message;
 }
+
+function setLoginStatus(message, type = "") {
+  if (!loginStatus) return;
+  loginStatus.textContent = message;
+  loginStatus.classList.remove("is-ok", "is-bad");
+  if (type) loginStatus.classList.add(type);
+}
+
+async function verifyConnection() {
+  if (!requireSupabase()) {
+    setLoginStatus("Not connected — missing Supabase keys in .env. Restart npm run dev after adding them.", "is-bad");
+    return false;
+  }
+
+  setLoginStatus("Checking connection…");
+
+  const { error } = await supabase.from("products").select("id", { count: "exact", head: true });
+  if (error) {
+    if (error.code === "PGRST205") {
+      setLoginStatus("Database not set up yet — run supabase/schema.sql in Supabase SQL Editor.", "is-bad");
+    } else {
+      setLoginStatus(`Connection error: ${error.message}`, "is-bad");
+    }
+    return false;
+  }
+
+  setLoginStatus("Connected to Geshtenja database", "is-ok");
+  return true;
+}
+
+togglePassword?.addEventListener("click", () => {
+  const show = loginPassword.type === "password";
+  loginPassword.type = show ? "text" : "password";
+  togglePassword.textContent = show ? "Hide password" : "Show password";
+  togglePassword.setAttribute("aria-pressed", show ? "true" : "false");
+});
 
 function requireSupabase() {
   if (!isSupabaseConfigured || !supabase) {
@@ -72,13 +111,18 @@ loginForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   if (!requireSupabase()) return;
   showError(loginError, "");
+  const submitBtn = loginForm.querySelector('button[type="submit"]');
+  submitBtn.disabled = true;
+  submitBtn.textContent = "Signing in…";
   const fd = new FormData(loginForm);
   const { error } = await supabase.auth.signInWithPassword({
     email: fd.get("email"),
     password: fd.get("password"),
   });
+  submitBtn.disabled = false;
+  submitBtn.textContent = "Sign in";
   if (error) {
-    showError(loginError, error.message);
+    showError(loginError, error.message === "Invalid login credentials" ? "Wrong email or password." : error.message);
     return;
   }
   await checkSession();
@@ -325,3 +369,4 @@ workForm.addEventListener("submit", async (e) => {
 });
 
 checkSession();
+verifyConnection();

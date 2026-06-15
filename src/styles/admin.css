@@ -12,6 +12,10 @@ body {
   min-height: 100vh;
 }
 
+.admin-panel[hidden] {
+  display: none !important;
+}
+
 .admin-panel {
   min-height: 100vh;
   padding: 2rem 1.25rem;
@@ -137,6 +141,49 @@ body {
 
 .admin-form input[type="file"] {
   font-size: 0.8rem;
+}
+
+.admin-password-field {
+  display: flex;
+  gap: 0.5rem;
+  align-items: stretch;
+}
+
+.admin-password-field input {
+  flex: 1;
+  min-width: 0;
+}
+
+.admin-password-toggle {
+  flex-shrink: 0;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  color: rgba(240, 236, 228, 0.75);
+  font: inherit;
+  font-size: 0.75rem;
+  padding: 0 0.75rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.admin-password-toggle:hover {
+  border-color: rgba(255, 255, 255, 0.3);
+  color: #f0ece4;
+}
+
+.admin-status {
+  font-size: 0.8rem;
+  margin: 0;
+  color: rgba(240, 236, 228, 0.55);
+}
+
+.admin-status.is-ok {
+  color: #86efac;
+}
+
+.admin-status.is-bad {
+  color: #fca5a5;
 }
 
 .admin-form__actions {
