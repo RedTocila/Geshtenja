@@ -1,0 +1,94 @@
+<svg
+  class="hero-lamp__svg"
+  viewBox="0 0 240 140"
+  xmlns="http://www.w3.org/2000/svg"
+  aria-hidden="true"
+  focusable="false"
+>
+  <defs>
+    <linearGradient id="matteBlack" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3d3d3d" />
+      <stop offset="22%" stop-color="#262626" />
+      <stop offset="55%" stop-color="#1a1a1a" />
+      <stop offset="100%" stop-color="#0f0f0f" />
+    </linearGradient>
+    <linearGradient id="neckMetal" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#4a4a4a" />
+      <stop offset="40%" stop-color="#222222" />
+      <stop offset="100%" stop-color="#181818" />
+    </linearGradient>
+    <linearGradient id="shadeSideLight" x1="0%" y1="50%" x2="100%" y2="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.09" />
+      <stop offset="35%" stop-color="#ffffff" stop-opacity="0" />
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.22" />
+    </linearGradient>
+  </defs>
+
+  <!-- Cord socket -->
+  <rect x="118" y="0" width="4" height="5" rx="0.5" fill="#141414" />
+  <ellipse cx="120" cy="7" rx="7" ry="2.5" fill="#1e1e1e" />
+
+  <!-- Spool neck -->
+  <path
+    class="lamp-neck"
+    d="M 120 9
+       C 113 9 109 13 108 19
+       C 107 25 109 31 114 35
+       C 109 37 106 41 107 46
+       C 108 51 113 54 120 54
+       C 127 54 132 51 133 46
+       C 134 41 131 37 126 35
+       C 131 31 133 25 132 19
+       C 131 13 127 9 120 9 Z"
+    fill="url(#neckMetal)"
+  />
+
+  <!-- Matte dome exterior -->
+  <path
+    class="lamp-shade"
+    d="M 120 54
+       C 88 56 48 68 32 96
+       C 20 118 18 128 26 136
+       L 214 136
+       C 222 128 220 118 208 96
+       C 192 68 152 56 120 54 Z"
+    fill="url(#matteBlack)"
+  />
+  <path
+    class="lamp-shade-tone"
+    d="M 120 54 C 88 56 48 68 32 96 C 20 118 18 128 26 136 L 214 136 C 222 128 220 118 208 96 C 192 68 152 56 120 54 Z"
+    fill="url(#shadeSideLight)"
+  />
+
+  <!-- Solid black underside — no visible bulb -->
+  <rect class="lamp-bottom" x="26" y="133" width="188" height="7" fill="#0a0a0a" />
+  <ellipse cx="120" cy="134" rx="94" ry="3" fill="#141414" />
+
+  <!-- Projected beam — top edge x 26–214 matches shade bottom corners -->
+  <g class="light-projection" aria-hidden="true">
+    <defs>
+      <linearGradient id="beamGrad" gradientUnits="userSpaceOnUse" x1="120" y1="136" x2="120" y2="720">
+        <stop offset="0%" stop-color="#fffef8" stop-opacity="0.9" />
+        <stop offset="8%" stop-color="#fff9e8" stop-opacity="0.82" />
+        <stop offset="28%" stop-color="#ffefc8" stop-opacity="0.65" />
+        <stop offset="55%" stop-color="#f0d898" stop-opacity="0.48" />
+        <stop offset="80%" stop-color="#e0c070" stop-opacity="0.28" />
+        <stop offset="100%" stop-color="#c9a050" stop-opacity="0" />
+      </linearGradient>
+      <linearGradient id="beamRimGrad" gradientUnits="userSpaceOnUse" x1="120" y1="136" x2="120" y2="142">
+        <stop offset="0%" stop-color="#ffffff" stop-opacity="1" />
+        <stop offset="100%" stop-color="#fff8e6" stop-opacity="0.92" />
+      </linearGradient>
+      <filter id="beamSoft" x="-150%" y="0%" width="400%" height="110%">
+        <feGaussianBlur stdDeviation="10" />
+      </filter>
+    </defs>
+    <polygon
+      class="light-projection__shape"
+      points="26,136 214,136 740,720 -500,720"
+      fill="url(#beamGrad)"
+      filter="url(#beamSoft)"
+    />
+    <rect class="light-projection__rim" x="26" y="136" width="188" height="6" fill="url(#beamRimGrad)" />
+  </g>
+</svg>

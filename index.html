@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Geshtenja — curated lighting and decor. From modern sconces to classic chandeliers." />
+    <title>Geshtenja — Illuminate Your Space</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/src/styles/main.css" />
+  </head>
+  <body>
+    <div class="ambient-glow" aria-hidden="true"></div>
+
+    <header class="site-header">
+      <a href="#" class="brand" aria-label="Geshtenja home">Geshtenja</a>
+      <nav class="nav" aria-label="Main navigation">
+        <a href="#hero">Home</a>
+        <span class="nav-sep">/</span>
+        <a href="#works">Works</a>
+        <span class="nav-sep">/</span>
+        <a href="#products">Products</a>
+        <span class="nav-sep">/</span>
+        <a href="#about">About Us</a>
+        <span class="nav-sep">/</span>
+        <a href="#contact">Contact</a>
+      </nav>
+      <div class="light-control" id="lightControl">
+        <p class="light-control__cloud" id="lightCloud" aria-hidden="true">Turn me on</p>
+        <label class="light-switch">
+          <input type="checkbox" class="light-switch__input" id="lightSwitch" role="switch" aria-label="Turn on the light" />
+          <span class="light-switch__track" aria-hidden="true">
+            <span class="light-switch__thumb"></span>
+          </span>
+        </label>
+      </div>
+    </header>
+
+    <main>
+      <!-- Hero -->
+      <section class="hero" id="hero">
+        <div class="hero__lighting">
+          <span class="hero-lamp__cord" id="lampCord" aria-hidden="true"></span>
+          <div class="hero-lamp">
+            <button class="hero-lamp__fixture" id="lamp" type="button" aria-label="Turn on the light">
+              <span id="lampFixture" aria-hidden="true"></span>
+            </button>
+          </div>
+        </div>
+
+        <div class="hero__arc" aria-hidden="true">
+          <svg viewBox="0 0 1200 400" preserveAspectRatio="none">
+            <path d="M 80 320 Q 600 40 1120 320" fill="none" stroke="currentColor" stroke-width="1" />
+          </svg>
+        </div>
+
+        <div class="hero__slider-nav hero__slider-nav--prev">
+          <span class="hero__slider-label">Prev</span>
+          <button type="button" class="hero__slider-btn" id="heroPrev" aria-label="Previous collection">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </button>
+          <span class="hero__slider-num" id="heroSlideNum">01</span>
+        </div>
+
+        <div class="hero__slider-nav hero__slider-nav--next">
+          <span class="hero__slider-label">Next</span>
+          <button type="button" class="hero__slider-btn" id="heroNext" aria-label="Next collection">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </button>
+          <span class="hero__slider-num" id="heroSlideNumNext">02</span>
+        </div>
+
+        <div class="hero__stage">
+          <h1 class="hero__title" id="heroTitle" aria-hidden="true">Pendant</h1>
+          <div class="hero__lamp-spacer" aria-hidden="true"></div>
+        </div>
+
+        <div class="hero__content">
+          <p class="hero__tagline" id="heroTagline">
+            Illuminate Your Space. Discover our curated lighting and decor. Find your perfect piece.
+            From modern sconces to classic chandeliers, we offer a diverse range of styles to enhance any room.
+            Let us help you find the perfect lighting.
+          </p>
+          <div class="hero__actions">
+            <a href="#works" class="btn btn--primary">View Our Work</a>
+            <a href="#products" class="btn btn--outline">Browse Collection</a>
+          </div>
+        </div>
+
+        <div class="scroll-indicator" aria-hidden="true">
+          <span>Scroll to illuminate</span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12l7 7 7-7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+      </section>
+
+      <!-- Marquee -->
+      <section class="marquee" aria-hidden="true">
+        <div class="marquee__track">
+          <span>Customizable Illuminations</span>
+          <span class="marquee__star">✦</span>
+          <span>Statement Pieces</span>
+          <span class="marquee__star">✦</span>
+          <span>Handcrafted Quality</span>
+          <span class="marquee__star">✦</span>
+          <span>Customizable Illuminations</span>
+          <span class="marquee__star">✦</span>
+          <span>Statement Pieces</span>
+          <span class="marquee__star">✦</span>
+          <span>Handcrafted Quality</span>
+          <span class="marquee__star">✦</span>
+        </div>
+      </section>
+
+      <!-- Works / Portfolio -->
+      <section class="section section--works" id="works">
+        <div class="section__inner">
+          <header class="section__header">
+            <span class="section__eyebrow">Portfolio</span>
+            <h2 class="section__title">Works We've Done</h2>
+            <p class="section__desc">Spaces transformed through light — residential lofts, boutique hotels, restaurants, and corporate environments across the region.</p>
+          </header>
+
+          <div class="works-grid" id="worksGrid"></div>
+        </div>
+      </section>
+
+      <!-- Products Catalog -->
+      <section class="section section--products" id="products">
+        <div class="section__inner">
+          <header class="section__header">
+            <span class="section__eyebrow">Our Collection</span>
+            <h2 class="section__title">Lighting Catalog</h2>
+            <p class="section__desc">Explore pendants, sconces, chandeliers, and floor lamps — each piece selected for form, function, and atmosphere.</p>
+          </header>
+
+          <div class="filter-bar" role="tablist" aria-label="Filter products">
+            <button class="filter-btn is-active" data-filter="all" role="tab" aria-selected="true">All</button>
+            <button class="filter-btn" data-filter="pendant" role="tab">Pendants</button>
+            <button class="filter-btn" data-filter="sconce" role="tab">Sconces</button>
+            <button class="filter-btn" data-filter="chandelier" role="tab">Chandeliers</button>
+            <button class="filter-btn" data-filter="floor" role="tab">Floor Lamps</button>
+            <button class="filter-btn" data-filter="office" role="tab">Office</button>
+          </div>
+
+          <div class="product-grid" id="productGrid"></div>
+        </div>
+      </section>
+
+      <!-- About -->
+      <section class="section section--about" id="about">
+        <div class="section__inner about-grid">
+          <div class="about__visual">
+            <div class="about__frame">
+              <div class="about__lamp-mini" id="aboutLamp" aria-hidden="true"></div>
+            </div>
+          </div>
+          <div class="about__text">
+            <span class="section__eyebrow">About Geshtenja</span>
+            <h2 class="section__title">Light as Design Language</h2>
+            <p>Founded in 2018, Geshtenja began as a small studio obsessed with how a single fixture can redefine a room. Today we curate and craft lighting for homes, offices, and hospitality spaces.</p>
+            <p>Every piece in our catalog is chosen for its material honesty, warm color temperature, and lasting craftsmanship. We work with local artisans and European manufacturers who share our belief that good light should feel effortless.</p>
+            <ul class="about__stats">
+              <li><strong>240+</strong><span>Projects completed</span></li>
+              <li><strong>85</strong><span>Lighting pieces</span></li>
+              <li><strong>12</strong><span>Design partners</span></li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- Contact -->
+      <section class="section section--contact" id="contact">
+        <div class="section__inner contact-grid">
+          <div>
+            <span class="section__eyebrow">Get in Touch</span>
+            <h2 class="section__title">Let's Illuminate Together</h2>
+            <p class="section__desc">Visit our showroom, request a consultation, or ask about custom installations.</p>
+            <address class="contact__info">
+              <p><strong>Showroom</strong><br />Rr. Nëna Terezë 14, Prishtinë</p>
+              <p><strong>Hours</strong><br />Mon–Sat 10:00–19:00</p>
+              <p><strong>Contact</strong><br /><a href="mailto:hello@geshtenja.com">hello@geshtenja.com</a><br /><a href="tel:+38344123456">+383 44 123 456</a></p>
+            </address>
+          </div>
+          <form class="contact-form" id="contactForm">
+            <label>
+              <span>Name</span>
+              <input type="text" name="name" required placeholder="Your name" />
+            </label>
+            <label>
+              <span>Email</span>
+              <input type="email" name="email" required placeholder="you@email.com" />
+            </label>
+            <label>
+              <span>Message</span>
+              <textarea name="message" rows="4" required placeholder="Tell us about your space..."></textarea>
+            </label>
+            <button type="submit" class="btn btn--primary">Send Message</button>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; 2026 Geshtenja. All rights reserved.</p>
+      <nav aria-label="Footer navigation">
+        <a href="#works">Works</a>
+        <a href="#products">Products</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </footer>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
