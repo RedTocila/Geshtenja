@@ -96,8 +96,11 @@ async function verifyConnection() {
 togglePassword?.addEventListener("click", () => {
   const show = loginPassword.type === "password";
   loginPassword.type = show ? "text" : "password";
-  togglePassword.textContent = show ? t("admin.login.hidePassword") : t("admin.login.showPassword");
+  const labelKey = show ? "admin.login.hidePassword" : "admin.login.showPassword";
+  togglePassword.setAttribute("aria-label", t(labelKey));
   togglePassword.setAttribute("aria-pressed", show ? "true" : "false");
+  togglePassword.querySelector(".admin-password-toggle__icon--show")?.toggleAttribute("hidden", show);
+  togglePassword.querySelector(".admin-password-toggle__icon--hide")?.toggleAttribute("hidden", !show);
 });
 
 function requireSupabase() {
