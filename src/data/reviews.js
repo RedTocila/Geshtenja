@@ -1,6 +1,5 @@
-/** Update with your Google Business Profile review URL when available. */
-export const GOOGLE_REVIEWS_URL =
-  "https://www.google.com/maps/search/?api=1&query=Geshtenja+Light,+Rr.+N%C3%ABna+Terez%C3%AB+14,+Prishtin%C3%AB";
+/** @deprecated Use GOOGLE_MAPS_URL from ./location.js */
+export { GOOGLE_MAPS_URL as GOOGLE_REVIEWS_URL } from "./location.js";
 
 export const GOOGLE_RATING = 4.9;
 export const GOOGLE_REVIEW_COUNT = 47;

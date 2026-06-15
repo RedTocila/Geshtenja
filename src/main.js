@@ -1,7 +1,8 @@
 import pendantSvg from "./assets/pendant-lamp.svg?raw";
 import { supabase, isSupabaseConfigured } from "./lib/supabase.js";
 import { FALLBACK_PRODUCTS, FALLBACK_WORKS, workGradient } from "./data/fallback.js";
-import { GOOGLE_REVIEWS_URL, GOOGLE_RATING, GOOGLE_REVIEW_COUNT, REVIEWS } from "./data/reviews.js";
+import { GOOGLE_RATING, GOOGLE_REVIEW_COUNT, REVIEWS } from "./data/reviews.js";
+import { GOOGLE_MAPS_URL, MAP_EMBED_URL, SHOWROOM_ADDRESS } from "./data/location.js";
 import { initLang, getHeroSlides, categoryLabel, t } from "./i18n.js";
 import { formatPrice, effectivePrice, slugify } from "./lib/format.js";
 import { productUrl } from "./lib/products.js";
@@ -162,10 +163,24 @@ function renderReviews() {
   }).join("");
 
   document.querySelectorAll("#reviewsGoogleLink, #contactGoogleReviews").forEach((link) => {
-    link.href = GOOGLE_REVIEWS_URL;
+    link.href = GOOGLE_MAPS_URL;
   });
 
   observeCards(grid.querySelectorAll(".review-card"));
+}
+
+function initContactMap() {
+  document.querySelectorAll("#contactMapLink").forEach((link) => {
+    link.href = GOOGLE_MAPS_URL;
+  });
+
+  const addressText = document.getElementById("contactMapAddressText");
+  if (addressText) addressText.textContent = SHOWROOM_ADDRESS;
+
+  const mapEmbed = document.getElementById("contactMapEmbed");
+  if (!mapEmbed) return;
+  if (!mapEmbed.src) mapEmbed.src = MAP_EMBED_URL;
+  mapEmbed.title = t("contact.mapAria");
 }
 
 function renderWorks() {
@@ -501,6 +516,7 @@ async function init() {
     renderProducts();
     renderWorks();
     renderReviews();
+    initContactMap();
     updateHeroSlide(0, { animate: false });
     positionHeroLamp();
   })();
@@ -562,6 +578,7 @@ async function init() {
     renderProducts(activeFilter);
     renderWorks();
     renderReviews();
+    initContactMap();
     syncCloudText();
   });
 

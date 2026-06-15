@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Geshtenja Light — ndriçim dhe dekor i kuruar. Nga mura moderne deri te lustra klasike." />
     <title>Geshtenja Light — Ndriçoni Hapësirën Tuaj</title>
-    <link rel="icon" type="image/png" href="/chestnut.png" />
-    <link rel="apple-touch-icon" href="/chestnut.png" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet" />
@@ -16,7 +16,7 @@
     <div class="splash" id="splash" role="status" aria-live="polite" aria-label="Geshtenja Light">
       <div class="splash__glow" aria-hidden="true"></div>
       <div class="splash__content">
-        <img src="/chestnut.png" alt="" class="brand__logo splash__logo" width="72" height="72" />
+        <img src="/logo.png" alt="" class="brand__logo splash__logo" width="72" height="72" />
         <p class="splash__title">Geshtenja Light</p>
         <p class="splash__tagline" data-i18n="splash.tagline">Ndriçoni hapësirën tuaj</p>
       </div>
@@ -35,7 +35,10 @@
 
     <header class="site-header site-header--ghost">
       <a href="#" class="brand" data-i18n-aria="nav.brandAria">
-        <img src="/chestnut.png" alt="" class="brand__logo" width="40" height="40" />
+        <span class="brand__mark" aria-hidden="true">
+          <img src="/logo.png" alt="" class="brand__logo brand__logo--off" width="40" height="40" />
+          <img src="/logo-dark.png" alt="" class="brand__logo brand__logo--on" width="40" height="40" />
+        </span>
         <span class="brand__name">Geshtenja Light</span>
       </a>
       <nav class="nav nav--desktop" data-i18n-aria="nav.aria">
@@ -267,8 +270,9 @@
 
       <!-- Contact -->
       <section class="section section--contact" id="contact">
-        <div class="section__inner contact-grid">
-          <div>
+        <div class="section__inner">
+          <div class="contact-grid">
+            <div>
             <span class="section__eyebrow" data-i18n="contact.eyebrow">Na kontaktoni</span>
             <h2 class="section__title" data-i18n="contact.title">Le të ndriçojmë së bashku</h2>
             <p class="section__desc" data-i18n="contact.desc">Vizitoni showroom-in tonë, kërkoni një konsultë ose pyetni për instalime të personalizuara.</p>
@@ -294,20 +298,58 @@
             </label>
             <button type="submit" class="btn btn--primary" data-i18n="contact.send">Dërgo mesazhin</button>
           </form>
+          </div>
+
+          <div class="contact-map">
+            <div class="contact-map__card">
+              <div class="contact-map__header">
+                <div class="contact-map__intro">
+                  <span class="section__eyebrow" data-i18n="contact.mapEyebrow">Vendndodhja</span>
+                  <h3 class="contact-map__title" data-i18n="contact.mapTitle">Ku ndodhemi</h3>
+                  <p class="contact-map__desc" data-i18n="contact.mapDesc">Vizitoni showroom-in tonë në Prishtinë.</p>
+                  <p class="contact-map__address" id="contactMapAddress">
+                    <svg class="contact-map__pin" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path d="M12 21s7-4.5 7-11a7 7 0 1 0-14 0c0 6.5 7 11 7 11Z" stroke="currentColor" stroke-width="1.5"/>
+                      <circle cx="12" cy="10" r="2.5" stroke="currentColor" stroke-width="1.5"/>
+                    </svg>
+                    <span id="contactMapAddressText">Rr. Nëna Terezë 14, Prishtinë</span>
+                  </p>
+                </div>
+                <a href="#" class="btn btn--outline contact-map__link" id="contactMapLink" target="_blank" rel="noopener noreferrer" data-i18n="contact.openInMaps">Hap në Google Maps</a>
+              </div>
+              <div class="contact-map__frame">
+                <div class="contact-map__glow" aria-hidden="true"></div>
+                <iframe
+                  id="contactMapEmbed"
+                  title="Geshtenja showroom location"
+                  data-i18n-title="contact.mapAria"
+                  loading="lazy"
+                  referrerpolicy="no-referrer-when-downgrade"
+                  allowfullscreen
+                ></iframe>
+                <div class="contact-map__vignette" aria-hidden="true"></div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
     </main>
 
     <footer class="site-footer">
-      <p data-i18n="footer.rights">© 2026 Geshtenja. Të gjitha të drejtat e rezervuara.</p>
-      <nav data-i18n-aria="footer.aria">
-        <a href="#works" data-i18n="footer.works">Punët</a>
-        <a href="#products" data-i18n="footer.products">Produktet</a>
-        <a href="#about" data-i18n="footer.about">Rreth nesh</a>
-        <a href="#reviews" data-i18n="reviews.eyebrow">Vlerësimet</a>
-        <a href="#contact" data-i18n="footer.contact">Kontakti</a>
-        <a href="/admin" class="site-footer__admin">Admin</a>
-      </nav>
+      <div class="site-footer__row">
+        <p data-i18n="footer.rights">© 2026 Geshtenja. Të gjitha të drejtat e rezervuara.</p>
+        <nav data-i18n-aria="footer.aria">
+          <a href="#works" data-i18n="footer.works">Punët</a>
+          <a href="#products" data-i18n="footer.products">Produktet</a>
+          <a href="#about" data-i18n="footer.about">Rreth nesh</a>
+          <a href="#reviews" data-i18n="reviews.eyebrow">Vlerësimet</a>
+          <a href="#contact" data-i18n="footer.contact">Kontakti</a>
+        </nav>
+      </div>
+      <p class="site-footer__credit">
+        <span data-i18n="footer.builtBy">Ndërtuar nga</span>
+        <a href="https://octosite.co" target="_blank" rel="noopener noreferrer">octosite.co</a>
+      </p>
     </footer>
 
     <script type="module" src="/src/main.js"></script>

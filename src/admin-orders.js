@@ -7,40 +7,15 @@ import {
   notifyOrderEmail,
 } from "./lib/orders.js";
 import { formatPrice } from "./lib/format.js";
+import { t } from "./i18n.js";
+import { showToast, showLoading, showEmpty } from "./admin-ui.js";
 
 const STATUS_OPTIONS = ["pending", "confirmed", "processing", "delivered", "cancelled"];
 
-const STATUS_LABELS = {
-  pending: "Pending",
-  confirmed: "Confirmed",
-  processing: "Out for delivery",
-  delivered: "Delivered",
-  cancelled: "Cancelled",
-};
-
-const ORDER_TABS = {
-  pending: {
-    title: "Pending orders",
-    statuses: ["pending", "confirmed", "processing"],
-    empty: "No pending orders.",
-  },
-  completed: {
-    title: "Completed orders",
-    statuses: ["delivered"],
-    empty: "No completed orders yet.",
-  },
-  cancelled: {
-    title: "Cancelled orders",
-    statuses: ["cancelled"],
-    empty: "No cancelled orders.",
-  },
-};
-
-const REVENUE_PERIOD_LABELS = {
-  "1d": "1 Day",
-  "7d": "7 Days",
-  "30d": "30 Days",
-  all: "All Time",
+const ORDER_TAB_STATUSES = {
+  pending: ["pending", "confirmed", "processing"],
+  completed: ["delivered"],
+  cancelled: ["cancelled"],
 };
 
 let allOrders = [];
@@ -48,7 +23,22 @@ let revenuePeriod = "1d";
 let activeOrderTab = "pending";
 
 function statusLabel(status) {
-  return STATUS_LABELS[status] || status;
+  return t(`admin.orders.status.${status}`) || status;
+}
+
+function orderTabTitle(tab) {
+  return t(`admin.orders.tabs.${tab}.title`);
+}
+
+function orderEmptyState(tab, hasQuery) {
+  if (hasQuery) {
+    return { icon: "⌕", title: t("admin.orders.noMatch.title"), hint: t("admin.orders.noMatch.hint") };
+  }
+  return {
+    icon: tab === "completed" ? "✓" : tab === "cancelled" ? "×" : "◎",
+    title: t(`admin.orders.empty.${tab}.title`),
+    hint: t(`admin.orders.empty.${tab}.hint`),
+  };
 }
 
 function statusBadge(status) {
@@ -63,7 +53,7 @@ function renderMetrics() {
   el.innerHTML = `
     <div class="admin-metric admin-metric--revenue">
       <strong>${formatPrice(m.totalRevenue)}</strong>
-      <span>Revenue · ${REVENUE_PERIOD_LABELS[revenuePeriod]}</span>
+      <span>${t("admin.orders.revenue")} · ${t(`admin.orders.periods.${revenuePeriod}`)}</span>
     </div>
     <div class="admin-metric">
       <strong>${m.totalOrders}</strong>
@@ -89,9 +79,9 @@ function updateOrderTabCounts() {
   const searched = filterOrdersBySearch(allOrders, query);
 
   const counts = {
-    pending: searched.filter((o) => ORDER_TABS.pending.statuses.includes(o.status)).length,
-    completed: searched.filter((o) => ORDER_TABS.completed.statuses.includes(o.status)).length,
-    cancelled: searched.filter((o) => ORDER_TABS.cancelled.statuses.includes(o.status)).length,
+    pending: searched.filter((o) => ORDER_TAB_STATUSES.pending.includes(o.status)).length,
+    completed: searched.filter((o) => ORDER_TAB_STATUSES.completed.includes(o.status)).length,
+    cancelled: searched.filter((o) => ORDER_TAB_STATUSES.cancelled.includes(o.status)).length,
   };
 
   document.getElementById("orderTabCountPending").textContent = String(counts.pending);
@@ -101,7 +91,11 @@ function updateOrderTabCounts() {
 
 export async function loadOrderMetrics() {
   const el = document.getElementById("orderMetrics");
+  const list = document.getElementById("orderList");
   if (!el) return;
+
+  if (list) showLoading(list, t("admin.orders.loading"));
+
   try {
     allOrders = await fetchOrders();
     renderMetrics();
@@ -109,6 +103,13 @@ export async function loadOrderMetrics() {
     renderOrderList();
   } catch (err) {
     el.innerHTML = `<p class="admin-error">${err.message}</p>`;
+    if (list) {
+      showEmpty(list, {
+        icon: "!",
+        title: t("admin.orders.loadError"),
+        hint: err.message,
+      });
+    }
   }
 }
 
@@ -123,6 +124,7 @@ async function setOrderStatus(orderId, status) {
   }
 
   await loadOrderMetrics();
+  showToast(t("admin.orders.statusUpdated"), "success");
 }
 
 function fulfillButton(order) {
@@ -146,8 +148,8 @@ function renderOrderRow(order) {
       ${statusBadge(order.status)}
       <div class="admin-list__actions">
         ${fulfillButton(order)}
-        <button type="button" class="admin-btn admin-btn--ghost admin-btn--small" data-view-order="${order.id}">View</button>
-        <button type="button" class="admin-btn admin-btn--danger admin-btn--small" data-delete-order="${order.id}">Delete</button>
+        <button type="button" class="admin-btn admin-btn--ghost admin-btn--small" data-view-order="${order.id}">${t("admin.common.view")}</button>
+        <button type="button" class="admin-btn admin-btn--danger admin-btn--small" data-delete-order="${order.id}">${t("admin.common.delete")}</button>
       </div>
     </li>`;
 }
@@ -157,17 +159,22 @@ function renderOrderList() {
   const title = document.getElementById("orderListTitle");
   if (!list || !title) return;
 
-  const tab = ORDER_TABS[activeOrderTab];
+  const statuses = ORDER_TAB_STATUSES[activeOrderTab];
   const query = document.getElementById("orderSearch")?.value || "";
   const searched = filterOrdersBySearch(allOrders, query);
-  const orders = searched.filter((o) => tab.statuses.includes(o.status));
+  const orders = searched.filter((o) => statuses.includes(o.status));
 
-  title.textContent = tab.title;
+  title.textContent = orderTabTitle(activeOrderTab);
+  title.dataset.i18n = `admin.orders.tabs.${activeOrderTab}.title`;
   updateOrderTabCounts();
 
   list.innerHTML = orders.length
     ? orders.map(renderOrderRow).join("")
-    : `<li class="admin-muted">${tab.empty}</li>`;
+    : "";
+
+  if (!orders.length) {
+    showEmpty(list, orderEmptyState(activeOrderTab, Boolean(query.trim())));
+  }
 
   bindOrderListEvents(list);
 }
@@ -196,6 +203,7 @@ function bindOrderListEvents(root) {
       if (!confirm("Delete this order permanently?")) return;
       await deleteOrder(btn.dataset.deleteOrder);
       await loadOrderMetrics();
+      showToast(t("admin.orders.deleted"), "success");
     });
   });
 }
@@ -210,6 +218,11 @@ function modalActions(order) {
   return "";
 }
 
+function closeOrderModal(modal) {
+  modal.classList.remove("is-open");
+  document.removeEventListener("keydown", modal._escHandler);
+}
+
 function openOrderModal(id) {
   const order = allOrders.find((o) => o.id === id);
   if (!order) return;
@@ -221,8 +234,12 @@ function openOrderModal(id) {
     modal.className = "admin-modal";
     modal.innerHTML = `<div class="admin-modal__backdrop"></div><div class="admin-modal__card" id="orderModalCard"></div>`;
     document.body.appendChild(modal);
-    modal.querySelector(".admin-modal__backdrop").addEventListener("click", () => modal.classList.remove("is-open"));
+    modal.querySelector(".admin-modal__backdrop").addEventListener("click", () => closeOrderModal(modal));
   }
+
+  modal._escHandler = (e) => {
+    if (e.key === "Escape") closeOrderModal(modal);
+  };
 
   const items = (order.order_items || [])
     .map(
@@ -242,7 +259,7 @@ function openOrderModal(id) {
         <button type="button" class="admin-modal__close" id="closeOrderModal" aria-label="Close order details">×</button>
       </div>
     </div>
-    <div class="admin-muted" style="line-height:1.8;margin:1rem 0">
+    <div class="admin-order-modal__customer admin-muted">
       <strong>${order.customer_name}</strong><br/>
       ${order.customer_phone}<br/>
       ${order.customer_email}<br/>
@@ -253,7 +270,7 @@ function openOrderModal(id) {
       <thead><tr><th>Product</th><th>Qty</th><th>Price</th><th>Total</th></tr></thead>
       <tbody>${items}</tbody>
     </table>
-    <p style="margin-top:1rem;font-weight:600">Total: ${formatPrice(order.total)} · Cash on Delivery</p>
+    <p class="admin-order-modal__total">Total: ${formatPrice(order.total)} · Cash on Delivery</p>
     <div class="admin-order-modal__actions">
       ${modalActions(order)}
       <label class="admin-form admin-order-modal__status">
@@ -265,23 +282,33 @@ function openOrderModal(id) {
   `;
 
   modal.classList.add("is-open");
-  document.getElementById("closeOrderModal").onclick = () => modal.classList.remove("is-open");
+  document.addEventListener("keydown", modal._escHandler);
+  document.getElementById("closeOrderModal").onclick = () => closeOrderModal(modal);
 
   document.getElementById("fulfillOrderBtn")?.addEventListener("click", async () => {
     await setOrderStatus(order.id, "processing");
-    modal.classList.remove("is-open");
+    closeOrderModal(modal);
   });
 
   document.getElementById("deliverOrderBtn")?.addEventListener("click", async () => {
     await setOrderStatus(order.id, "delivered");
-    modal.classList.remove("is-open");
+    closeOrderModal(modal);
   });
 
   document.getElementById("saveOrderStatus").onclick = async () => {
     const status = document.getElementById("orderStatusSelect").value;
     await setOrderStatus(order.id, status);
-    modal.classList.remove("is-open");
+    closeOrderModal(modal);
   };
+
+  document.getElementById("closeOrderModal").focus();
+}
+
+export function refreshOrdersUi() {
+  if (!allOrders.length && !document.getElementById("orderMetrics")?.querySelector(".admin-metric")) return;
+  renderMetrics();
+  updateOrderTabCounts();
+  renderOrderList();
 }
 
 export function initOrdersTab() {

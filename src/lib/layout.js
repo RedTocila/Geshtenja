@@ -1,5 +1,5 @@
 import { cartCount } from "./cart.js";
-import { initLang, t } from "../i18n.js";
+import { initLang, t, applyLanguage } from "../i18n.js";
 import { initMobileNav } from "./mobile-nav.js";
 
 const WHATSAPP_NUMBER = "38344123456";
@@ -15,7 +15,10 @@ export function mountShopHeader(mount, opts = {}) {
   mount.innerHTML = `
     <header class="site-header shop-header">
       <a href="/" class="brand" aria-label="Geshtenja Light home">
-        <img src="/chestnut.png" alt="" class="brand__logo" width="40" height="40" />
+        <span class="brand__mark" aria-hidden="true">
+          <img src="/logo.png" alt="" class="brand__logo brand__logo--off" width="40" height="40" />
+          <img src="/logo-dark.png" alt="" class="brand__logo brand__logo--on" width="40" height="40" />
+        </span>
         <span class="brand__name">Geshtenja Light</span>
       </a>
       <nav class="nav nav--desktop shop-nav" aria-label="Shop navigation">
@@ -100,14 +103,21 @@ export function mountShopHeader(mount, opts = {}) {
 export function mountShopFooter(mount) {
   mount.innerHTML = `
     <footer class="site-footer shop-footer">
-      <p>&copy; ${new Date().getFullYear()} Geshtenja Light. All rights reserved.</p>
-      <nav aria-label="Footer navigation">
-        <a href="/shop">Shop</a>
-        <a href="/#works">Works</a>
-        <a href="/#contact">Contact</a>
-      </nav>
+      <div class="site-footer__row">
+        <p data-i18n="footer.rights">&copy; ${new Date().getFullYear()} Geshtenja Light. All rights reserved.</p>
+        <nav data-i18n-aria="footer.aria">
+          <a href="/shop">Shop</a>
+          <a href="/#works" data-i18n="footer.works">Works</a>
+          <a href="/#contact" data-i18n="footer.contact">Contact</a>
+        </nav>
+      </div>
+      <p class="site-footer__credit">
+        <span data-i18n="footer.builtBy">Built by</span>
+        <a href="https://octosite.co" target="_blank" rel="noopener noreferrer">octosite.co</a>
+      </p>
     </footer>
   `;
+  applyLanguage();
 }
 
 export function mountWhatsAppFab() {

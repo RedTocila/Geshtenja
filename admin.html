@@ -4,251 +4,383 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Geshtenja Admin</title>
-    <link rel="icon" type="image/png" href="/chestnut.png" />
-    <link rel="apple-touch-icon" href="/chestnut.png" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="/src/styles/admin.css" />
   </head>
-  <body>
+  <body class="admin-page">
     <div id="app">
       <!-- Login -->
       <section class="admin-panel" id="loginPanel">
+        <div class="admin-lang-toolbar">
+          <div class="lang-switch" role="group" data-i18n-aria="lang.switchAria">
+            <button type="button" class="lang-switch__btn is-active" data-lang="al" aria-pressed="true">AL</button>
+            <button type="button" class="lang-switch__btn" data-lang="en" aria-pressed="false">EN</button>
+          </div>
+        </div>
         <div class="admin-card admin-card--narrow">
           <div class="admin-brand">
-            <img src="/chestnut.png" alt="" class="admin-brand__logo" width="48" height="48" />
-            <h1>Geshtenja Admin</h1>
+            <img src="/logo.png" alt="" class="admin-brand__logo" width="48" height="48" />
+            <h1 data-i18n="admin.login.title">Geshtenja Admin</h1>
           </div>
-          <p class="admin-muted">Sign in to manage products and portfolio works.</p>
+          <p class="admin-muted" data-i18n="admin.login.subtitle">Sign in to manage products, portfolio, and orders.</p>
           <form id="loginForm" class="admin-form">
             <label>
-              <span>Email</span>
-              <input type="email" name="email" required autocomplete="username" placeholder="alfredpasha69@gmail.com" />
+              <span data-i18n="admin.login.email">Email</span>
+              <input type="email" name="email" required autocomplete="username" data-i18n-placeholder="admin.login.emailPlaceholder" placeholder="you@example.com" />
             </label>
             <label>
-              <span>Password</span>
+              <span data-i18n="admin.login.password">Password</span>
               <div class="admin-password-field">
                 <input type="password" name="password" id="loginPassword" required autocomplete="current-password" />
-                <button type="button" class="admin-password-toggle" id="togglePassword" aria-pressed="false">Show password</button>
+                <button type="button" class="admin-password-toggle" id="togglePassword" aria-pressed="false" data-i18n="admin.login.showPassword">Show password</button>
               </div>
             </label>
             <p class="admin-status" id="loginStatus"></p>
             <p class="admin-error" id="loginError" hidden></p>
-            <button type="submit" class="admin-btn admin-btn--primary">Sign in</button>
+            <button type="submit" class="admin-btn admin-btn--primary" data-i18n="admin.login.signIn">Sign in</button>
           </form>
         </div>
       </section>
 
       <!-- Dashboard -->
-      <section class="admin-panel" id="dashboardPanel" hidden>
-        <header class="admin-header">
-          <div class="admin-brand">
-            <img src="/chestnut.png" alt="" class="admin-brand__logo" width="40" height="40" />
-            <div>
-            <h1>Geshtenja Admin</h1>
-            <p class="admin-muted" id="adminEmail"></p>
+      <section class="admin-panel admin-panel--dashboard" id="dashboardPanel" hidden>
+        <div class="admin-shell">
+          <aside class="admin-sidebar" id="adminSidebar" aria-label="Dashboard navigation">
+            <div class="admin-sidebar__brand">
+              <img src="/logo.png" alt="" class="admin-brand__logo" width="36" height="36" />
+              <span class="admin-sidebar__brand-name">Geshtenja</span>
             </div>
-          </div>
-          <div class="admin-header__actions">
-            <a href="/" class="admin-btn admin-btn--ghost" target="_blank">View site</a>
-            <button type="button" class="admin-btn admin-btn--ghost" id="logoutBtn">Sign out</button>
-          </div>
-        </header>
 
-        <div class="admin-tabs" role="tablist">
-          <button type="button" class="admin-tab is-active" data-tab="products" role="tab">Products</button>
-          <button type="button" class="admin-tab" data-tab="works" role="tab">Portfolio</button>
-          <button type="button" class="admin-tab" data-tab="orders" role="tab">Orders</button>
-        </div>
+            <nav class="admin-sidebar__nav admin-tabs" role="tablist" data-i18n-aria="admin.sidebar.navAria">
+              <button type="button" class="admin-tab is-active" data-tab="products" role="tab" id="tab-btn-products" aria-selected="true" aria-controls="tab-products">
+                <span class="admin-tab__icon" aria-hidden="true">◈</span>
+                <span class="admin-tab__label" data-i18n="admin.tabs.products">Products</span>
+              </button>
+              <button type="button" class="admin-tab" data-tab="works" role="tab" id="tab-btn-works" aria-selected="false" aria-controls="tab-works">
+                <span class="admin-tab__icon" aria-hidden="true">◇</span>
+                <span class="admin-tab__label" data-i18n="admin.tabs.works">Portfolio</span>
+              </button>
+              <button type="button" class="admin-tab" data-tab="tags" role="tab" id="tab-btn-tags" aria-selected="false" aria-controls="tab-tags">
+                <span class="admin-tab__icon" aria-hidden="true">◆</span>
+                <span class="admin-tab__label" data-i18n="admin.tabs.tags">Tags</span>
+              </button>
+              <button type="button" class="admin-tab" data-tab="orders" role="tab" id="tab-btn-orders" aria-selected="false" aria-controls="tab-orders">
+                <span class="admin-tab__icon" aria-hidden="true">◎</span>
+                <span class="admin-tab__label" data-i18n="admin.tabs.orders">Orders</span>
+              </button>
+            </nav>
+
+            <div class="admin-sidebar__footer">
+              <p class="admin-sidebar__email admin-muted" id="adminEmail"></p>
+              <a href="/" class="admin-sidebar__action" target="_blank" rel="noopener" data-i18n="admin.sidebar.viewSite">View site</a>
+              <button type="button" class="admin-sidebar__action admin-sidebar__action--logout" id="logoutBtn" data-i18n="admin.sidebar.signOut">Sign out</button>
+            </div>
+          </aside>
+
+          <div class="admin-main">
+            <header class="admin-main__topbar">
+              <button type="button" class="admin-sidebar-toggle" id="sidebarToggle" data-i18n-aria="admin.sidebar.openMenu" aria-expanded="false" aria-controls="adminSidebar">☰</button>
+              <h1 class="admin-main__title" id="mainTopbarTitle" data-i18n="admin.tabs.products">Products</h1>
+              <div class="admin-main__actions">
+                <div class="lang-switch admin-lang-switch" role="group" data-i18n-aria="lang.switchAria">
+                  <button type="button" class="lang-switch__btn is-active" data-lang="al" aria-pressed="true">AL</button>
+                  <button type="button" class="lang-switch__btn" data-lang="en" aria-pressed="false">EN</button>
+                </div>
+              </div>
+            </header>
+
+            <div class="admin-main__body">
 
         <!-- Products -->
-        <div class="admin-tab-panel is-active" id="tab-products">
-          <div class="admin-grid">
-            <div class="admin-card">
-              <h2 id="productFormTitle">Add product</h2>
-              <form id="productForm" class="admin-form">
-                <input type="hidden" name="id" />
-                <label>
-                  <span>Name</span>
-                  <input type="text" name="name" required placeholder="e.g. Aurora Pendant" />
-                </label>
-                <label>
-                  <span>Slug</span>
-                  <input type="text" name="slug" placeholder="auto-generated from name" />
-                </label>
-                <label>
-                  <span>Short description</span>
-                  <input type="text" name="short_description" placeholder="Brief tagline for shop cards" />
-                </label>
-                <label>
-                  <span>Description</span>
-                  <textarea name="description" rows="4" placeholder="Full product description"></textarea>
-                </label>
-                <label>
-                  <span>Category</span>
-                  <select name="category" required>
-                    <option value="pendant">Pendant</option>
-                    <option value="sconce">Sconce</option>
-                    <option value="chandelier">Chandelier</option>
-                    <option value="floor">Floor lamp</option>
-                    <option value="office">Office</option>
-                  </select>
-                </label>
-                <div class="admin-form__row">
-                  <label>
-                    <span>Price (€)</span>
-                    <input type="number" name="price" step="0.01" min="0" required />
-                  </label>
-                  <label>
-                    <span>Sale price (€)</span>
-                    <input type="number" name="sale_price" step="0.01" min="0" placeholder="Optional" />
-                  </label>
-                </div>
-                <div class="admin-form__row">
-                  <label>
-                    <span>SKU</span>
-                    <input type="text" name="sku" placeholder="Optional" />
-                  </label>
-                  <label>
-                    <span>Stock quantity</span>
-                    <input type="number" name="stock_quantity" min="0" value="10" required />
-                  </label>
-                </div>
-                <label class="admin-form" style="flex-direction:row;align-items:center;gap:0.5rem">
-                  <input type="checkbox" name="in_stock" checked />
-                  <span>In stock</span>
-                </label>
-                <label class="admin-form" style="flex-direction:row;align-items:center;gap:0.5rem">
-                  <input type="checkbox" name="is_featured" />
-                  <span>Featured product</span>
-                </label>
-                <div class="admin-form">
-                  <span>Main photo</span>
-                  <div class="admin-file">
-                    <input type="file" name="image" accept="image/*" class="admin-file__input" id="productMainImage" />
-                    <label for="productMainImage" class="admin-file__btn">Choose file</label>
-                    <span class="admin-file__name" data-file-name>No file chosen</span>
-                  </div>
-                  <small class="admin-muted">Leave empty to keep current image when editing.</small>
-                </div>
-                <div class="admin-form">
-                  <span>Gallery images</span>
-                  <div class="admin-file">
-                    <input type="file" name="gallery" accept="image/*" multiple class="admin-file__input" id="productGallery" />
-                    <label for="productGallery" class="admin-file__btn">Choose files</label>
-                    <span class="admin-file__name" data-file-name>No files chosen</span>
-                  </div>
-                  <small class="admin-muted">Additional photos for product page.</small>
-                </div>
-                <div class="admin-preview" id="productPreview" hidden>
-                  <img alt="Preview" />
-                </div>
-                <p class="admin-error" id="productError" hidden></p>
-                <div class="admin-form__actions">
-                  <button type="submit" class="admin-btn admin-btn--primary">Save product</button>
-                  <button type="button" class="admin-btn admin-btn--ghost" id="productCancel" hidden>Cancel</button>
-                </div>
-              </form>
+        <div class="admin-tab-panel is-active" id="tab-products" role="tabpanel" aria-labelledby="tab-btn-products">
+          <div class="admin-section-head">
+            <p class="admin-muted" data-i18n="admin.products.desc">Manage shop items. Changes appear on the site immediately.</p>
+          </div>
+
+          <div class="admin-card admin-products-toolbar">
+            <label class="admin-search">
+              <span class="admin-search__icon" aria-hidden="true">⌕</span>
+              <input type="search" id="productSearch" data-i18n-placeholder="admin.products.searchPlaceholder" placeholder="Search by name, SKU, category, or tag…" data-i18n-aria="admin.products.filterAria" aria-label="Search products" />
+            </label>
+            <div class="admin-pill-bar admin-pill-bar--inline" id="productTagFilters" role="tablist" data-i18n-aria="admin.products.filterAria">
+              <button type="button" class="admin-pill-btn is-active" data-product-tag="" data-i18n="admin.common.all">All</button>
             </div>
-            <div class="admin-card">
-              <h2>Your products</h2>
-              <ul class="admin-list" id="productList"></ul>
+          </div>
+
+          <div class="admin-card admin-card--list">
+            <div class="admin-card__header">
+              <div class="admin-card__header-left">
+                <h3 data-i18n="admin.products.heading">Products</h3>
+                <span class="admin-count" id="productCount" hidden></span>
+              </div>
+              <button type="button" class="admin-btn admin-btn--add" id="addProductBtn" data-i18n-aria="admin.products.addAria" aria-label="Add product">+</button>
             </div>
+            <ul class="admin-list" id="productList"></ul>
+          </div>
+        </div>
+
+        <!-- Tags -->
+        <div class="admin-tab-panel" id="tab-tags" role="tabpanel" aria-labelledby="tab-btn-tags" hidden>
+          <div class="admin-section-head">
+            <p class="admin-muted" data-i18n="admin.tags.desc">Create and manage tags to organize products and filter the product list.</p>
+          </div>
+          <div class="admin-card admin-card--list">
+            <div class="admin-card__header">
+              <div class="admin-card__header-left">
+                <h3 data-i18n="admin.tags.heading">Tags</h3>
+                <span class="admin-count" id="tagCount" hidden></span>
+              </div>
+              <button type="button" class="admin-btn admin-btn--add" id="addTagBtn" data-i18n-aria="admin.tags.addAria" aria-label="Add tag">+</button>
+            </div>
+            <ul class="admin-list" id="tagList"></ul>
           </div>
         </div>
 
         <!-- Works -->
-        <div class="admin-tab-panel" id="tab-works" hidden>
-          <div class="admin-grid">
-            <div class="admin-card">
-              <h2 id="workFormTitle">Add portfolio work</h2>
-              <form id="workForm" class="admin-form">
-                <input type="hidden" name="id" />
-                <label>
-                  <span>Title</span>
-                  <input type="text" name="title" required placeholder="e.g. Meridian Hotel Lobby" />
-                </label>
-                <label>
-                  <span>Type</span>
-                  <input type="text" name="type" required placeholder="e.g. Hospitality" />
-                </label>
-                <label>
-                  <span>Location & year</span>
-                  <input type="text" name="location" required placeholder="e.g. Prishtinë, 2025" />
-                </label>
-                <div class="admin-form">
-                  <span>Photo</span>
-                  <div class="admin-file">
-                    <input type="file" name="image" accept="image/*" class="admin-file__input" id="workMainImage" />
-                    <label for="workMainImage" class="admin-file__btn">Choose file</label>
-                    <span class="admin-file__name" data-file-name>No file chosen</span>
-                  </div>
-                </div>
-                <div class="admin-form">
-                  <span>Video (optional)</span>
-                  <div class="admin-file">
-                    <input type="file" name="video" accept="video/*" class="admin-file__input" id="workVideo" />
-                    <label for="workVideo" class="admin-file__btn">Choose file</label>
-                    <span class="admin-file__name" data-file-name>No file chosen</span>
-                  </div>
-                </div>
-                <div class="admin-preview" id="workPreview" hidden>
-                  <img alt="Preview" />
-                </div>
-                <p class="admin-error" id="workError" hidden></p>
-                <div class="admin-form__actions">
-                  <button type="submit" class="admin-btn admin-btn--primary">Save work</button>
-                  <button type="button" class="admin-btn admin-btn--ghost" id="workCancel" hidden>Cancel</button>
-                </div>
-              </form>
+        <div class="admin-tab-panel" id="tab-works" role="tabpanel" aria-labelledby="tab-btn-works" hidden>
+          <div class="admin-section-head">
+            <p class="admin-muted" data-i18n="admin.works.desc">Showcase completed projects on the portfolio page.</p>
+          </div>
+          <div class="admin-card admin-card--list">
+            <div class="admin-card__header">
+              <div class="admin-card__header-left">
+                <h3 data-i18n="admin.works.heading">Portfolio</h3>
+                <span class="admin-count" id="workCount" hidden></span>
+              </div>
+              <button type="button" class="admin-btn admin-btn--add" id="addWorkBtn" data-i18n-aria="admin.works.addAria" aria-label="Add portfolio work">+</button>
             </div>
-            <div class="admin-card">
-              <h2>Your portfolio</h2>
-              <ul class="admin-list" id="workList"></ul>
-            </div>
+            <ul class="admin-list" id="workList"></ul>
           </div>
         </div>
 
         <!-- Orders -->
-        <div class="admin-tab-panel" id="tab-orders" hidden>
+        <div class="admin-tab-panel" id="tab-orders" role="tabpanel" aria-labelledby="tab-btn-orders" hidden>
+          <div class="admin-section-head">
+            <h2 data-i18n="admin.orders.title">Orders</h2>
+            <p class="admin-muted" data-i18n="admin.orders.desc">Track revenue, fulfill orders, and update delivery status.</p>
+          </div>
+
           <div class="admin-card admin-revenue-card">
             <div class="admin-revenue-card__header">
-              <h2>Revenue</h2>
-              <div class="admin-pill-bar" id="revenuePeriodTabs" role="tablist" aria-label="Revenue period">
-                <button type="button" class="admin-pill-btn is-active" data-period="1d">1 Day</button>
-                <button type="button" class="admin-pill-btn" data-period="7d">7 Days</button>
-                <button type="button" class="admin-pill-btn" data-period="30d">30 Days</button>
-                <button type="button" class="admin-pill-btn" data-period="all">All Time</button>
+              <h2 data-i18n="admin.orders.revenue">Revenue</h2>
+              <div class="admin-pill-bar" id="revenuePeriodTabs" role="tablist" data-i18n-aria="admin.orders.revenuePeriodAria">
+                <button type="button" class="admin-pill-btn is-active" data-period="1d" data-i18n="admin.orders.periods.1d">1 Day</button>
+                <button type="button" class="admin-pill-btn" data-period="7d" data-i18n="admin.orders.periods.7d">7 Days</button>
+                <button type="button" class="admin-pill-btn" data-period="30d" data-i18n="admin.orders.periods.30d">30 Days</button>
+                <button type="button" class="admin-pill-btn" data-period="all" data-i18n="admin.orders.periods.all">All Time</button>
               </div>
             </div>
             <div class="admin-metrics" id="orderMetrics"></div>
           </div>
 
-          <div class="admin-card" style="margin-bottom:1rem">
-            <label class="admin-form">
-              <span>Search orders</span>
-              <input type="search" id="orderSearch" placeholder="Order #, name, email, phone…" />
+          <div class="admin-card admin-orders-toolbar">
+            <label class="admin-search">
+              <span class="admin-search__icon" aria-hidden="true">⌕</span>
+              <input type="search" id="orderSearch" data-i18n-placeholder="admin.orders.searchPlaceholder" placeholder="Search by order #, name, email, or phone…" data-i18n-aria="admin.orders.searchAria" aria-label="Search orders" />
             </label>
+            <div class="admin-pill-bar admin-pill-bar--inline" id="orderStatusTabs" role="tablist" data-i18n-aria="admin.orders.statusTabsAria">
+              <button type="button" class="admin-pill-btn is-active" data-order-tab="pending">
+                <span data-i18n="admin.orders.pending">Pending</span> <span class="admin-pill-btn__count" id="orderTabCountPending">0</span>
+              </button>
+              <button type="button" class="admin-pill-btn" data-order-tab="completed">
+                <span data-i18n="admin.orders.completed">Completed</span> <span class="admin-pill-btn__count" id="orderTabCountCompleted">0</span>
+              </button>
+              <button type="button" class="admin-pill-btn" data-order-tab="cancelled">
+                <span data-i18n="admin.orders.cancelled">Cancelled</span> <span class="admin-pill-btn__count" id="orderTabCountCancelled">0</span>
+              </button>
+            </div>
           </div>
 
-          <div class="admin-pill-bar admin-pill-bar--orders" id="orderStatusTabs" role="tablist" aria-label="Order status">
-            <button type="button" class="admin-pill-btn is-active" data-order-tab="pending">
-              Pending <span class="admin-pill-btn__count" id="orderTabCountPending">0</span>
-            </button>
-            <button type="button" class="admin-pill-btn" data-order-tab="completed">
-              Completed <span class="admin-pill-btn__count" id="orderTabCountCompleted">0</span>
-            </button>
-            <button type="button" class="admin-pill-btn" data-order-tab="cancelled">
-              Cancelled <span class="admin-pill-btn__count" id="orderTabCountCancelled">0</span>
-            </button>
-          </div>
-
-          <div class="admin-card">
-            <h2 id="orderListTitle">Pending orders</h2>
-            <ul class="admin-list" id="orderList"></ul>
+          <div class="admin-card admin-card--list">
+            <div class="admin-card__header">
+              <h3 id="orderListTitle" data-i18n="admin.orders.tabs.pending.title">Pending orders</h3>
+            </div>
+            <ul class="admin-list admin-list--orders" id="orderList"></ul>
           </div>
         </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="admin-sidebar-backdrop" id="sidebarBackdrop" hidden></div>
+
+        <!-- Product modal -->
+        <div class="admin-modal" id="productModal" aria-hidden="true">
+          <div class="admin-modal__backdrop" data-close-modal="productModal"></div>
+          <div class="admin-modal__card admin-modal__card--form" role="dialog" aria-labelledby="productFormTitle">
+            <div class="admin-modal__header">
+              <h2 id="productFormTitle" data-i18n="admin.products.addTitle">Add product</h2>
+              <button type="button" class="admin-modal__close" id="productModalClose" data-i18n-aria="admin.common.close" aria-label="Close">×</button>
+            </div>
+            <form id="productForm" class="admin-form">
+              <input type="hidden" name="record_id" />
+              <label>
+                <span>Name</span>
+                <input type="text" name="name" required placeholder="e.g. Aurora Pendant" />
+              </label>
+              <label>
+                <span>Slug</span>
+                <input type="text" name="slug" placeholder="auto-generated from name" />
+              </label>
+              <label>
+                <span>Short description</span>
+                <input type="text" name="short_description" placeholder="Brief tagline for shop cards" />
+              </label>
+              <label>
+                <span>Description</span>
+                <textarea name="description" rows="4" placeholder="Full product description"></textarea>
+              </label>
+              <label>
+                <span>Category</span>
+                <select name="category" required>
+                  <option value="pendant">Pendant</option>
+                  <option value="sconce">Sconce</option>
+                  <option value="chandelier">Chandelier</option>
+                  <option value="floor">Floor lamp</option>
+                  <option value="office">Office</option>
+                </select>
+              </label>
+              <div class="admin-form__row">
+                <label>
+                  <span>Price (€)</span>
+                  <input type="number" name="price" step="0.01" min="0" required />
+                </label>
+                <label>
+                  <span>Sale price (€)</span>
+                  <input type="number" name="sale_price" step="0.01" min="0" placeholder="Optional" />
+                </label>
+              </div>
+              <div class="admin-form__row">
+                <label>
+                  <span>SKU</span>
+                  <input type="text" name="sku" placeholder="Optional" />
+                </label>
+                <label>
+                  <span>Stock quantity</span>
+                  <input type="number" name="stock_quantity" min="0" value="10" required />
+                </label>
+              </div>
+              <label class="admin-checkbox">
+                <input type="checkbox" name="in_stock" checked />
+                <span>In stock</span>
+              </label>
+              <label class="admin-checkbox">
+                <input type="checkbox" name="is_featured" />
+                <span>Featured product</span>
+              </label>
+              <fieldset class="admin-tag-picker">
+                <legend data-i18n="admin.products.tagsLegend">Tags</legend>
+                <p class="admin-muted" data-i18n="admin.products.tagsHint">Select tags to organize and search products more easily.</p>
+                <div class="admin-tag-picker__list" id="productTagOptions"></div>
+              </fieldset>
+              <div class="admin-form">
+                <span>Main photo</span>
+                <div class="admin-file">
+                  <input type="file" name="image" accept="image/*" class="admin-file__input" id="productMainImage" />
+                  <label for="productMainImage" class="admin-file__btn">Choose file</label>
+                  <span class="admin-file__name" data-file-name>No file chosen</span>
+                </div>
+                <small class="admin-muted">Leave empty to keep current image when editing.</small>
+              </div>
+              <div class="admin-form">
+                <span>Gallery images</span>
+                <div class="admin-file">
+                  <input type="file" name="gallery" accept="image/*" multiple class="admin-file__input" id="productGallery" />
+                  <label for="productGallery" class="admin-file__btn">Choose files</label>
+                  <span class="admin-file__name" data-file-name>No files chosen</span>
+                </div>
+                <small class="admin-muted">Additional photos for product page.</small>
+              </div>
+              <div class="admin-preview" id="productPreview" hidden>
+                <img alt="Preview" />
+              </div>
+              <p class="admin-error" id="productError" hidden></p>
+              <div class="admin-form__actions">
+                <button type="submit" class="admin-btn admin-btn--primary" data-i18n="admin.products.save">Save product</button>
+                <button type="button" class="admin-btn admin-btn--ghost" id="productCancel" data-i18n="admin.common.cancel">Cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Tag modal -->
+        <div class="admin-modal" id="tagModal" aria-hidden="true">
+          <div class="admin-modal__backdrop" data-close-modal="tagModal"></div>
+          <div class="admin-modal__card admin-modal__card--narrow" role="dialog" aria-labelledby="tagFormTitle">
+            <div class="admin-modal__header">
+              <h2 id="tagFormTitle" data-i18n="admin.tags.addTitle">Add tag</h2>
+              <button type="button" class="admin-modal__close" id="tagModalClose" data-i18n-aria="admin.common.close" aria-label="Close">×</button>
+            </div>
+            <form id="tagForm" class="admin-form">
+              <input type="hidden" name="record_id" />
+              <label>
+                <span data-i18n="admin.tags.name">Tag name</span>
+                <input type="text" name="name" required data-i18n-placeholder="admin.tags.namePlaceholder" placeholder="e.g. Brass, Minimal, LED" />
+              </label>
+              <p class="admin-error" id="tagError" hidden></p>
+              <div class="admin-form__actions">
+                <button type="submit" class="admin-btn admin-btn--primary" data-i18n="admin.tags.save">Save tag</button>
+                <button type="button" class="admin-btn admin-btn--ghost" id="tagCancel" data-i18n="admin.common.cancel">Cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Portfolio modal -->
+        <div class="admin-modal" id="workModal" aria-hidden="true">
+          <div class="admin-modal__backdrop" data-close-modal="workModal"></div>
+          <div class="admin-modal__card admin-modal__card--form" role="dialog" aria-labelledby="workFormTitle">
+            <div class="admin-modal__header">
+              <h2 id="workFormTitle" data-i18n="admin.works.addTitle">Add portfolio work</h2>
+              <button type="button" class="admin-modal__close" id="workModalClose" data-i18n-aria="admin.common.close" aria-label="Close">×</button>
+            </div>
+            <form id="workForm" class="admin-form">
+              <input type="hidden" name="record_id" />
+              <label>
+                <span>Title</span>
+                <input type="text" name="title" required placeholder="e.g. Meridian Hotel Lobby" />
+              </label>
+              <label>
+                <span>Type</span>
+                <input type="text" name="type" required placeholder="e.g. Hospitality" />
+              </label>
+              <label>
+                <span>Location & year</span>
+                <input type="text" name="location" required placeholder="e.g. Prishtinë, 2025" />
+              </label>
+              <div class="admin-form">
+                <span>Photo</span>
+                <div class="admin-file">
+                  <input type="file" name="image" accept="image/*" class="admin-file__input" id="workMainImage" />
+                  <label for="workMainImage" class="admin-file__btn">Choose file</label>
+                  <span class="admin-file__name" data-file-name>No file chosen</span>
+                </div>
+              </div>
+              <div class="admin-form">
+                <span>Video (optional)</span>
+                <div class="admin-file">
+                  <input type="file" name="video" accept="video/*" class="admin-file__input" id="workVideo" />
+                  <label for="workVideo" class="admin-file__btn">Choose file</label>
+                  <span class="admin-file__name" data-file-name>No file chosen</span>
+                </div>
+              </div>
+              <div class="admin-preview" id="workPreview" hidden>
+                <img alt="Preview" />
+              </div>
+              <p class="admin-error" id="workError" hidden></p>
+              <div class="admin-form__actions">
+                <button type="submit" class="admin-btn admin-btn--primary" data-i18n="admin.works.save">Save work</button>
+                <button type="button" class="admin-btn admin-btn--ghost" id="workCancel" data-i18n="admin.common.cancel">Cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div id="adminToast" class="admin-toast" role="status" aria-live="polite" hidden></div>
       </section>
     </div>
     <script type="module" src="/src/admin.js"></script>
