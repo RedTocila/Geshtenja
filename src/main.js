@@ -1,6 +1,7 @@
 import pendantSvg from "./assets/pendant-lamp.svg?raw";
 import { supabase, isSupabaseConfigured } from "./lib/supabase.js";
 import { FALLBACK_PRODUCTS, FALLBACK_WORKS, workGradient } from "./data/fallback.js";
+import { initLang, setLang, getHeroSlides, categoryLabel, t } from "./i18n.js";
 
 const LAMP_GRADIENT_IDS = ["matteBlack", "neckMetal", "shadeSideLight", "beamGrad", "beamRimGrad"];
 const LAMP_FILTER_IDS = ["beamSoft"];
@@ -16,12 +17,6 @@ function injectPendantLamp(container, prefix) {
 
 let products = [...FALLBACK_PRODUCTS];
 let works = [...FALLBACK_WORKS];
-
-const HERO_SLIDES = [
-  { title: "Pendant", tagline: "Illuminate Your Space. Discover our curated lighting and decor. Find your perfect piece. From modern sconces to classic chandeliers, we offer a diverse range of styles to enhance any room. Let us help you find the perfect lighting." },
-  { title: "Sconce", tagline: "Wall-mounted elegance for every corridor and reading nook. Our sconce collection blends sculptural form with warm, directed light." },
-  { title: "Chandelier", tagline: "Make a statement overhead. From minimalist rings to cascading crystal forms, our chandeliers anchor the room." },
-];
 
 let isLit = false;
 let scrollAutoLightUsed = false;
@@ -60,7 +55,7 @@ function renderProducts(filter = "all") {
         <img class="product-card__img" src="${image}" alt="${p.name}" loading="lazy" width="600" height="750" />
       </div>
       <div class="product-card__body">
-        <span class="product-card__category">${p.category}</span>
+        <span class="product-card__category">${categoryLabel(p.category)}</span>
         <h3 class="product-card__name">${p.name}</h3>
       </div>
     </article>
@@ -83,7 +78,7 @@ function renderWorks() {
   grid.innerHTML = works
     .map((w, i) => {
       const videoBtn = w.video_url
-        ? `<button type="button" class="work-card__play" data-video="${w.video_url}" aria-label="Play video">▶</button>`
+        ? `<button type="button" class="work-card__play" data-video="${w.video_url}" aria-label="${t("video.play")}">▶</button>`
         : "";
       return `
     <article class="work-card">
@@ -118,7 +113,7 @@ function openVideoModal(src) {
     modal.innerHTML = `
       <div class="video-modal__backdrop"></div>
       <div class="video-modal__content">
-        <button type="button" class="video-modal__close" aria-label="Close">×</button>
+        <button type="button" class="video-modal__close" aria-label="${t("video.close")}">×</button>
         <video controls playsinline></video>
       </div>
     `;
@@ -159,12 +154,13 @@ function toggleLight() {
 }
 
 function updateHeroSlide(index) {
-  heroSlideIndex = ((index % HERO_SLIDES.length) + HERO_SLIDES.length) % HERO_SLIDES.length;
-  const slide = HERO_SLIDES[heroSlideIndex];
+  const slides = getHeroSlides();
+  heroSlideIndex = ((index % slides.length) + slides.length) % slides.length;
+  const slide = slides[heroSlideIndex];
   document.getElementById("heroTitle").textContent = slide.title;
   document.getElementById("heroTagline").textContent = slide.tagline;
   document.getElementById("heroSlideNum").textContent = String(heroSlideIndex + 1).padStart(2, "0");
-  document.getElementById("heroSlideNumNext").textContent = String((heroSlideIndex + 1) % HERO_SLIDES.length + 1).padStart(2, "0");
+  document.getElementById("heroSlideNumNext").textContent = String((heroSlideIndex + 1) % slides.length + 1).padStart(2, "0");
 }
 
 function handleScroll() {
@@ -252,6 +248,8 @@ function observeCards(cards) {
 }
 
 async function init() {
+  initLang();
+
   injectPendantLamp(document.getElementById("lampFixture"), "hero");
   injectPendantLamp(document.getElementById("aboutLamp"), "about");
 
@@ -280,13 +278,23 @@ async function init() {
   document.getElementById("contactForm").addEventListener("submit", (e) => {
     e.preventDefault();
     const btn = e.target.querySelector("button");
-    btn.textContent = "Message Sent ✓";
+    btn.textContent = t("contact.sent");
     btn.disabled = true;
     setTimeout(() => {
-      btn.textContent = "Send Message";
+      btn.textContent = t("contact.send");
       btn.disabled = false;
       e.target.reset();
     }, 3000);
+  });
+
+  document.querySelectorAll(".lang-switch__btn").forEach((btn) => {
+    btn.addEventListener("click", () => setLang(btn.dataset.lang));
+  });
+
+  window.addEventListener("languagechange", () => {
+    updateHeroSlide(heroSlideIndex);
+    renderProducts(activeFilter);
+    renderWorks();
   });
 
   initFilters();
