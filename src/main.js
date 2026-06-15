@@ -24,6 +24,7 @@ const HERO_SLIDES = [
 ];
 
 let isLit = false;
+let scrollAutoLightUsed = false;
 let heroSlideIndex = 0;
 let activeFilter = "all";
 
@@ -148,7 +149,12 @@ function setLit(lit) {
   if (lightSwitch) lightSwitch.checked = lit;
 }
 
+function takeManualLightControl() {
+  scrollAutoLightUsed = true;
+}
+
 function toggleLight() {
+  takeManualLightControl();
   setLit(!isLit);
 }
 
@@ -165,8 +171,9 @@ function handleScroll() {
   const scrollY = window.scrollY;
   const threshold = window.innerHeight * 0.15;
 
-  if (scrollY > threshold) {
+  if (!scrollAutoLightUsed && scrollY > threshold) {
     setLit(true);
+    scrollAutoLightUsed = true;
   }
 
   positionHeroLamp();
@@ -258,7 +265,10 @@ async function init() {
   const lightSwitch = document.getElementById("lightSwitch");
 
   lamp.addEventListener("click", toggleLight);
-  lightSwitch.addEventListener("change", () => setLit(lightSwitch.checked));
+  lightSwitch.addEventListener("change", () => {
+    takeManualLightControl();
+    setLit(lightSwitch.checked);
+  });
 
   document.getElementById("heroPrev").addEventListener("click", () => updateHeroSlide(heroSlideIndex - 1));
   document.getElementById("heroNext").addEventListener("click", () => updateHeroSlide(heroSlideIndex + 1));
