@@ -1,12 +1,14 @@
 import pendantSvg from "./assets/pendant-lamp.svg?raw";
 import { supabase, isSupabaseConfigured } from "./lib/supabase.js";
 import { FALLBACK_PRODUCTS, FALLBACK_WORKS, workGradient } from "./data/fallback.js";
+import { GOOGLE_REVIEWS_URL, GOOGLE_RATING, GOOGLE_REVIEW_COUNT, REVIEWS } from "./data/reviews.js";
 import { initLang, getHeroSlides, categoryLabel, t } from "./i18n.js";
 import { formatPrice, effectivePrice, slugify } from "./lib/format.js";
 import { productUrl } from "./lib/products.js";
 import { cartCount } from "./lib/cart.js";
 import { mountWhatsAppFab } from "./lib/layout.js";
 import { initMobileNav } from "./lib/mobile-nav.js";
+import { runSplashUntilReady } from "./lib/splash.js";
 
 const LAMP_GRADIENT_IDS = ["matteBlack", "neckMetal", "shadeSideLight", "bulbGlass", "bulbGlow", "beamGrad", "beamRimGrad"];
 const LAMP_CLIP_IDS = ["bulbGlowClip"];
@@ -100,6 +102,70 @@ function workCardBg(w, index) {
     return `background-image: url('${w.image_url}'); background-size: cover; background-position: center;`;
   }
   return `background: ${w.gradient || workGradient(index)};`;
+}
+
+function starRatingHtml(rating) {
+  const full = Math.round(rating);
+  return Array.from({ length: 5 }, (_, i) => {
+    const filled = i < full;
+    return `<span class="review-stars__star${filled ? " is-filled" : ""}" aria-hidden="true">★</span>`;
+  }).join("");
+}
+
+function renderReviews() {
+  const summary = document.getElementById("reviewsSummary");
+  const grid = document.getElementById("reviewsGrid");
+  if (!summary || !grid) return;
+
+  summary.innerHTML = `
+    <div class="reviews-summary__badge" aria-hidden="true">
+      <svg class="reviews-summary__google" width="28" height="28" viewBox="0 0 24 24" aria-hidden="true">
+        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+      </svg>
+    </div>
+    <div class="reviews-summary__meta">
+      <p class="reviews-summary__score"><strong>${GOOGLE_RATING.toFixed(1)}</strong></p>
+      <div class="review-stars" aria-label="${GOOGLE_RATING} ${t("reviews.ratingLabel")}">${starRatingHtml(GOOGLE_RATING)}</div>
+      <p class="reviews-summary__count">${GOOGLE_REVIEW_COUNT} ${t("reviews.reviewCount")}</p>
+    </div>
+  `;
+
+  grid.innerHTML = REVIEWS.map((review) => {
+    const author = t(`reviews.items.${review.id}.author`);
+    const date = t(`reviews.items.${review.id}.date`);
+    const text = t(`reviews.items.${review.id}.text`);
+    const initial = author.charAt(0).toUpperCase();
+
+    return `
+    <article class="review-card">
+      <header class="review-card__header">
+        <div class="review-card__avatar" aria-hidden="true">${initial}</div>
+        <div class="review-card__meta">
+          <h3 class="review-card__author">${author}</h3>
+          <time class="review-card__date">${date}</time>
+        </div>
+        <svg class="review-card__google" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+        </svg>
+      </header>
+      <div class="review-stars review-card__stars" aria-label="${review.rating} ${t("reviews.ratingLabel")}">${starRatingHtml(review.rating)}</div>
+      <p class="review-card__text">${text}</p>
+      <p class="review-card__source">${t("reviews.onGoogle")}</p>
+    </article>
+  `;
+  }).join("");
+
+  document.querySelectorAll("#reviewsGoogleLink, #contactGoogleReviews").forEach((link) => {
+    link.href = GOOGLE_REVIEWS_URL;
+  });
+
+  observeCards(grid.querySelectorAll(".review-card"));
 }
 
 function renderWorks() {
@@ -428,14 +494,18 @@ function observeCards(cards) {
 async function init() {
   initLang();
 
-  injectPendantLamp(document.getElementById("lampFixture"), "hero");
-  injectPendantLamp(document.getElementById("aboutLamp"), "about");
+  const contentReady = (async () => {
+    injectPendantLamp(document.getElementById("lampFixture"), "hero");
+    injectPendantLamp(document.getElementById("aboutLamp"), "about");
+    await loadContent();
+    renderProducts();
+    renderWorks();
+    renderReviews();
+    updateHeroSlide(0, { animate: false });
+    positionHeroLamp();
+  })();
 
-  await loadContent();
-  renderProducts();
-  renderWorks();
-  updateHeroSlide(0, { animate: false });
-  positionHeroLamp();
+  await runSplashUntilReady(contentReady);
 
   const lamp = document.getElementById("lamp");
   const lightSwitch = document.getElementById("lightSwitch");
@@ -491,6 +561,7 @@ async function init() {
     updateHeroSlide(heroSlideIndex, { animate: false });
     renderProducts(activeFilter);
     renderWorks();
+    renderReviews();
     syncCloudText();
   });
 

@@ -1,4 +1,4 @@
-import { setLang, t } from "../i18n.js";
+import { t } from "../i18n.js";
 
 function getMenu(toggle) {
   const id = toggle.getAttribute("aria-controls");
@@ -69,10 +69,6 @@ export function initMobileNav(root = document) {
 
     menu.querySelectorAll("a[href]").forEach((link) => {
       link.addEventListener("click", () => closeMenu(toggle));
-    });
-
-    header.querySelectorAll(".lang-switch__btn").forEach((btn) => {
-      btn.addEventListener("click", () => setLang(btn.dataset.lang));
     });
   });
 

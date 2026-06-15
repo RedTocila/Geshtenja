@@ -13,6 +13,24 @@
     <link rel="stylesheet" href="/src/styles/main.css" />
   </head>
   <body>
+    <div class="splash" id="splash" role="status" aria-live="polite" aria-label="Geshtenja Light">
+      <div class="splash__glow" aria-hidden="true"></div>
+      <div class="splash__content">
+        <img src="/chestnut.png" alt="" class="brand__logo splash__logo" width="72" height="72" />
+        <p class="splash__title">Geshtenja Light</p>
+        <p class="splash__tagline" data-i18n="splash.tagline">Ndriçoni hapësirën tuaj</p>
+      </div>
+    </div>
+    <script>
+      try {
+        if (sessionStorage.getItem("geshtenja-splash-seen") === "1") {
+          document.getElementById("splash")?.remove();
+        } else {
+          document.body.classList.add("splash-active");
+        }
+      } catch (e) {}
+    </script>
+
     <div class="ambient-glow" aria-hidden="true"></div>
 
     <header class="site-header site-header--ghost">
@@ -230,6 +248,23 @@
         </div>
       </section>
 
+      <!-- Google Reviews -->
+      <section class="section section--reviews" id="reviews">
+        <div class="section__inner">
+          <header class="section__header">
+            <span class="section__eyebrow" data-i18n="reviews.eyebrow">Vlerësimet</span>
+            <h2 class="section__title" data-i18n="reviews.title">Çfarë thonë klientët</h2>
+            <p class="section__desc" data-i18n="reviews.desc">Vlerësime të vërteta nga klientë që kanë vizituar showroom-in tonë dhe kanë përfunduar projekte ndriçimi.</p>
+          </header>
+
+          <div class="reviews-summary" id="reviewsSummary"></div>
+          <div class="reviews-grid" id="reviewsGrid"></div>
+          <div class="reviews-more">
+            <a href="#" class="btn btn--outline reviews-more__link" id="reviewsGoogleLink" target="_blank" rel="noopener noreferrer" data-i18n="reviews.viewAll" data-i18n-aria="reviews.viewAllAria">Shiko të gjitha në Google</a>
+          </div>
+        </div>
+      </section>
+
       <!-- Contact -->
       <section class="section section--contact" id="contact">
         <div class="section__inner contact-grid">
@@ -241,6 +276,7 @@
               <p><strong data-i18n="contact.showroom">Showroom</strong><br />Rr. Nëna Terezë 14, Prishtinë</p>
               <p><strong data-i18n="contact.hours">Orari</strong><br /><span data-i18n="contact.hoursValue">Hën–Sht 10:00–19:00</span></p>
               <p><strong data-i18n="contact.contactLabel">Kontakti</strong><br /><a href="mailto:hello@geshtenja.com">hello@geshtenja.com</a><br /><a href="tel:+38344123456">+383 44 123 456</a></p>
+              <p><strong>Google</strong><br /><a href="#" id="contactGoogleReviews" target="_blank" rel="noopener noreferrer" data-i18n="contact.googleReviews">Vlerësimet në Google</a></p>
             </address>
           </div>
           <form class="contact-form" id="contactForm">
@@ -268,6 +304,7 @@
         <a href="#works" data-i18n="footer.works">Punët</a>
         <a href="#products" data-i18n="footer.products">Produktet</a>
         <a href="#about" data-i18n="footer.about">Rreth nesh</a>
+        <a href="#reviews" data-i18n="reviews.eyebrow">Vlerësimet</a>
         <a href="#contact" data-i18n="footer.contact">Kontakti</a>
         <a href="/admin" class="site-footer__admin">Admin</a>
       </nav>

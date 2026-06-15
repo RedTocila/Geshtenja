@@ -22,6 +22,9 @@ export const translations = {
       menuAria: "Hap menunë",
       menuClose: "Mbyll menunë",
     },
+    splash: {
+      tagline: "Ndriçoni hapësirën tuaj",
+    },
     light: {
       cloud: "Më ndiz",
       cloudUrgent: "S'po shoh!",
@@ -103,6 +106,34 @@ export const translations = {
       messagePlaceholder: "Na tregoni për hapësirinë tuaj...",
       send: "Dërgo mesazhin",
       sent: "Mesazhi u dërgua ✓",
+      googleReviews: "Vlerësimet në Google",
+    },
+    reviews: {
+      eyebrow: "Vlerësimet",
+      title: "Çfarë thonë klientët",
+      desc: "Vlerësime të vërteta nga klientë që kanë vizituar showroom-in tonë dhe kanë përfunduar projekte ndriçimi.",
+      ratingLabel: "Vlerësim në Google",
+      reviewCount: "vlerësime",
+      onGoogle: "Në Google",
+      viewAll: "Shiko të gjitha në Google",
+      viewAllAria: "Hap vlerësimet në Google",
+      items: {
+        arben: {
+          author: "Arben K.",
+          date: "2 muaj më parë",
+          text: "Ekip profesional dhe produkte cilësore. Na ndihmuan të zgjedhim varëset e duhura për shtëpinë — instalimi ishte i përsosur.",
+        },
+        elira: {
+          author: "Elira M.",
+          date: "3 muaj më parë",
+          text: "Showroom-i është i mrekullueshëm. Lustra që zgjodhëm për sallën e ngrënies e transformoi plotësisht ambientin.",
+        },
+        mark: {
+          author: "Mark D.",
+          date: "5 muaj më parë",
+          text: "Shërbim i shkëlqyer për projektin e zyrës. Konsultimi ishte i detajuar dhe çdo fixture u dorëzua në kohë.",
+        },
+      },
     },
     footer: {
       aria: "Navigimi i fundfaqes",
@@ -136,6 +167,9 @@ export const translations = {
       brandAria: "Geshtenja Light home",
       menuAria: "Open menu",
       menuClose: "Close menu",
+    },
+    splash: {
+      tagline: "Illuminate your space",
     },
     light: {
       cloud: "Turn me on",
@@ -218,6 +252,34 @@ export const translations = {
       messagePlaceholder: "Tell us about your space...",
       send: "Send Message",
       sent: "Message Sent ✓",
+      googleReviews: "Google Reviews",
+    },
+    reviews: {
+      eyebrow: "Reviews",
+      title: "What Our Clients Say",
+      desc: "Real feedback from customers who visited our showroom and completed lighting projects with us.",
+      ratingLabel: "Google rating",
+      reviewCount: "reviews",
+      onGoogle: "On Google",
+      viewAll: "See all on Google",
+      viewAllAria: "Open reviews on Google",
+      items: {
+        arben: {
+          author: "Arben K.",
+          date: "2 months ago",
+          text: "Professional team and quality products. They helped us choose the right pendants for our home — installation was flawless.",
+        },
+        elira: {
+          author: "Elira M.",
+          date: "3 months ago",
+          text: "The showroom is wonderful. The chandelier we picked completely transformed our dining room.",
+        },
+        mark: {
+          author: "Mark D.",
+          date: "5 months ago",
+          text: "Excellent service for our office project. The consultation was thorough and every fixture arrived on time.",
+        },
+      },
     },
     footer: {
       aria: "Footer navigation",
@@ -263,10 +325,20 @@ export function setLang(lang) {
   applyLanguage();
 }
 
+function initLangSwitch() {
+  if (document.body.dataset.langSwitchInit === "true") return;
+  document.body.dataset.langSwitchInit = "true";
+  document.addEventListener("click", (e) => {
+    const btn = e.target.closest(".lang-switch__btn");
+    if (btn?.dataset.lang) setLang(btn.dataset.lang);
+  });
+}
+
 export function initLang() {
   const saved = localStorage.getItem(STORAGE_KEY);
   const normalized = saved === "sq" ? "al" : saved;
   currentLang = translations[normalized] ? normalized : DEFAULT_LANG;
+  initLangSwitch();
   applyLanguage();
 }
 
