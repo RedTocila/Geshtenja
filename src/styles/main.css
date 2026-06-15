@@ -1120,6 +1120,16 @@ body.is-lit .marquee__track {
     display: none;
   }
 
+  .hero__stage {
+    height: clamp(220px, 36vh, 320px);
+    margin-bottom: 1rem;
+    margin-top: 0.25rem;
+  }
+
+  .hero__content {
+    margin-top: -0.5rem;
+  }
+
   .work-card,
   .work-card:nth-child(1),
   .work-card:nth-child(4),

@@ -209,17 +209,26 @@ function initFilters() {
 function positionHeroLamp() {
   const hero = document.getElementById("hero");
   const lamp = document.getElementById("lamp");
+  const stage = document.querySelector(".hero__stage");
   const header = document.querySelector(".site-header");
   if (!hero || !lamp) return;
 
   const headerHeight = header ? header.offsetHeight : 72;
+  let lampTop = headerHeight + 8;
 
-  hero.style.setProperty("--lamp-top", `${headerHeight + 8}px`);
+  if (window.matchMedia("(max-width: 900px)").matches && stage) {
+    const heroRect = hero.getBoundingClientRect();
+    const stageRect = stage.getBoundingClientRect();
+    const lampHeight = lamp.offsetHeight;
+    const lowTop = stageRect.bottom - heroRect.top - lampHeight;
+    lampTop = lampTop + (lowTop - lampTop) * 0.4;
+  }
+
+  hero.style.setProperty("--lamp-top", `${lampTop}px`);
   void lamp.offsetHeight;
 
   const lampRect = lamp.getBoundingClientRect();
-  const cordHeight = Math.max(lampRect.top, 0);
-  document.documentElement.style.setProperty("--lamp-cord-height", `${cordHeight}px`);
+  document.documentElement.style.setProperty("--lamp-cord-height", `${Math.max(lampRect.top, 0)}px`);
 }
 
 let cardObserver;
