@@ -20,7 +20,7 @@
         <img src="/chestnut.png" alt="" class="brand__logo" width="40" height="40" />
         <span class="brand__name">Geshtenja</span>
       </a>
-      <nav class="nav" data-i18n-aria="nav.aria">
+      <nav class="nav nav--desktop" data-i18n-aria="nav.aria">
         <a href="#hero" data-i18n="nav.home">Ballina</a>
         <span class="nav-sep">/</span>
         <a href="#works" data-i18n="nav.works">Punët</a>
@@ -43,17 +43,49 @@
             </span>
           </label>
         </div>
-        <a href="/cart" class="cart-link" id="homeCartLink" aria-label="Shopping cart">
+        <a href="/cart" class="cart-link header-actions__cart" id="homeCartLink" aria-label="Shopping cart">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
             <path d="M6 6h15l-1.5 9h-12L6 6z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
             <circle cx="9" cy="20" r="1.5" fill="currentColor"/>
             <circle cx="18" cy="20" r="1.5" fill="currentColor"/>
           </svg>
-          <span class="cart-link__count" id="homeCartCount" hidden>0</span>
+          <span class="cart-link__count" data-cart-count hidden>0</span>
         </a>
-        <div class="lang-switch" role="group" data-i18n-aria="lang.switchAria">
+        <div class="lang-switch header-actions__lang" role="group" data-i18n-aria="lang.switchAria">
           <button type="button" class="lang-switch__btn is-active" data-lang="al" aria-pressed="true">AL</button>
           <button type="button" class="lang-switch__btn" data-lang="en" aria-pressed="false">EN</button>
+        </div>
+        <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="mobileMenu" data-i18n-aria="nav.menuAria">
+          <span class="nav-toggle__line" aria-hidden="true"></span>
+          <span class="nav-toggle__line" aria-hidden="true"></span>
+          <span class="nav-toggle__line" aria-hidden="true"></span>
+        </button>
+      </div>
+      <div class="mobile-menu" id="mobileMenu" hidden>
+        <button type="button" class="mobile-menu__backdrop" data-nav-close tabindex="-1" aria-hidden="true"></button>
+        <div class="mobile-menu__panel">
+          <nav class="nav nav--mobile" data-i18n-aria="nav.aria">
+            <a href="#hero" data-i18n="nav.home">Ballina</a>
+            <a href="#works" data-i18n="nav.works">Punët</a>
+            <a href="#products" data-i18n="nav.products">Produktet</a>
+            <a href="/shop">Shop</a>
+            <a href="#about" data-i18n="nav.about">Rreth nesh</a>
+            <a href="#contact" data-i18n="nav.contact">Kontakti</a>
+          </nav>
+          <div class="mobile-menu__actions">
+            <a href="/cart" class="cart-link" aria-label="Shopping cart">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M6 6h15l-1.5 9h-12L6 6z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                <circle cx="9" cy="20" r="1.5" fill="currentColor"/>
+                <circle cx="18" cy="20" r="1.5" fill="currentColor"/>
+              </svg>
+              <span class="cart-link__count" data-cart-count hidden>0</span>
+            </a>
+            <div class="lang-switch" role="group" data-i18n-aria="lang.switchAria">
+              <button type="button" class="lang-switch__btn is-active" data-lang="al" aria-pressed="true">AL</button>
+              <button type="button" class="lang-switch__btn" data-lang="en" aria-pressed="false">EN</button>
+            </div>
+          </div>
         </div>
       </div>
     </header>

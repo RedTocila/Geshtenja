@@ -1,5 +1,6 @@
 import { cartCount } from "./cart.js";
-import { initLang, setLang, t } from "../i18n.js";
+import { initLang, t } from "../i18n.js";
+import { initMobileNav } from "./mobile-nav.js";
 
 const WHATSAPP_NUMBER = "38344123456";
 
@@ -17,7 +18,7 @@ export function mountShopHeader(mount, opts = {}) {
         <img src="/chestnut.png" alt="" class="brand__logo" width="40" height="40" />
         <span class="brand__name">Geshtenja</span>
       </a>
-      <nav class="nav shop-nav" aria-label="Shop navigation">
+      <nav class="nav nav--desktop shop-nav" aria-label="Shop navigation">
         <a href="/" class="${active === "home" ? "is-active" : ""}">Home</a>
         <span class="nav-sep">/</span>
         <a href="/shop" class="${active === "shop" ? "is-active" : ""}">Shop</a>
@@ -27,37 +28,72 @@ export function mountShopHeader(mount, opts = {}) {
         <a href="/#contact">Contact</a>
       </nav>
       <div class="header-actions">
-        <div class="lang-switch" role="group" aria-label="Choose language">
+        <div class="lang-switch header-actions__lang" role="group" aria-label="Choose language">
           <button type="button" class="lang-switch__btn is-active" data-lang="al" aria-pressed="true">AL</button>
           <button type="button" class="lang-switch__btn" data-lang="en" aria-pressed="false">EN</button>
         </div>
         ${
           showCart
-            ? `<a href="/cart" class="cart-link" aria-label="Shopping cart">
+            ? `<a href="/cart" class="cart-link header-actions__cart" aria-label="Shopping cart">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
               <path d="M6 6h15l-1.5 9h-12L6 6z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
               <circle cx="9" cy="20" r="1.5" fill="currentColor"/>
               <circle cx="18" cy="20" r="1.5" fill="currentColor"/>
             </svg>
-            <span class="cart-link__count" id="headerCartCount" ${count ? "" : "hidden"}>${count}</span>
+            <span class="cart-link__count" data-cart-count ${count ? "" : "hidden"}>${count}</span>
           </a>`
             : ""
         }
+        <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="shopMobileMenu" data-i18n-aria="nav.menuAria">
+          <span class="nav-toggle__line" aria-hidden="true"></span>
+          <span class="nav-toggle__line" aria-hidden="true"></span>
+          <span class="nav-toggle__line" aria-hidden="true"></span>
+        </button>
+      </div>
+      <div class="mobile-menu" id="shopMobileMenu" hidden>
+        <button type="button" class="mobile-menu__backdrop" data-nav-close tabindex="-1" aria-hidden="true"></button>
+        <div class="mobile-menu__panel">
+          <nav class="nav nav--mobile shop-nav" aria-label="Shop navigation">
+            <a href="/" class="${active === "home" ? "is-active" : ""}">Home</a>
+            <a href="/shop" class="${active === "shop" ? "is-active" : ""}">Shop</a>
+            <a href="/#works">Works</a>
+            <a href="/#contact">Contact</a>
+          </nav>
+          <div class="mobile-menu__actions">
+            ${
+              showCart
+                ? `<a href="/cart" class="cart-link" aria-label="Shopping cart">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M6 6h15l-1.5 9h-12L6 6z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                  <circle cx="9" cy="20" r="1.5" fill="currentColor"/>
+                  <circle cx="18" cy="20" r="1.5" fill="currentColor"/>
+                </svg>
+                <span class="cart-link__count" data-cart-count ${count ? "" : "hidden"}>${count}</span>
+              </a>`
+                : ""
+            }
+            <div class="lang-switch" role="group" aria-label="Choose language">
+              <button type="button" class="lang-switch__btn is-active" data-lang="al" aria-pressed="true">AL</button>
+              <button type="button" class="lang-switch__btn" data-lang="en" aria-pressed="false">EN</button>
+            </div>
+          </div>
+        </div>
       </div>
     </header>
   `;
 
-  mount.querySelectorAll(".lang-switch__btn").forEach((btn) => {
-    btn.addEventListener("click", () => setLang(btn.dataset.lang));
-  });
+  initMobileNav(mount);
 
-  window.addEventListener("cartchange", (e) => {
-    const el = document.getElementById("headerCartCount");
-    if (!el) return;
-    const n = e.detail?.count ?? 0;
-    el.textContent = String(n);
-    el.hidden = n === 0;
-  });
+  if (!mount.dataset.cartListener) {
+    mount.dataset.cartListener = "true";
+    window.addEventListener("cartchange", (e) => {
+      const n = e.detail?.count ?? 0;
+      mount.querySelectorAll("[data-cart-count]").forEach((el) => {
+        el.textContent = String(n);
+        el.hidden = n === 0;
+      });
+    });
+  }
 }
 
 /** @param {HTMLElement} mount */

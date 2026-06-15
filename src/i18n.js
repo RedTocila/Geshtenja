@@ -17,7 +17,10 @@ export const translations = {
       products: "Produktet",
       about: "Rreth nesh",
       contact: "Kontakti",
+      cart: "Shporta",
       brandAria: "Geshtenja ballina",
+      menuAria: "Hap menunë",
+      menuClose: "Mbyll menunë",
     },
     light: {
       cloud: "Më ndiz",
@@ -126,7 +129,10 @@ export const translations = {
       products: "Products",
       about: "About Us",
       contact: "Contact",
+      cart: "Cart",
       brandAria: "Geshtenja home",
+      menuAria: "Open menu",
+      menuClose: "Close menu",
     },
     light: {
       cloud: "Turn me on",

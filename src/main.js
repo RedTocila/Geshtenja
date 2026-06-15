@@ -1,11 +1,12 @@
 import pendantSvg from "./assets/pendant-lamp.svg?raw";
 import { supabase, isSupabaseConfigured } from "./lib/supabase.js";
 import { FALLBACK_PRODUCTS, FALLBACK_WORKS, workGradient } from "./data/fallback.js";
-import { initLang, setLang, getHeroSlides, categoryLabel, t } from "./i18n.js";
+import { initLang, getHeroSlides, categoryLabel, t } from "./i18n.js";
 import { formatPrice, effectivePrice, slugify } from "./lib/format.js";
 import { productUrl } from "./lib/products.js";
 import { cartCount } from "./lib/cart.js";
 import { mountWhatsAppFab } from "./lib/layout.js";
+import { initMobileNav } from "./lib/mobile-nav.js";
 
 const LAMP_GRADIENT_IDS = ["matteBlack", "neckMetal", "shadeSideLight", "beamGrad", "beamRimGrad"];
 const LAMP_FILTER_IDS = ["beamSoft"];
@@ -402,10 +403,6 @@ async function init() {
     }, 3000);
   });
 
-  document.querySelectorAll(".lang-switch__btn").forEach((btn) => {
-    btn.addEventListener("click", () => setLang(btn.dataset.lang));
-  });
-
   window.addEventListener("languagechange", () => {
     updateHeroSlide(heroSlideIndex, { animate: false });
     renderProducts(activeFilter);
@@ -414,17 +411,17 @@ async function init() {
 
   initFilters();
 
-  const homeCartCount = document.getElementById("homeCartCount");
   const updateHomeCart = () => {
     const n = cartCount();
-    if (homeCartCount) {
-      homeCartCount.textContent = String(n);
-      homeCartCount.hidden = n === 0;
-    }
+    document.querySelectorAll("[data-cart-count]").forEach((el) => {
+      el.textContent = String(n);
+      el.hidden = n === 0;
+    });
   };
   updateHomeCart();
   window.addEventListener("cartchange", updateHomeCart);
 
+  initMobileNav();
   mountWhatsAppFab();
 
   document.querySelectorAll(".section__header").forEach((el) => {
