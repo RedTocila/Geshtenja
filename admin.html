@@ -8,7 +8,7 @@
     <link rel="apple-touch-icon" href="/chestnut.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="/src/styles/admin.css" />
   </head>
   <body>
@@ -59,6 +59,7 @@
         <div class="admin-tabs" role="tablist">
           <button type="button" class="admin-tab is-active" data-tab="products" role="tab">Products</button>
           <button type="button" class="admin-tab" data-tab="works" role="tab">Portfolio</button>
+          <button type="button" class="admin-tab" data-tab="orders" role="tab">Orders</button>
         </div>
 
         <!-- Products -->
@@ -73,6 +74,18 @@
                   <input type="text" name="name" required placeholder="e.g. Aurora Pendant" />
                 </label>
                 <label>
+                  <span>Slug</span>
+                  <input type="text" name="slug" placeholder="auto-generated from name" />
+                </label>
+                <label>
+                  <span>Short description</span>
+                  <input type="text" name="short_description" placeholder="Brief tagline for shop cards" />
+                </label>
+                <label>
+                  <span>Description</span>
+                  <textarea name="description" rows="4" placeholder="Full product description"></textarea>
+                </label>
+                <label>
                   <span>Category</span>
                   <select name="category" required>
                     <option value="pendant">Pendant</option>
@@ -82,11 +95,52 @@
                     <option value="office">Office</option>
                   </select>
                 </label>
-                <label>
-                  <span>Photo</span>
-                  <input type="file" name="image" accept="image/*" />
-                  <small class="admin-muted">Leave empty to keep current image when editing.</small>
+                <div class="admin-form__row">
+                  <label>
+                    <span>Price (€)</span>
+                    <input type="number" name="price" step="0.01" min="0" required />
+                  </label>
+                  <label>
+                    <span>Sale price (€)</span>
+                    <input type="number" name="sale_price" step="0.01" min="0" placeholder="Optional" />
+                  </label>
+                </div>
+                <div class="admin-form__row">
+                  <label>
+                    <span>SKU</span>
+                    <input type="text" name="sku" placeholder="Optional" />
+                  </label>
+                  <label>
+                    <span>Stock quantity</span>
+                    <input type="number" name="stock_quantity" min="0" value="10" required />
+                  </label>
+                </div>
+                <label class="admin-form" style="flex-direction:row;align-items:center;gap:0.5rem">
+                  <input type="checkbox" name="in_stock" checked />
+                  <span>In stock</span>
                 </label>
+                <label class="admin-form" style="flex-direction:row;align-items:center;gap:0.5rem">
+                  <input type="checkbox" name="is_featured" />
+                  <span>Featured product</span>
+                </label>
+                <div class="admin-form">
+                  <span>Main photo</span>
+                  <div class="admin-file">
+                    <input type="file" name="image" accept="image/*" class="admin-file__input" id="productMainImage" />
+                    <label for="productMainImage" class="admin-file__btn">Choose file</label>
+                    <span class="admin-file__name" data-file-name>No file chosen</span>
+                  </div>
+                  <small class="admin-muted">Leave empty to keep current image when editing.</small>
+                </div>
+                <div class="admin-form">
+                  <span>Gallery images</span>
+                  <div class="admin-file">
+                    <input type="file" name="gallery" accept="image/*" multiple class="admin-file__input" id="productGallery" />
+                    <label for="productGallery" class="admin-file__btn">Choose files</label>
+                    <span class="admin-file__name" data-file-name>No files chosen</span>
+                  </div>
+                  <small class="admin-muted">Additional photos for product page.</small>
+                </div>
                 <div class="admin-preview" id="productPreview" hidden>
                   <img alt="Preview" />
                 </div>
@@ -123,14 +177,22 @@
                   <span>Location & year</span>
                   <input type="text" name="location" required placeholder="e.g. Prishtinë, 2025" />
                 </label>
-                <label>
+                <div class="admin-form">
                   <span>Photo</span>
-                  <input type="file" name="image" accept="image/*" />
-                </label>
-                <label>
+                  <div class="admin-file">
+                    <input type="file" name="image" accept="image/*" class="admin-file__input" id="workMainImage" />
+                    <label for="workMainImage" class="admin-file__btn">Choose file</label>
+                    <span class="admin-file__name" data-file-name>No file chosen</span>
+                  </div>
+                </div>
+                <div class="admin-form">
                   <span>Video (optional)</span>
-                  <input type="file" name="video" accept="video/*" />
-                </label>
+                  <div class="admin-file">
+                    <input type="file" name="video" accept="video/*" class="admin-file__input" id="workVideo" />
+                    <label for="workVideo" class="admin-file__btn">Choose file</label>
+                    <span class="admin-file__name" data-file-name>No file chosen</span>
+                  </div>
+                </div>
                 <div class="admin-preview" id="workPreview" hidden>
                   <img alt="Preview" />
                 </div>
@@ -145,6 +207,46 @@
               <h2>Your portfolio</h2>
               <ul class="admin-list" id="workList"></ul>
             </div>
+          </div>
+        </div>
+
+        <!-- Orders -->
+        <div class="admin-tab-panel" id="tab-orders" hidden>
+          <div class="admin-card admin-revenue-card">
+            <div class="admin-revenue-card__header">
+              <h2>Revenue</h2>
+              <div class="admin-pill-bar" id="revenuePeriodTabs" role="tablist" aria-label="Revenue period">
+                <button type="button" class="admin-pill-btn is-active" data-period="1d">1 Day</button>
+                <button type="button" class="admin-pill-btn" data-period="7d">7 Days</button>
+                <button type="button" class="admin-pill-btn" data-period="30d">30 Days</button>
+                <button type="button" class="admin-pill-btn" data-period="all">All Time</button>
+              </div>
+            </div>
+            <div class="admin-metrics" id="orderMetrics"></div>
+          </div>
+
+          <div class="admin-card" style="margin-bottom:1rem">
+            <label class="admin-form">
+              <span>Search orders</span>
+              <input type="search" id="orderSearch" placeholder="Order #, name, email, phone…" />
+            </label>
+          </div>
+
+          <div class="admin-pill-bar admin-pill-bar--orders" id="orderStatusTabs" role="tablist" aria-label="Order status">
+            <button type="button" class="admin-pill-btn is-active" data-order-tab="pending">
+              Pending <span class="admin-pill-btn__count" id="orderTabCountPending">0</span>
+            </button>
+            <button type="button" class="admin-pill-btn" data-order-tab="completed">
+              Completed <span class="admin-pill-btn__count" id="orderTabCountCompleted">0</span>
+            </button>
+            <button type="button" class="admin-pill-btn" data-order-tab="cancelled">
+              Cancelled <span class="admin-pill-btn__count" id="orderTabCountCancelled">0</span>
+            </button>
+          </div>
+
+          <div class="admin-card">
+            <h2 id="orderListTitle">Pending orders</h2>
+            <ul class="admin-list" id="orderList"></ul>
           </div>
         </div>
       </section>

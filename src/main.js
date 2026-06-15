@@ -2,6 +2,10 @@ import pendantSvg from "./assets/pendant-lamp.svg?raw";
 import { supabase, isSupabaseConfigured } from "./lib/supabase.js";
 import { FALLBACK_PRODUCTS, FALLBACK_WORKS, workGradient } from "./data/fallback.js";
 import { initLang, setLang, getHeroSlides, categoryLabel, t } from "./i18n.js";
+import { formatPrice, effectivePrice, slugify } from "./lib/format.js";
+import { productUrl } from "./lib/products.js";
+import { cartCount } from "./lib/cart.js";
+import { mountWhatsAppFab } from "./lib/layout.js";
 
 const LAMP_GRADIENT_IDS = ["matteBlack", "neckMetal", "shadeSideLight", "beamGrad", "beamRimGrad"];
 const LAMP_FILTER_IDS = ["beamSoft"];
@@ -23,6 +27,7 @@ let scrollAutoLightUsed = false;
 let heroSlideIndex = 0;
 let heroSlideTimer = null;
 const HERO_AUTO_SLIDE_MS = 5000;
+const HOME_PRODUCT_LIMIT = 12;
 let activeFilter = "all";
 
 async function loadContent() {
@@ -46,24 +51,40 @@ async function loadContent() {
 
 function renderProducts(filter = "all") {
   const grid = document.getElementById("productGrid");
+  const more = document.getElementById("productsMore");
   const items = filter === "all" ? products : products.filter((p) => p.category === filter);
+  const visible = items.slice(0, HOME_PRODUCT_LIMIT);
 
-  grid.innerHTML = items
+  grid.innerHTML = visible
     .map((p) => {
       const image = p.image_url || p.image;
+      const onSale = p.sale_price != null && Number(p.sale_price) < Number(p.price);
+      const price = effectivePrice(p);
+      const slug = p.slug || slugify(p.name);
+      const href = p.slug ? productUrl(p.slug) : `/shop/${slug}`;
+      const priceHtml = onSale
+        ? `<span class="product-card__price product-card__price--sale">${formatPrice(p.sale_price)}</span>
+           <span class="product-card__price product-card__price--old">${formatPrice(p.price)}</span>`
+        : `<span class="product-card__price">${formatPrice(price)}</span>`;
+
       return `
     <article class="product-card" data-category="${p.category}">
-      <div class="product-card__visual">
+      <a href="${href}" class="product-card__visual">
         <img class="product-card__img" src="${image}" alt="${p.name}" loading="lazy" width="600" height="750" />
-      </div>
-      <div class="product-card__body">
-        <span class="product-card__category">${categoryLabel(p.category)}</span>
-        <h3 class="product-card__name">${p.name}</h3>
-      </div>
+        <div class="product-card__overlay">
+          <span class="product-card__category">${categoryLabel(p.category)}</span>
+          <h3 class="product-card__name">${p.name}</h3>
+          <div class="product-card__price-row">${priceHtml}</div>
+        </div>
+      </a>
     </article>
   `;
     })
     .join("");
+
+  if (more) {
+    more.hidden = items.length <= HOME_PRODUCT_LIMIT;
+  }
 
   observeCards(grid.querySelectorAll(".product-card"));
 }
@@ -392,6 +413,19 @@ async function init() {
   });
 
   initFilters();
+
+  const homeCartCount = document.getElementById("homeCartCount");
+  const updateHomeCart = () => {
+    const n = cartCount();
+    if (homeCartCount) {
+      homeCartCount.textContent = String(n);
+      homeCartCount.hidden = n === 0;
+    }
+  };
+  updateHomeCart();
+  window.addEventListener("cartchange", updateHomeCart);
+
+  mountWhatsAppFab();
 
   document.querySelectorAll(".section__header").forEach((el) => {
     el.style.opacity = "0";

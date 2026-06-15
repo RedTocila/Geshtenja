@@ -27,6 +27,8 @@
         <span class="nav-sep">/</span>
         <a href="#products" data-i18n="nav.products">Produktet</a>
         <span class="nav-sep">/</span>
+        <a href="/shop">Shop</a>
+        <span class="nav-sep">/</span>
         <a href="#about" data-i18n="nav.about">Rreth nesh</a>
         <span class="nav-sep">/</span>
         <a href="#contact" data-i18n="nav.contact">Kontakti</a>
@@ -41,6 +43,14 @@
             </span>
           </label>
         </div>
+        <a href="/cart" class="cart-link" id="homeCartLink" aria-label="Shopping cart">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M6 6h15l-1.5 9h-12L6 6z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+            <circle cx="9" cy="20" r="1.5" fill="currentColor"/>
+            <circle cx="18" cy="20" r="1.5" fill="currentColor"/>
+          </svg>
+          <span class="cart-link__count" id="homeCartCount" hidden>0</span>
+        </a>
         <div class="lang-switch" role="group" data-i18n-aria="lang.switchAria">
           <button type="button" class="lang-switch__btn is-active" data-lang="al" aria-pressed="true">AL</button>
           <button type="button" class="lang-switch__btn" data-lang="en" aria-pressed="false">EN</button>
@@ -95,6 +105,7 @@
           <div class="hero__actions">
             <a href="#works" class="btn btn--primary" data-i18n="hero.viewWork">Shiko Punët Tona</a>
             <a href="#products" class="btn btn--outline" data-i18n="hero.browseCollection">Shfleto Koleksionin</a>
+            <a href="/shop" class="btn btn--outline">Shop</a>
           </div>
         </div>
 
@@ -154,6 +165,9 @@
           </div>
 
           <div class="product-grid" id="productGrid"></div>
+          <div class="products-more" id="productsMore" hidden>
+            <a href="/shop" class="btn btn--outline" data-i18n="products.seeAll">Shiko të gjitha</a>
+          </div>
         </div>
       </section>
 
@@ -193,17 +207,17 @@
             </address>
           </div>
           <form class="contact-form" id="contactForm">
-            <label>
+            <label class="form-field">
               <span data-i18n="contact.name">Emri</span>
-              <input type="text" name="name" required data-i18n-placeholder="contact.namePlaceholder" />
+              <input class="form-control" type="text" name="name" required data-i18n-placeholder="contact.namePlaceholder" />
             </label>
-            <label>
+            <label class="form-field">
               <span data-i18n="contact.email">Email</span>
-              <input type="email" name="email" required data-i18n-placeholder="contact.emailPlaceholder" />
+              <input class="form-control" type="email" name="email" required data-i18n-placeholder="contact.emailPlaceholder" />
             </label>
-            <label>
+            <label class="form-field">
               <span data-i18n="contact.message">Mesazhi</span>
-              <textarea name="message" rows="4" required data-i18n-placeholder="contact.messagePlaceholder"></textarea>
+              <textarea class="form-control" name="message" rows="4" required data-i18n-placeholder="contact.messagePlaceholder"></textarea>
             </label>
             <button type="submit" class="btn btn--primary" data-i18n="contact.send">Dërgo mesazhin</button>
           </form>

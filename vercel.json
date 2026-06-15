@@ -1,6 +1,12 @@
 {
   "rewrites": [
     { "source": "/admin", "destination": "/admin.html" },
-    { "source": "/admin/", "destination": "/admin.html" }
+    { "source": "/admin/", "destination": "/admin.html" },
+    { "source": "/shop", "destination": "/shop.html" },
+    { "source": "/shop/", "destination": "/shop.html" },
+    { "source": "/shop/:slug", "destination": "/product.html?slug=:slug" },
+    { "source": "/cart", "destination": "/cart.html" },
+    { "source": "/checkout", "destination": "/checkout.html" },
+    { "source": "/order-success", "destination": "/order-success.html" }
   ]
 }

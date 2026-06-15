@@ -1,4 +1,6 @@
 import { supabase, isSupabaseConfigured, MEDIA_BUCKET } from "./lib/supabase.js";
+import { slugify } from "./lib/format.js";
+import { loadOrderMetrics, initOrdersTab } from "./admin-orders.js";
 
 const loginPanel = document.getElementById("loginPanel");
 const dashboardPanel = document.getElementById("dashboardPanel");
@@ -142,6 +144,7 @@ document.querySelectorAll(".admin-tab").forEach((tab) => {
       p.hidden = p.id !== `tab-${tab.dataset.tab}`;
       p.classList.toggle("is-active", p.id === `tab-${tab.dataset.tab}`);
     });
+    if (tab.dataset.tab === "orders") loadOrderMetrics();
   });
 });
 
@@ -181,7 +184,10 @@ workForm.querySelector('input[name="image"]').addEventListener("change", (e) => 
 });
 
 async function loadProducts() {
-  const { data, error } = await supabase.from("products").select("*").order("sort_order");
+  const { data, error } = await supabase
+    .from("products")
+    .select("*, product_images(id, image_url, sort_order)")
+    .order("sort_order");
   if (error) throw error;
   productList.innerHTML = data.length
     ? data
@@ -191,7 +197,7 @@ async function loadProducts() {
         <img class="admin-list__thumb" src="${p.image_url}" alt="" />
         <div class="admin-list__info">
           <p class="admin-list__title">${p.name}</p>
-          <p class="admin-list__meta">${p.category}</p>
+          <p class="admin-list__meta">${p.category} · €${p.price}${p.sale_price ? ` → €${p.sale_price}` : ""} · stock ${p.stock_quantity}</p>
         </div>
         <div class="admin-list__actions">
           <button type="button" class="admin-btn admin-btn--ghost admin-btn--small" data-edit-product="${p.id}">Edit</button>
@@ -208,7 +214,16 @@ async function loadProducts() {
       if (!item) return;
       editingProduct = item;
       productForm.name.value = item.name;
+      productForm.slug.value = item.slug || "";
+      productForm.short_description.value = item.short_description || "";
+      productForm.description.value = item.description || "";
       productForm.category.value = item.category;
+      productForm.price.value = item.price ?? "";
+      productForm.sale_price.value = item.sale_price ?? "";
+      productForm.sku.value = item.sku || "";
+      productForm.stock_quantity.value = item.stock_quantity ?? 0;
+      productForm.in_stock.checked = item.in_stock !== false;
+      productForm.is_featured.checked = !!item.is_featured;
       productForm.id.value = item.id;
       productFormTitle.textContent = "Edit product";
       productCancel.hidden = false;
@@ -289,11 +304,24 @@ async function loadAll() {
   }
 }
 
+async function saveProductImages(productId, galleryFiles, startOrder = 0) {
+  const files = [...galleryFiles].filter((f) => f?.size);
+  for (let i = 0; i < files.length; i++) {
+    const url = await uploadFile(files[i], "products");
+    await supabase.from("product_images").insert({
+      product_id: productId,
+      image_url: url,
+      sort_order: startOrder + i + 1,
+    });
+  }
+}
+
 productForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   showError(productError, "");
   const fd = new FormData(productForm);
   const imageFile = fd.get("image");
+  const galleryFiles = productForm.querySelector('input[name="gallery"]').files;
   let imageUrl = editingProduct?.image_url;
 
   try {
@@ -301,23 +329,52 @@ productForm.addEventListener("submit", async (e) => {
       imageUrl = await uploadFile(imageFile, "products");
     }
     if (!imageUrl) {
-      showError(productError, "Please add a photo.");
+      showError(productError, "Please add a main photo.");
       return;
     }
 
+    const name = fd.get("name");
+    const slug = (fd.get("slug") || slugify(name)).trim() || slugify(name);
+    const saleRaw = fd.get("sale_price");
     const payload = {
-      name: fd.get("name"),
+      name,
+      slug,
+      short_description: fd.get("short_description") || null,
+      description: fd.get("description") || null,
       category: fd.get("category"),
       image_url: imageUrl,
+      price: Number(fd.get("price")) || 0,
+      sale_price: saleRaw ? Number(saleRaw) : null,
+      sku: fd.get("sku") || null,
+      stock_quantity: Number(fd.get("stock_quantity")) || 0,
+      in_stock: fd.get("in_stock") === "on",
+      is_featured: fd.get("is_featured") === "on",
+      updated_at: new Date().toISOString(),
     };
+
+    let productId;
 
     if (editingProduct) {
       const { error } = await supabase.from("products").update(payload).eq("id", editingProduct.id);
       if (error) throw error;
+      productId = editingProduct.id;
     } else {
       const { count } = await supabase.from("products").select("*", { count: "exact", head: true });
-      const { error } = await supabase.from("products").insert({ ...payload, sort_order: (count || 0) + 1 });
+      const { data: inserted, error } = await supabase
+        .from("products")
+        .insert({ ...payload, sort_order: (count || 0) + 1 })
+        .select("id")
+        .single();
       if (error) throw error;
+      productId = inserted.id;
+    }
+
+    if (galleryFiles?.length) {
+      const { count: imgCount } = await supabase
+        .from("product_images")
+        .select("*", { count: "exact", head: true })
+        .eq("product_id", productId);
+      await saveProductImages(productId, galleryFiles, imgCount || 0);
     }
 
     resetProductForm();
@@ -370,3 +427,23 @@ workForm.addEventListener("submit", async (e) => {
 
 checkSession();
 verifyConnection();
+initOrdersTab();
+initFileFields();
+
+function initFileFields() {
+  document.querySelectorAll(".admin-file__input").forEach((input) => {
+    const wrap = input.closest(".admin-file");
+    const nameEl = wrap?.querySelector("[data-file-name]");
+    if (!nameEl) return;
+
+    const updateName = () => {
+      if (!input.files?.length) {
+        nameEl.textContent = input.multiple ? "No files chosen" : "No file chosen";
+        return;
+      }
+      nameEl.textContent = [...input.files].map((f) => f.name).join(", ");
+    };
+
+    input.addEventListener("change", updateName);
+  });
+}

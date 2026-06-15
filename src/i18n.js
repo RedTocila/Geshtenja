@@ -61,6 +61,7 @@ export const translations = {
       title: "Katalogu i ndriçimit",
       desc: "Eksploroni varëse, mura, lustra dhe llamba dyshemeje — çdo pjesë e zgjedhur për formë, funksion dhe atmosferë.",
       filterAria: "Filtro produktet",
+      seeAll: "Shiko të gjitha",
     },
     categories: {
       all: "Të gjitha",
@@ -86,6 +87,7 @@ export const translations = {
       showroom: "Showroom",
       hours: "Orari",
       contactLabel: "Kontakti",
+      whatsappAria: "Bisedo në WhatsApp",
       hoursValue: "Hën–Sht 10:00–19:00",
       name: "Emri",
       email: "Email",
@@ -168,6 +170,7 @@ export const translations = {
       title: "Lighting Catalog",
       desc: "Explore pendants, sconces, chandeliers, and floor lamps — each piece selected for form, function, and atmosphere.",
       filterAria: "Filter products",
+      seeAll: "See all products",
     },
     categories: {
       all: "All",
@@ -193,6 +196,7 @@ export const translations = {
       showroom: "Showroom",
       hours: "Hours",
       contactLabel: "Contact",
+      whatsappAria: "Chat on WhatsApp",
       hoursValue: "Mon–Sat 10:00–19:00",
       name: "Name",
       email: "Email",
