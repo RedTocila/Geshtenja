@@ -71,7 +71,7 @@ async function init() {
   mountShopFooter(document.getElementById("siteFooter"));
 
   setPageMeta({
-    title: "Shop — Geshtenja",
+    title: "Shop — Geshtenja Light",
     description: "Browse premium lighting — pendants, sconces, chandeliers and more. Cash on delivery.",
     url: `${location.origin}/shop`,
   });

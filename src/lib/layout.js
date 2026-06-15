@@ -14,9 +14,9 @@ export function mountShopHeader(mount, opts = {}) {
 
   mount.innerHTML = `
     <header class="site-header shop-header">
-      <a href="/" class="brand" aria-label="Geshtenja home">
+      <a href="/" class="brand" aria-label="Geshtenja Light home">
         <img src="/chestnut.png" alt="" class="brand__logo" width="40" height="40" />
-        <span class="brand__name">Geshtenja</span>
+        <span class="brand__name">Geshtenja Light</span>
       </a>
       <nav class="nav nav--desktop shop-nav" aria-label="Shop navigation">
         <a href="/" class="${active === "home" ? "is-active" : ""}">Home</a>
@@ -100,7 +100,7 @@ export function mountShopHeader(mount, opts = {}) {
 export function mountShopFooter(mount) {
   mount.innerHTML = `
     <footer class="site-footer shop-footer">
-      <p>&copy; ${new Date().getFullYear()} Geshtenja. All rights reserved.</p>
+      <p>&copy; ${new Date().getFullYear()} Geshtenja Light. All rights reserved.</p>
       <nav aria-label="Footer navigation">
         <a href="/shop">Shop</a>
         <a href="/#works">Works</a>

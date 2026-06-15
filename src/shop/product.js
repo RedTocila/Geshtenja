@@ -137,7 +137,7 @@ function renderProduct(product, all) {
   }
 
   setPageMeta({
-    title: `${product.name} — Geshtenja`,
+    title: `${product.name} — Geshtenja Light`,
     description: product.short_description || product.description,
     url: `${location.origin}/shop/${product.slug}`,
     image: product.image_url,

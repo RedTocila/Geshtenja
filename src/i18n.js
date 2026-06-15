@@ -4,8 +4,8 @@ export const DEFAULT_LANG = "al";
 export const translations = {
   al: {
     meta: {
-      title: "Geshtenja — Ndriçoni Hapësirën Tuaj",
-      description: "Geshtenja — ndriçim dhe dekor i kuruar. Nga mura moderne deri te lustra klasike.",
+      title: "Geshtenja Light — Ndriçoni Hapësirën Tuaj",
+      description: "Geshtenja Light — ndriçim dhe dekor i kuruar. Nga mura moderne deri te lustra klasike.",
     },
     lang: {
       switchAria: "Zgjidhni gjuhën",
@@ -18,7 +18,7 @@ export const translations = {
       about: "Rreth nesh",
       contact: "Kontakti",
       cart: "Shporta",
-      brandAria: "Geshtenja ballina",
+      brandAria: "Geshtenja Light ballina",
       menuAria: "Hap menunë",
       menuClose: "Mbyll menunë",
     },
@@ -80,7 +80,7 @@ export const translations = {
     about: {
       eyebrow: "Rreth Geshtenjes",
       title: "Drita si gjuhë dizajni",
-      p1: "Themeluar në 2018, Geshtenja filloi si një studio e vogël e obsesionuar me mënyrën se si një fixture i vetëm mund të ripërcaktojë një dhomë. Sot kuratojmë dhe krijojmë ndriçim për shtëpi, zyra dhe hapësira hoteliere.",
+      p1: "Themeluar në 2018, Geshtenja Light filloi si një studio e vogël e obsesionuar me mënyrën se si një fixture i vetëm mund të ripërcaktojë një dhomë. Sot kuratojmë dhe krijojmë ndriçim për shtëpi, zyra dhe hapësira hoteliere.",
       p2: "Çdo pjesë në katalogun tonë zgjidhet për ndershmërinë e materialit, temperaturën e ngrohtë të ngjyrës dhe zanatçinë që zgjat. Punojmë me artizanë lokalë dhe prodhues evropianë që ndajnë besimin tonë se drita e mirë duhet të ndihet pa përpjekje.",
       statsProjects: "Projekte të përfunduara",
       statsPieces: "Pjesë ndriçimi",
@@ -106,7 +106,7 @@ export const translations = {
     },
     footer: {
       aria: "Navigimi i fundfaqes",
-      rights: "© 2026 Geshtenja. Të gjitha të drejtat e rezervuara.",
+      rights: "© 2026 Geshtenja Light. Të gjitha të drejtat e rezervuara.",
       works: "Punët",
       products: "Produktet",
       about: "Rreth nesh",
@@ -119,8 +119,8 @@ export const translations = {
   },
   en: {
     meta: {
-      title: "Geshtenja — Illuminate Your Space",
-      description: "Geshtenja — curated lighting and decor. From modern sconces to classic chandeliers.",
+      title: "Geshtenja Light — Illuminate Your Space",
+      description: "Geshtenja Light — curated lighting and decor. From modern sconces to classic chandeliers.",
     },
     lang: {
       switchAria: "Choose language",
@@ -133,7 +133,7 @@ export const translations = {
       about: "About Us",
       contact: "Contact",
       cart: "Cart",
-      brandAria: "Geshtenja home",
+      brandAria: "Geshtenja Light home",
       menuAria: "Open menu",
       menuClose: "Close menu",
     },
@@ -193,9 +193,9 @@ export const translations = {
       office: "Office",
     },
     about: {
-      eyebrow: "About Geshtenja",
+      eyebrow: "About Geshtenja Light",
       title: "Light as Design Language",
-      p1: "Founded in 2018, Geshtenja began as a small studio obsessed with how a single fixture can redefine a room. Today we curate and craft lighting for homes, offices, and hospitality spaces.",
+      p1: "Founded in 2018, Geshtenja Light began as a small studio obsessed with how a single fixture can redefine a room. Today we curate and craft lighting for homes, offices, and hospitality spaces.",
       p2: "Every piece in our catalog is chosen for its material honesty, warm color temperature, and lasting craftsmanship. We work with local artisans and European manufacturers who share our belief that good light should feel effortless.",
       statsProjects: "Projects completed",
       statsPieces: "Lighting pieces",
@@ -221,7 +221,7 @@ export const translations = {
     },
     footer: {
       aria: "Footer navigation",
-      rights: "© 2026 Geshtenja. All rights reserved.",
+      rights: "© 2026 Geshtenja Light. All rights reserved.",
       works: "Works",
       products: "Products",
       about: "About",
