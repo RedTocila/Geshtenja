@@ -22,6 +22,20 @@
       <stop offset="35%" stop-color="#ffffff" stop-opacity="0" />
       <stop offset="100%" stop-color="#000000" stop-opacity="0.22" />
     </linearGradient>
+    <radialGradient id="bulbGlass" gradientUnits="userSpaceOnUse" cx="120" cy="138" r="24">
+      <stop offset="0%" stop-color="#fff3c4" />
+      <stop offset="30%" stop-color="#ffc107" />
+      <stop offset="70%" stop-color="#ff9800" />
+      <stop offset="100%" stop-color="#e65100" />
+    </radialGradient>
+    <radialGradient id="bulbGlow" gradientUnits="userSpaceOnUse" cx="120" cy="154" r="20">
+      <stop offset="0%" stop-color="#ffe082" stop-opacity="0.95" />
+      <stop offset="55%" stop-color="#ffb300" stop-opacity="0.55" />
+      <stop offset="100%" stop-color="#ff8f00" stop-opacity="0" />
+    </radialGradient>
+    <clipPath id="bulbGlowClip">
+      <rect x="0" y="137" width="240" height="40" />
+    </clipPath>
   </defs>
 
   <!-- Cord socket -->
@@ -43,6 +57,11 @@
     fill="url(#neckMetal)"
   />
 
+  <!-- Bulb glow — behind shade, only below opening -->
+  <g class="lamp-bulb__glow-wrap" clip-path="url(#bulbGlowClip)">
+    <ellipse class="lamp-bulb__glow" cx="120" cy="154" rx="20" ry="11" fill="url(#bulbGlow)" />
+  </g>
+
   <!-- Matte dome exterior -->
   <path
     class="lamp-shade"
@@ -60,9 +79,18 @@
     fill="url(#shadeSideLight)"
   />
 
-  <!-- Solid black underside — no visible bulb -->
-  <rect class="lamp-bottom" x="26" y="133" width="188" height="7" fill="#0a0a0a" />
-  <ellipse cx="120" cy="134" rx="94" ry="3" fill="#141414" />
+  <!-- Bulb glass — visible half-sphere facing down -->
+  <path
+    class="lamp-bulb__glass"
+    d="M 96 136
+       Q 96 158 120 160
+       Q 144 158 144 136
+       Z"
+    fill="url(#bulbGlass)"
+  />
+
+  <!-- Shade lip — thin rim around opening -->
+  <ellipse class="lamp-shade__lip" cx="120" cy="134.5" rx="94" ry="3.5" fill="none" stroke="#1a1a1a" stroke-width="2.5" />
 
   <!-- Projected beam — top edge x 26–214 matches shade bottom corners -->
   <g class="light-projection" aria-hidden="true">

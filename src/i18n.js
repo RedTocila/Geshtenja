@@ -24,6 +24,9 @@ export const translations = {
     },
     light: {
       cloud: "Më ndiz",
+      cloudUrgent: "S'po shoh!",
+      on: "NDEZ",
+      off: "FIK",
       switchAria: "Ndiz dritën",
       lampAria: "Ndiz dritën",
     },
@@ -136,6 +139,9 @@ export const translations = {
     },
     light: {
       cloud: "Turn me on",
+      cloudUrgent: "I can't see!",
+      on: "ON",
+      off: "OFF",
       switchAria: "Turn on the light",
       lampAria: "Turn on the light",
     },

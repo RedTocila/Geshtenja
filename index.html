@@ -15,7 +15,7 @@
   <body>
     <div class="ambient-glow" aria-hidden="true"></div>
 
-    <header class="site-header">
+    <header class="site-header site-header--ghost">
       <a href="#" class="brand" data-i18n-aria="nav.brandAria">
         <img src="/chestnut.png" alt="" class="brand__logo" width="40" height="40" />
         <span class="brand__name">Geshtenja</span>
@@ -34,15 +34,6 @@
         <a href="#contact" data-i18n="nav.contact">Kontakti</a>
       </nav>
       <div class="header-actions">
-        <div class="light-control" id="lightControl">
-          <p class="light-control__cloud" id="lightCloud" aria-hidden="true" data-i18n="light.cloud">Më ndiz</p>
-          <label class="light-switch">
-            <input type="checkbox" class="light-switch__input" id="lightSwitch" role="switch" data-i18n-aria="light.switchAria" />
-            <span class="light-switch__track" aria-hidden="true">
-              <span class="light-switch__thumb"></span>
-            </span>
-          </label>
-        </div>
         <a href="/cart" class="cart-link header-actions__cart" id="homeCartLink" aria-label="Shopping cart">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
             <path d="M6 6h15l-1.5 9h-12L6 6z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
@@ -89,6 +80,20 @@
         </div>
       </div>
     </header>
+
+    <div class="light-control" id="lightControl">
+      <p class="light-control__cloud" id="lightCloud" aria-hidden="true" data-i18n="light.cloud">Më ndiz</p>
+      <label class="light-switch">
+        <input type="checkbox" class="light-switch__input" id="lightSwitch" role="switch" data-i18n-aria="light.switchAria" />
+        <span class="light-switch__plate" aria-hidden="true">
+          <span class="light-switch__screw light-switch__screw--tl"></span>
+          <span class="light-switch__screw light-switch__screw--tr"></span>
+          <span class="light-switch__lever"></span>
+          <span class="light-switch__screw light-switch__screw--bl"></span>
+          <span class="light-switch__screw light-switch__screw--br"></span>
+        </span>
+      </label>
+    </div>
 
     <main>
       <!-- Hero -->

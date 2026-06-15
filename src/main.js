@@ -8,12 +8,17 @@ import { cartCount } from "./lib/cart.js";
 import { mountWhatsAppFab } from "./lib/layout.js";
 import { initMobileNav } from "./lib/mobile-nav.js";
 
-const LAMP_GRADIENT_IDS = ["matteBlack", "neckMetal", "shadeSideLight", "beamGrad", "beamRimGrad"];
+const LAMP_GRADIENT_IDS = ["matteBlack", "neckMetal", "shadeSideLight", "bulbGlass", "bulbGlow", "beamGrad", "beamRimGrad"];
+const LAMP_CLIP_IDS = ["bulbGlowClip"];
 const LAMP_FILTER_IDS = ["beamSoft"];
 
 function injectPendantLamp(container, prefix) {
   let svg = pendantSvg;
   [...LAMP_GRADIENT_IDS, ...LAMP_FILTER_IDS].forEach((id) => {
+    svg = svg.replaceAll(`id="${id}"`, `id="${prefix}-${id}"`);
+    svg = svg.replaceAll(`url(#${id})`, `url(#${prefix}-${id})`);
+  });
+  LAMP_CLIP_IDS.forEach((id) => {
     svg = svg.replaceAll(`id="${id}"`, `id="${prefix}-${id}"`);
     svg = svg.replaceAll(`url(#${id})`, `url(#${prefix}-${id})`);
   });
@@ -160,12 +165,59 @@ function closeVideoModal() {
   modal.classList.remove("is-open");
 }
 
+const CLOUD_NUDGE_MS = 5000;
+let cloudNudgeTimer = null;
+let cloudIsUrgent = false;
+
+function syncCloudText() {
+  const cloud = document.getElementById("lightCloud");
+  if (!cloud || isLit) return;
+  const key = cloudIsUrgent ? "light.cloudUrgent" : "light.cloud";
+  cloud.dataset.i18n = key;
+  cloud.textContent = t(key);
+}
+
+function setCloudUrgent(urgent) {
+  if (cloudIsUrgent === urgent) return;
+  cloudIsUrgent = urgent;
+  const cloud = document.getElementById("lightCloud");
+  if (!cloud) return;
+  cloud.classList.toggle("is-urgent", urgent);
+  syncCloudText();
+}
+
+function clearCloudNudgeTimer() {
+  if (cloudNudgeTimer) {
+    clearTimeout(cloudNudgeTimer);
+    cloudNudgeTimer = null;
+  }
+}
+
+function scheduleCloudNudge() {
+  clearCloudNudgeTimer();
+  if (isLit) return;
+  cloudNudgeTimer = setTimeout(() => {
+    if (!isLit) setCloudUrgent(true);
+  }, CLOUD_NUDGE_MS);
+}
+
+function resetCloudNudge() {
+  setCloudUrgent(false);
+  scheduleCloudNudge();
+}
+
 function setLit(lit) {
   if (isLit === lit) return;
   isLit = lit;
   document.body.classList.toggle("is-lit", lit);
   const lightSwitch = document.getElementById("lightSwitch");
   if (lightSwitch) lightSwitch.checked = lit;
+  if (lit) {
+    clearCloudNudgeTimer();
+    setCloudUrgent(false);
+  } else {
+    scheduleCloudNudge();
+  }
 }
 
 function takeManualLightControl() {
@@ -361,9 +413,14 @@ async function init() {
   const lamp = document.getElementById("lamp");
   const lightSwitch = document.getElementById("lightSwitch");
 
-  lamp.addEventListener("click", toggleLight);
+  lamp.addEventListener("click", () => {
+    takeManualLightControl();
+    resetCloudNudge();
+    toggleLight();
+  });
   lightSwitch.addEventListener("change", () => {
     takeManualLightControl();
+    resetCloudNudge();
     setLit(lightSwitch.checked);
   });
 
@@ -407,6 +464,7 @@ async function init() {
     updateHeroSlide(heroSlideIndex, { animate: false });
     renderProducts(activeFilter);
     renderWorks();
+    syncCloudText();
   });
 
   initFilters();
@@ -423,6 +481,7 @@ async function init() {
 
   initMobileNav();
   mountWhatsAppFab();
+  scheduleCloudNudge();
 
   document.querySelectorAll(".section__header").forEach((el) => {
     el.style.opacity = "0";
