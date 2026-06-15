@@ -21,6 +21,8 @@ let works = [...FALLBACK_WORKS];
 let isLit = false;
 let scrollAutoLightUsed = false;
 let heroSlideIndex = 0;
+let heroSlideTimer = null;
+const HERO_AUTO_SLIDE_MS = 5000;
 let activeFilter = "all";
 
 async function loadContent() {
@@ -153,14 +155,80 @@ function toggleLight() {
   setLit(!isLit);
 }
 
-function updateHeroSlide(index) {
-  const slides = getHeroSlides();
-  heroSlideIndex = ((index % slides.length) + slides.length) % slides.length;
-  const slide = slides[heroSlideIndex];
+function applyHeroSlideContent(slide, totalSlides) {
   document.getElementById("heroTitle").textContent = slide.title;
   document.getElementById("heroTagline").textContent = slide.tagline;
   document.getElementById("heroSlideNum").textContent = String(heroSlideIndex + 1).padStart(2, "0");
-  document.getElementById("heroSlideNumNext").textContent = String((heroSlideIndex + 1) % slides.length + 1).padStart(2, "0");
+  document.getElementById("heroSlideNumNext").textContent = String((heroSlideIndex + 1) % totalSlides + 1).padStart(2, "0");
+}
+
+const HERO_SLIDE_ANIM_MS = 450;
+let heroSlideAnimating = false;
+
+function getHeroSlideEls() {
+  return [
+    document.getElementById("heroTitle"),
+    document.getElementById("heroTagline"),
+    document.getElementById("heroSlideNum"),
+    document.getElementById("heroSlideNumNext"),
+  ];
+}
+
+function updateHeroSlide(index, { animate = true, direction = 1 } = {}) {
+  const slides = getHeroSlides();
+  const nextIndex = ((index % slides.length) + slides.length) % slides.length;
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if (nextIndex === heroSlideIndex) return;
+
+  if (!animate || reducedMotion) {
+    heroSlideIndex = nextIndex;
+    applyHeroSlideContent(slides[heroSlideIndex], slides.length);
+    return;
+  }
+
+  if (heroSlideAnimating) return;
+
+  const els = getHeroSlideEls();
+  heroSlideAnimating = true;
+  const outClass = direction >= 0 ? "is-slide-out-next" : "is-slide-out-prev";
+
+  els.forEach((el) => el.classList.add(outClass));
+
+  setTimeout(() => {
+    heroSlideIndex = nextIndex;
+    applyHeroSlideContent(slides[heroSlideIndex], slides.length);
+
+    const inClass = direction >= 0 ? "is-slide-in-next" : "is-slide-in-prev";
+    els.forEach((el) => {
+      el.classList.remove(outClass);
+      el.classList.add(inClass);
+    });
+
+    requestAnimationFrame(() => {
+      els.forEach((el) => el.classList.remove(inClass));
+      heroSlideAnimating = false;
+    });
+  }, HERO_SLIDE_ANIM_MS);
+}
+
+function startHeroAutoSlide() {
+  stopHeroAutoSlide();
+  heroSlideTimer = setInterval(() => {
+    updateHeroSlide(heroSlideIndex + 1, { direction: 1 });
+  }, HERO_AUTO_SLIDE_MS);
+}
+
+function stopHeroAutoSlide() {
+  if (heroSlideTimer) {
+    clearInterval(heroSlideTimer);
+    heroSlideTimer = null;
+  }
+}
+
+function resetHeroAutoSlide() {
+  stopHeroAutoSlide();
+  startHeroAutoSlide();
 }
 
 function handleScroll() {
@@ -265,7 +333,7 @@ async function init() {
   await loadContent();
   renderProducts();
   renderWorks();
-  updateHeroSlide(0);
+  updateHeroSlide(0, { animate: false });
   positionHeroLamp();
 
   const lamp = document.getElementById("lamp");
@@ -277,8 +345,25 @@ async function init() {
     setLit(lightSwitch.checked);
   });
 
-  document.getElementById("heroPrev").addEventListener("click", () => updateHeroSlide(heroSlideIndex - 1));
-  document.getElementById("heroNext").addEventListener("click", () => updateHeroSlide(heroSlideIndex + 1));
+  document.getElementById("heroPrev").addEventListener("click", () => {
+    updateHeroSlide(heroSlideIndex - 1, { direction: -1 });
+    resetHeroAutoSlide();
+  });
+  document.getElementById("heroNext").addEventListener("click", () => {
+    updateHeroSlide(heroSlideIndex + 1, { direction: 1 });
+    resetHeroAutoSlide();
+  });
+
+  const hero = document.getElementById("hero");
+  hero.addEventListener("mouseenter", stopHeroAutoSlide);
+  hero.addEventListener("mouseleave", startHeroAutoSlide);
+  hero.addEventListener("focusin", stopHeroAutoSlide);
+  hero.addEventListener("focusout", startHeroAutoSlide);
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) stopHeroAutoSlide();
+    else startHeroAutoSlide();
+  });
+  startHeroAutoSlide();
 
   window.addEventListener("scroll", handleScroll, { passive: true });
   window.addEventListener("resize", positionHeroLamp);
@@ -301,7 +386,7 @@ async function init() {
   });
 
   window.addEventListener("languagechange", () => {
-    updateHeroSlide(heroSlideIndex);
+    updateHeroSlide(heroSlideIndex, { animate: false });
     renderProducts(activeFilter);
     renderWorks();
   });
