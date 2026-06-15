@@ -240,8 +240,9 @@ function applyHeroSlideContent(slide, totalSlides) {
   document.getElementById("heroSlideNumNext").textContent = String((heroSlideIndex + 1) % totalSlides + 1).padStart(2, "0");
 }
 
-const HERO_SLIDE_ANIM_MS = 450;
+const HERO_SLIDE_ANIM_MS = 280;
 let heroSlideAnimating = false;
+let heroSlideAnimTimer = null;
 
 function getHeroSlideEls() {
   return [
@@ -265,15 +266,28 @@ function updateHeroSlide(index, { animate = true, direction = 1 } = {}) {
     return;
   }
 
-  if (heroSlideAnimating) return;
-
   const els = getHeroSlideEls();
+
+  if (heroSlideAnimating) {
+    if (heroSlideAnimTimer) clearTimeout(heroSlideAnimTimer);
+    els.forEach((el) => {
+      el.classList.remove(
+        "is-slide-out-next",
+        "is-slide-out-prev",
+        "is-slide-in-next",
+        "is-slide-in-prev"
+      );
+    });
+    heroSlideAnimating = false;
+  }
+
   heroSlideAnimating = true;
   const outClass = direction >= 0 ? "is-slide-out-next" : "is-slide-out-prev";
 
   els.forEach((el) => el.classList.add(outClass));
 
-  setTimeout(() => {
+  heroSlideAnimTimer = setTimeout(() => {
+    heroSlideAnimTimer = null;
     heroSlideIndex = nextIndex;
     applyHeroSlideContent(slides[heroSlideIndex], slides.length);
 
@@ -309,6 +323,16 @@ function resetHeroAutoSlide() {
   startHeroAutoSlide();
 }
 
+let lampLayoutFrame = null;
+
+function scheduleLampLayout() {
+  if (lampLayoutFrame != null) return;
+  lampLayoutFrame = requestAnimationFrame(() => {
+    lampLayoutFrame = null;
+    positionHeroLamp();
+  });
+}
+
 function handleScroll() {
   const scrollY = window.scrollY;
   const threshold = window.innerHeight * 0.15;
@@ -318,7 +342,7 @@ function handleScroll() {
     scrollAutoLightUsed = true;
   }
 
-  positionHeroLamp();
+  scheduleLampLayout();
 }
 
 function initFilters() {
@@ -371,7 +395,6 @@ function positionHeroLamp() {
   }
 
   hero.style.setProperty("--lamp-top", `${lampTop}px`);
-  void lamp.offsetHeight;
 
   const lampRect = lamp.getBoundingClientRect();
   document.documentElement.style.setProperty("--lamp-cord-height", `${Math.max(lampRect.top, 0)}px`);
@@ -449,8 +472,8 @@ async function init() {
   startHeroAutoSlide();
 
   window.addEventListener("scroll", handleScroll, { passive: true });
-  window.addEventListener("resize", positionHeroLamp);
-  requestAnimationFrame(positionHeroLamp);
+  window.addEventListener("resize", scheduleLampLayout, { passive: true });
+  scheduleLampLayout();
 
   document.getElementById("contactForm").addEventListener("submit", (e) => {
     e.preventDefault();

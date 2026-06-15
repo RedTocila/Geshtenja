@@ -17,7 +17,7 @@
   --projection-opacity: 0;
   --lamp-cord-height: 80px;
   --hero-title-opacity: 0.12;
-  --transition-theme: 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-theme: 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
   --font-display: "Cormorant Garamond", Georgia, serif;
   --font-body: "DM Sans", system-ui, sans-serif;
 }
@@ -93,7 +93,7 @@ button {
   z-index: 0;
   opacity: var(--ambient-opacity);
   background: #f7f5f2;
-  transition: opacity var(--transition-theme);
+  transition: opacity 0.4s ease;
 }
 
 main,
@@ -105,7 +105,7 @@ main,
 /* Beam lives inside lamp SVG — top edge at shade corners (x 26–214) */
 .hero-lamp__svg .light-projection {
   opacity: var(--projection-opacity);
-  transition: opacity var(--transition-theme);
+  transition: opacity 0.4s ease;
   pointer-events: none;
 }
 
@@ -501,9 +501,8 @@ body.mobile-nav-open .light-control__cloud {
   transform: translateY(-50%);
   transform-origin: right center;
   animation: cloud-wiggle 1.4s ease-in-out infinite;
-  transition:
-    opacity 0.4s ease,
-    transform 0.4s ease;
+  will-change: transform;
+  transition: opacity 0.25s ease;
   pointer-events: none;
 }
 
@@ -547,7 +546,7 @@ body.is-lit .light-control__cloud {
   border-color: rgba(220, 38, 38, 0.85);
   box-shadow: 0 4px 16px rgba(220, 38, 38, 0.35);
   font-weight: 600;
-  animation: cloud-wiggle-urgent 0.5s ease-in-out infinite;
+  animation: cloud-wiggle-urgent 0.65s ease-in-out infinite;
 }
 
 .light-control__cloud.is-urgent::after {
@@ -782,7 +781,7 @@ body.is-lit .hero__arc {
   font-size: 0.75rem;
   font-weight: 500;
   color: var(--text-muted);
-  transition: opacity 0.45s ease, transform 0.45s ease;
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 .hero__slider-num.is-slide-out-next,
@@ -848,8 +847,8 @@ body.is-lit .hero__arc {
     2px 4px 0 var(--shadow),
     -1px -1px 0 rgba(255,255,255,0.03);
   transition:
-    opacity 0.45s ease,
-    transform 0.45s ease,
+    opacity 0.3s ease,
+    transform 0.3s ease,
     color var(--transition-theme);
   user-select: none;
   z-index: 1;
@@ -897,7 +896,7 @@ body.is-lit .hero__title {
   height: var(--lamp-cord-height);
   background: linear-gradient(to bottom, #0a0a0a, #1c1c1c 70%, #2a2a2a);
   box-shadow: 1px 0 0 rgba(255, 255, 255, 0.04);
-  transition: background var(--transition-theme), height 0.15s ease-out;
+  transition: background var(--transition-theme);
   pointer-events: none;
   z-index: 150;
 }
@@ -952,8 +951,8 @@ body.is-lit .hero-lamp__cord {
   opacity: calc(0.55 + var(--lamp-brightness) * 0.45);
   filter: brightness(0.65) saturate(0.9);
   transition:
-    opacity var(--transition-theme),
-    filter var(--transition-theme);
+    opacity 0.4s ease,
+    filter 0.4s ease;
 }
 
 body.is-lit .lamp-bulb__glass {
@@ -962,7 +961,7 @@ body.is-lit .lamp-bulb__glass {
 
 .lamp-bulb__glow {
   opacity: calc(0.12 + var(--lamp-brightness) * 0.88);
-  transition: opacity var(--transition-theme);
+  transition: opacity 0.4s ease;
 }
 
 /* Hero content */
@@ -979,8 +978,8 @@ body.is-lit .lamp-bulb__glass {
   color: var(--text-muted);
   margin-bottom: 2rem;
   transition:
-    opacity 0.45s ease,
-    transform 0.45s ease,
+    opacity 0.3s ease,
+    transform 0.3s ease,
     color var(--transition-theme);
 }
 
