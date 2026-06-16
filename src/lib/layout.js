@@ -2,7 +2,7 @@ import { cartCount } from "./cart.js";
 import { initLang, t, applyLanguage } from "../i18n.js";
 import { initMobileNav } from "./mobile-nav.js";
 
-const WHATSAPP_NUMBER = "38344123456";
+const WHATSAPP_NUMBER = "35569696688";
 
 /**
  * @param {HTMLElement} mount
@@ -21,14 +21,14 @@ export function mountShopHeader(mount, opts = {}) {
         </span>
         <span class="brand__name">Geshtenja Light</span>
       </a>
-      <nav class="nav nav--desktop shop-nav" aria-label="Shop navigation">
-        <a href="/" class="${active === "home" ? "is-active" : ""}">Home</a>
+      <nav class="nav nav--desktop shop-nav" data-i18n-aria="nav.aria">
+        <a href="/" class="${active === "home" ? "is-active" : ""}" data-i18n="nav.home">Home</a>
         <span class="nav-sep">/</span>
-        <a href="/shop" class="${active === "shop" ? "is-active" : ""}">Shop</a>
+        <a href="/shop" class="${active === "shop" ? "is-active" : ""}" data-i18n="nav.shop">Shop</a>
         <span class="nav-sep">/</span>
-        <a href="/#works">Works</a>
+        <a href="/#works" data-i18n="nav.works">Works</a>
         <span class="nav-sep">/</span>
-        <a href="/#contact">Contact</a>
+        <a href="/#contact" data-i18n="nav.contact">Contact</a>
       </nav>
       <div class="header-actions">
         <div class="lang-switch header-actions__lang" role="group" aria-label="Choose language">
@@ -56,11 +56,11 @@ export function mountShopHeader(mount, opts = {}) {
       <div class="mobile-menu" id="shopMobileMenu" hidden>
         <button type="button" class="mobile-menu__backdrop" data-nav-close tabindex="-1" aria-hidden="true"></button>
         <div class="mobile-menu__panel">
-          <nav class="nav nav--mobile shop-nav" aria-label="Shop navigation">
-            <a href="/" class="${active === "home" ? "is-active" : ""}">Home</a>
-            <a href="/shop" class="${active === "shop" ? "is-active" : ""}">Shop</a>
-            <a href="/#works">Works</a>
-            <a href="/#contact">Contact</a>
+          <nav class="nav nav--mobile shop-nav" data-i18n-aria="nav.aria">
+            <a href="/" class="${active === "home" ? "is-active" : ""}" data-i18n="nav.home">Home</a>
+            <a href="/shop" class="${active === "shop" ? "is-active" : ""}" data-i18n="nav.shop">Shop</a>
+            <a href="/#works" data-i18n="nav.works">Works</a>
+            <a href="/#contact" data-i18n="nav.contact">Contact</a>
           </nav>
           <div class="mobile-menu__actions">
             ${
@@ -86,6 +86,7 @@ export function mountShopHeader(mount, opts = {}) {
   `;
 
   initMobileNav(mount);
+  applyLanguage();
 
   if (!mount.dataset.cartListener) {
     mount.dataset.cartListener = "true";
@@ -106,7 +107,7 @@ export function mountShopFooter(mount) {
       <div class="site-footer__row">
         <p data-i18n="footer.rights">&copy; ${new Date().getFullYear()} Geshtenja Light. All rights reserved.</p>
         <nav data-i18n-aria="footer.aria">
-          <a href="/shop">Shop</a>
+          <a href="/shop" data-i18n="nav.shop">Shop</a>
           <a href="/#works" data-i18n="footer.works">Works</a>
           <a href="/#contact" data-i18n="footer.contact">Contact</a>
         </nav>

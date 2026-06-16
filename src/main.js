@@ -81,9 +81,13 @@ function renderProducts(filter = "all") {
       <a href="${href}" class="product-card__visual">
         <img class="product-card__img" src="${image}" alt="${p.name}" loading="lazy" width="600" height="750" />
         <div class="product-card__overlay">
-          <span class="product-card__category">${categoryLabel(p.category)}</span>
-          <h3 class="product-card__name">${p.name}</h3>
-          <div class="product-card__price-row">${priceHtml}</div>
+          <div class="product-card__label">
+            <span class="product-card__category">${categoryLabel(p.category)}</span>
+            <div class="product-card__meta">
+              <h3 class="product-card__name">${p.name}</h3>
+              <div class="product-card__price-row">${priceHtml}</div>
+            </div>
+          </div>
         </div>
       </a>
     </article>

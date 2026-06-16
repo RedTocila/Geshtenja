@@ -46,9 +46,7 @@
         <span class="nav-sep">/</span>
         <a href="#works" data-i18n="nav.works">Punët</a>
         <span class="nav-sep">/</span>
-        <a href="#products" data-i18n="nav.products">Produktet</a>
-        <span class="nav-sep">/</span>
-        <a href="/shop">Shop</a>
+        <a href="/shop" data-i18n="nav.shop">Produktet</a>
         <span class="nav-sep">/</span>
         <a href="#about" data-i18n="nav.about">Rreth nesh</a>
         <span class="nav-sep">/</span>
@@ -79,8 +77,7 @@
           <nav class="nav nav--mobile" data-i18n-aria="nav.aria">
             <a href="#hero" data-i18n="nav.home">Ballina</a>
             <a href="#works" data-i18n="nav.works">Punët</a>
-            <a href="#products" data-i18n="nav.products">Produktet</a>
-            <a href="/shop">Shop</a>
+            <a href="/shop" data-i18n="nav.shop">Produktet</a>
             <a href="#about" data-i18n="nav.about">Rreth nesh</a>
             <a href="#contact" data-i18n="nav.contact">Kontakti</a>
           </nav>
@@ -160,8 +157,7 @@
           </p>
           <div class="hero__actions">
             <a href="#works" class="btn btn--primary" data-i18n="hero.viewWork">Shiko Punët Tona</a>
-            <a href="#products" class="btn btn--outline" data-i18n="hero.browseCollection">Shfleto Koleksionin</a>
-            <a href="/shop" class="btn btn--outline">Shop</a>
+            <a href="/shop" class="btn btn--outline" data-i18n="hero.browseCollection">Shfleto Koleksionin</a>
           </div>
         </div>
 
@@ -211,6 +207,10 @@
             <p class="section__desc" data-i18n="products.desc">Eksploroni varëse, mura, lustra dhe llamba dyshemeje — çdo pjesë e zgjedhur për formë, funksion dhe atmosferë.</p>
           </header>
 
+          <div class="products-toolbar">
+            <a href="/shop" class="btn btn--outline products-toolbar__shop" data-i18n="products.goToShop">Shko në dyqan</a>
+          </div>
+
           <div class="filter-bar" role="tablist" data-i18n-aria="products.filterAria">
             <button class="filter-btn is-active" data-filter="all" role="tab" aria-selected="true" data-i18n="categories.all">Të gjitha</button>
             <button class="filter-btn" data-filter="pendant" role="tab" data-i18n="categories.pendant">Varëse</button>
@@ -236,10 +236,11 @@
             </div>
           </div>
           <div class="about__text">
-            <span class="section__eyebrow" data-i18n="about.eyebrow">Rreth Geshtenjes</span>
-            <h2 class="section__title" data-i18n="about.title">Drita si gjuhë dizajni</h2>
-            <p data-i18n="about.p1">Themeluar në 2018, Geshtenja filloi si një studio e vogël e obsesionuar me mënyrën se si një fixture i vetëm mund të ripërcaktojë një dhomë. Sot kuratojmë dhe krijojmë ndriçim për shtëpi, zyra dhe hapësira hoteliere.</p>
-            <p data-i18n="about.p2">Çdo pjesë në katalogun tonë zgjidhet për ndershmërinë e materialit, temperaturën e ngrohtë të ngjyrës dhe zanatçinë që zgjat. Punojmë me artizanë lokalë dhe prodhues evropianë që ndajnë besimin tonë se drita e mirë duhet të ndihet pa përpjekje.</p>
+            <h2 class="section__title" data-i18n="about.title">Rreth Geshtenja Light</h2>
+            <p data-i18n="about.p1">Geshtenja Light është një kompani e specializuar në zgjidhje profesionale ndriçimi, e përkushtuar ndaj cilësisë, estetikës dhe funksionalitetit. Me një qasje të kujdesshme ndaj dizajnit dhe përzgjedhjes së produkteve, ne ofrojmë ndriçim që jo vetëm plotëson nevojat praktike të hapësirës, por edhe kontribuon në krijimin e një ambienti të rafinuar dhe harmonik.</p>
+            <p data-i18n="about.p2">Bashkëpunojmë me prodhues dhe partnerë të besueshëm evropianë për të sjellë produkte që karakterizohen nga standarde të larta teknike, qëndrueshmëri afatgjatë dhe dizajn bashkëkohor. Portofoli ynë përfshin zgjidhje për ambiente rezidenciale, komerciale, zyra, hotele dhe projekte të personalizuara.</p>
+            <p data-i18n="about.p3">Në çdo projekt synojmë të kombinojmë inovacionin, efikasitetin energjetik dhe estetikën, duke krijuar hapësira ku drita shërben si element thelbësor i identitetit dhe përvojës së përdoruesit. Për ne, ndriçimi nuk është thjesht një nevojë teknike, por një komponent i rëndësishëm i arkitekturës dhe dizajnit modern.</p>
+            <p class="about__tagline" data-i18n="about.tagline">Geshtenja Light – ku cilësia, dizajni dhe drita takohen në harmoni.</p>
             <ul class="about__stats">
               <li><strong>240+</strong><span data-i18n="about.statsProjects">Projekte të përfunduara</span></li>
               <li><strong>85</strong><span data-i18n="about.statsPieces">Pjesë ndriçimi</span></li>
@@ -275,9 +276,9 @@
             <h2 class="section__title" data-i18n="contact.title">Le të ndriçojmë së bashku</h2>
             <p class="section__desc" data-i18n="contact.desc">Vizitoni showroom-in tonë, kërkoni një konsultë ose pyetni për instalime të personalizuara.</p>
             <address class="contact__info">
-              <p><strong data-i18n="contact.showroom">Showroom</strong><br />Rr. Nëna Terezë 14, Prishtinë</p>
+              <p><strong data-i18n="contact.showroom">Showroom</strong><br />Rruga Gjik Kuqali, Tiranë 1001, Albania</p>
               <p><strong data-i18n="contact.hours">Orari</strong><br /><span data-i18n="contact.hoursValue">Hën–Sht 10:00–19:00</span></p>
-              <p><strong data-i18n="contact.contactLabel">Kontakti</strong><br /><a href="mailto:hello@geshtenja.com">hello@geshtenja.com</a><br /><a href="tel:+38344123456">+383 44 123 456</a></p>
+              <p><strong data-i18n="contact.contactLabel">Kontakti</strong><br /><a href="mailto:emiljangeshtenja25@gmail.com">emiljangeshtenja25@gmail.com</a><br /><a href="tel:+35569696688">+355 69 669 6688</a></p>
               <p><strong>Google</strong><br /><a href="#" id="contactGoogleReviews" target="_blank" rel="noopener noreferrer" data-i18n="contact.googleReviews">Vlerësimet në Google</a></p>
             </address>
           </div>
@@ -304,13 +305,13 @@
                 <div class="contact-map__intro">
                   <span class="section__eyebrow" data-i18n="contact.mapEyebrow">Vendndodhja</span>
                   <h3 class="contact-map__title" data-i18n="contact.mapTitle">Ku ndodhemi</h3>
-                  <p class="contact-map__desc" data-i18n="contact.mapDesc">Vizitoni showroom-in tonë në Prishtinë.</p>
+                  <p class="contact-map__desc" data-i18n="contact.mapDesc">Vizitoni showroom-in tonë në Tiranë.</p>
                   <p class="contact-map__address" id="contactMapAddress">
                     <svg class="contact-map__pin" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                       <path d="M12 21s7-4.5 7-11a7 7 0 1 0-14 0c0 6.5 7 11 7 11Z" stroke="currentColor" stroke-width="1.5"/>
                       <circle cx="12" cy="10" r="2.5" stroke="currentColor" stroke-width="1.5"/>
                     </svg>
-                    <span id="contactMapAddressText">Rr. Nëna Terezë 14, Prishtinë</span>
+                    <span id="contactMapAddressText">Rruga Gjik Kuqali, Tiranë 1001, Albania</span>
                   </p>
                 </div>
                 <a href="#" class="btn btn--outline contact-map__link" id="contactMapLink" target="_blank" rel="noopener noreferrer" data-i18n="contact.openInMaps">Hap në Google Maps</a>
@@ -338,7 +339,7 @@
         <p data-i18n="footer.rights">© 2026 Geshtenja. Të gjitha të drejtat e rezervuara.</p>
         <nav data-i18n-aria="footer.aria">
           <a href="#works" data-i18n="footer.works">Punët</a>
-          <a href="#products" data-i18n="footer.products">Produktet</a>
+          <a href="/shop" data-i18n="nav.shop">Produktet</a>
           <a href="#about" data-i18n="footer.about">Rreth nesh</a>
           <a href="#reviews" data-i18n="reviews.eyebrow">Vlerësimet</a>
           <a href="#contact" data-i18n="footer.contact">Kontakti</a>
