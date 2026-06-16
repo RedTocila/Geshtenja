@@ -10,6 +10,7 @@ import { cartCount } from "./lib/cart.js";
 import { mountWhatsAppFab } from "./lib/layout.js";
 import { initMobileNav } from "./lib/mobile-nav.js";
 import { runSplashUntilReady } from "./lib/splash.js";
+import { applyImageZoom } from "./lib/image-zoom.js";
 
 const LAMP_GRADIENT_IDS = ["matteBlack", "neckMetal", "shadeSideLight", "bulbGlass", "bulbGlow", "beamGrad", "beamRimGrad"];
 const LAMP_CLIP_IDS = ["bulbGlowClip"];
@@ -99,6 +100,7 @@ function renderProducts(filter = "all") {
     more.hidden = items.length <= HOME_PRODUCT_LIMIT;
   }
 
+  applyImageZoom(grid, ".product-card__img");
   observeCards(grid.querySelectorAll(".product-card"));
 }
 

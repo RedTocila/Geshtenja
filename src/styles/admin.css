@@ -1141,6 +1141,32 @@ body {
   flex-shrink: 0;
 }
 
+img.admin-list__thumb {
+  cursor: zoom-in;
+}
+
+.admin-img-preview {
+  position: fixed;
+  z-index: 9999;
+  width: 240px;
+  height: 240px;
+  padding: 4px;
+  background: var(--admin-bg-elevated, #252019);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 8px;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+}
+
+.admin-img-preview img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 4px;
+  background: #2a2420;
+}
+
 .admin-list__thumb--empty {
   display: flex;
   align-items: center;

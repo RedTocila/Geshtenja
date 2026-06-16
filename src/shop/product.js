@@ -10,6 +10,7 @@ import {
 import { formatPrice, effectivePrice } from "../lib/format.js";
 import { addToCart } from "../lib/cart.js";
 import { categoryLabel } from "../i18n.js";
+import { applyImageZoom } from "../lib/image-zoom.js";
 
 function getSlugFromPath() {
   const params = new URLSearchParams(location.search);
@@ -144,6 +145,12 @@ function renderProduct(product, all) {
     type: "product",
   });
   injectProductJsonLd(product, price);
+
+  applyImageZoom(document.getElementById("productContent"), ".product-gallery__main img", {
+    zoom: 3.2,
+    lensSize: 210,
+  });
+  applyImageZoom(document.getElementById("relatedProducts"), ".shop-card__media img");
 }
 
 async function init() {

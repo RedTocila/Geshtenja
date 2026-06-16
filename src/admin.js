@@ -15,6 +15,7 @@ import {
   renderProductTagChips,
   setTagsChangedHandler,
 } from "./admin-tags.js";
+import { initAdminImagePreview } from "./lib/admin-image-preview.js";
 
 const loginPanel = document.getElementById("loginPanel");
 const dashboardPanel = document.getElementById("dashboardPanel");
@@ -687,6 +688,7 @@ setTagsChangedHandler(async () => {
 });
 initOrdersTab();
 initInventoryTab();
+initAdminImagePreview();
 initFileFields();
 
 productSearch?.addEventListener("input", () => renderProductList());

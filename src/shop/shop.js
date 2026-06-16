@@ -3,6 +3,7 @@ import { setPageMeta } from "../lib/seo.js";
 import { fetchProducts, filterAndSortProducts, productUrl } from "../lib/products.js";
 import { formatPrice } from "../lib/format.js";
 import { categoryLabel } from "../i18n.js";
+import { applyImageZoom } from "../lib/image-zoom.js";
 
 const CATEGORIES = ["all", "pendant", "sconce", "chandelier", "floor", "office"];
 
@@ -63,6 +64,7 @@ function renderGrid() {
 
   empty.hidden = true;
   grid.innerHTML = list.map(renderProductCard).join("");
+  applyImageZoom(grid, ".shop-card__media img");
 }
 
 async function init() {

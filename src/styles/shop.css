@@ -320,6 +320,31 @@ body.shop-page select.form-control {
   object-fit: cover;
 }
 
+/* Pointer-following image magnifier */
+.img-zoom {
+  cursor: crosshair;
+}
+
+.img-zoom__lens {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 5;
+  transform: translate(-50%, -50%);
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.28),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+  background-repeat: no-repeat;
+  background-color: #eeeae4;
+}
+
+.img-zoom--active .product-card__img,
+.product-card:hover .img-zoom--active .product-card__img,
+.shop-card:hover .img-zoom--active .shop-card__media img {
+  transform: none;
+}
+
 .product-info__title {
   font-family: var(--font-display);
   font-size: clamp(2rem, 5vw, 3rem);
