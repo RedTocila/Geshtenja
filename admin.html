@@ -82,6 +82,10 @@
                 <span class="admin-tab__icon" aria-hidden="true">◇</span>
                 <span class="admin-tab__label" data-i18n="admin.tabs.works">Portfolio</span>
               </button>
+              <button type="button" class="admin-tab" data-tab="inventory" role="tab" id="tab-btn-inventory" aria-selected="false" aria-controls="tab-inventory">
+                <span class="admin-tab__icon" aria-hidden="true">▤</span>
+                <span class="admin-tab__label" data-i18n="admin.tabs.inventory">Inventory</span>
+              </button>
               <button type="button" class="admin-tab" data-tab="tags" role="tab" id="tab-btn-tags" aria-selected="false" aria-controls="tab-tags">
                 <span class="admin-tab__icon" aria-hidden="true">◆</span>
                 <span class="admin-tab__label" data-i18n="admin.tabs.tags">Tags</span>
@@ -138,6 +142,43 @@
               <button type="button" class="admin-btn admin-btn--add" id="addProductBtn" data-i18n-aria="admin.products.addAria" aria-label="Add product">+</button>
             </div>
             <ul class="admin-list" id="productList"></ul>
+          </div>
+        </div>
+
+        <!-- Inventory -->
+        <div class="admin-tab-panel" id="tab-inventory" role="tabpanel" aria-labelledby="tab-btn-inventory" hidden>
+          <div class="admin-section-head">
+            <p class="admin-muted" data-i18n="admin.inventory.desc">View stock levels, product codes, and adjust inventory for every item.</p>
+          </div>
+
+          <div class="admin-card admin-inventory-toolbar">
+            <label class="admin-search">
+              <span class="admin-search__icon" aria-hidden="true">⌕</span>
+              <input type="search" id="inventorySearch" data-i18n-placeholder="admin.inventory.searchPlaceholder" placeholder="Search by name or product code…" data-i18n-aria="admin.inventory.searchAria" aria-label="Search inventory" />
+            </label>
+            <div class="admin-inventory-summary" id="inventorySummary"></div>
+          </div>
+
+          <div class="admin-card admin-card--list">
+            <div class="admin-card__header">
+              <h3 data-i18n="admin.inventory.heading">Inventory</h3>
+            </div>
+            <div class="admin-table-wrap" id="inventoryTableWrap">
+              <table class="admin-table admin-table--inventory">
+                <thead>
+                  <tr>
+                    <th data-i18n="admin.inventory.colProduct">Product</th>
+                    <th data-i18n="admin.inventory.colCode">Code</th>
+                    <th data-i18n="admin.inventory.colCategory">Category</th>
+                    <th data-i18n="admin.inventory.colStatus">Status</th>
+                    <th data-i18n="admin.inventory.colStock">Stock</th>
+                    <th data-i18n="admin.inventory.colAdjust">Adjust</th>
+                  </tr>
+                </thead>
+                <tbody id="inventoryList"></tbody>
+              </table>
+            </div>
+            <div id="inventoryEmpty" hidden></div>
           </div>
         </div>
 

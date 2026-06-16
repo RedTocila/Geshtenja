@@ -2,6 +2,7 @@ import { supabase, isSupabaseConfigured, MEDIA_BUCKET } from "./lib/supabase.js"
 import { slugify } from "./lib/format.js";
 import { initLang, t, categoryLabel } from "./i18n.js";
 import { loadOrderMetrics, initOrdersTab, refreshOrdersUi } from "./admin-orders.js";
+import { initInventoryTab, renderInventory } from "./admin-inventory.js";
 import { showToast, showLoading, showEmpty, updateCount, openModal, closeModal, initModal, resetFormFileLabels } from "./admin-ui.js";
 import {
   fetchTags,
@@ -207,6 +208,7 @@ document.querySelectorAll(".admin-tab").forEach((tab) => {
     setSidebarOpen(false);
     if (tab.dataset.tab === "orders") loadOrderMetrics();
     if (tab.dataset.tab === "tags") loadTagsList?.();
+    if (tab.dataset.tab === "inventory") renderInventory(productsCache);
   });
 });
 
@@ -327,6 +329,7 @@ async function loadProducts() {
   productsCache = data || [];
   renderProductTagFilters();
   renderProductList();
+  renderInventory(productsCache);
 }
 
 function renderProductTagFilters() {
@@ -659,6 +662,7 @@ function refreshAdminDynamicUi() {
   }
   renderProductTagFilters();
   renderProductList();
+  renderInventory(productsCache);
   loadWorks().catch(() => {});
   loadTagsList?.();
   refreshOrdersUi?.();
@@ -682,6 +686,7 @@ setTagsChangedHandler(async () => {
   }
 });
 initOrdersTab();
+initInventoryTab();
 initFileFields();
 
 productSearch?.addEventListener("input", () => renderProductList());
