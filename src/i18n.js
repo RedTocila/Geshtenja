@@ -43,19 +43,19 @@ export const translations = {
       browseCollection: "Shfleto Koleksionin",
       slides: [
         {
-          title: "Varëse",
+          title: "Ndriçoni Çdo Hapësirë",
           tagline:
-            "Ndriçoni hapësirën tuaj. Zbuloni koleksionin tonë të ndriçimit dhe dekorit. Gjeni pjesën tuaj të përsosur. Nga mura moderne deri te lustra klasike, ofrojmë stile të ndryshme për çdo ambient. Na lini t'ju ndihmojmë të gjeni ndriçimin e duhur.",
+            "Zbuloni zgjidhje premium ndriçimi brenda dhe jashtë, të dizajnuara për të përmirësuar komoditetin, stilin dhe efikasitetin për shtëpi dhe biznese.",
         },
         {
-          title: "Mur",
+          title: "Instalim Ekspert Ndriçimi",
           tagline:
-            "Elegancë murale për çdo korridor dhe kënd leximi. Koleksioni ynë i murave kombinon formë skulpturore me dritë të ngrohtë dhe të drejtuar.",
+            "Nga zëvendësimet e thjeshta të pajisjeve deri te sistemet e plota të ndriçimit, ekipi ynë me përvojë ofron instalime të sigurta, të besueshme dhe profesionale.",
         },
         {
-          title: "Lustër",
+          title: "Transformoni Shtëpinë Tuaj",
           tagline:
-            "Bëni një deklaratë nga lart. Nga unaza minimaliste deri te forma kristalore, lustra tona e mbajnë dhomën së bashku.",
+            "Krijoni atmosferën e përsosur me ndriçim elegant për dhoma ndenjeje, kuzhina, dhoma gjumi, kopshte dhe hapësira të jashtme.",
         },
       ],
     },
@@ -341,19 +341,19 @@ export const translations = {
       browseCollection: "Browse Collection",
       slides: [
         {
-          title: "Pendant",
+          title: "Illuminate Every Space",
           tagline:
-            "Illuminate Your Space. Discover our curated lighting and decor. Find your perfect piece. From modern sconces to classic chandeliers, we offer a diverse range of styles to enhance any room. Let us help you find the perfect lighting.",
+            "Discover premium indoor and outdoor lighting solutions designed to enhance comfort, style, and efficiency for homes and businesses.",
         },
         {
-          title: "Sconce",
+          title: "Expert Lighting Installation",
           tagline:
-            "Wall-mounted elegance for every corridor and reading nook. Our sconce collection blends sculptural form with warm, directed light.",
+            "From simple fixture replacements to complete lighting systems, our experienced team delivers safe, reliable, and professional installations.",
         },
         {
-          title: "Chandelier",
+          title: "Transform Your Home",
           tagline:
-            "Make a statement overhead. From minimalist rings to cascading crystal forms, our chandeliers anchor the room.",
+            "Create the perfect atmosphere with elegant lighting for living rooms, kitchens, bedrooms, gardens, and outdoor spaces.",
         },
       ],
     },

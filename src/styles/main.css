@@ -856,11 +856,11 @@ body.is-lit .hero__arc {
   position: relative;
   width: 100%;
   max-width: 900px;
-  height: clamp(300px, 48vh, 460px);
+  height: clamp(260px, 42vh, 420px);
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
   margin-top: 0.5rem;
   z-index: 4;
 }
@@ -877,12 +877,16 @@ body.is-lit .hero__arc {
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
+  width: min(100%, 52rem);
+  padding: 0 1.25rem;
   font-family: var(--font-display);
-  font-size: clamp(5rem, 18vw, 14rem);
+  font-size: clamp(2rem, 4.5vw + 0.75rem, 5.25rem);
   font-weight: 600;
-  line-height: 0.85;
+  line-height: 0.95;
   letter-spacing: -0.02em;
-  white-space: nowrap;
+  text-align: center;
+  text-wrap: balance;
+  white-space: normal;
   color: var(--text);
   opacity: var(--hero-title-opacity);
   text-shadow:
@@ -1010,15 +1014,18 @@ body.is-lit .lamp-bulb__glass {
 .hero__content {
   position: relative;
   z-index: 5;
+  width: min(100%, 640px);
   max-width: 640px;
+  padding: 0 0.5rem;
   text-align: center;
 }
 
 .hero__tagline {
-  font-size: 0.95rem;
-  line-height: 1.75;
+  font-size: clamp(0.875rem, 0.8rem + 0.35vw, 0.95rem);
+  line-height: 1.65;
   color: var(--text-muted);
-  margin-bottom: 2rem;
+  margin-bottom: 1.75rem;
+  text-wrap: pretty;
   transition:
     opacity 0.3s ease,
     transform 0.3s ease,
@@ -2161,13 +2168,26 @@ body.is-lit select.form-control {
   }
 
   .hero__stage {
-    height: clamp(220px, 36vh, 320px);
-    margin-bottom: 1rem;
+    height: clamp(200px, 32vh, 300px);
+    margin-bottom: 0.75rem;
     margin-top: 0.25rem;
   }
 
+  .hero__title {
+    width: min(100%, 100%);
+    padding: 0 0.5rem;
+    font-size: clamp(1.65rem, 6.5vw, 2.75rem);
+    line-height: 1;
+  }
+
   .hero__content {
-    margin-top: -0.5rem;
+    margin-top: -0.25rem;
+    padding: 0 0.25rem;
+  }
+
+  .hero__tagline {
+    line-height: 1.55;
+    margin-bottom: 1.5rem;
   }
 
   .work-card,
@@ -2219,8 +2239,21 @@ body.is-lit select.form-control {
 }
 
 @media (max-width: 480px) {
+  .hero {
+    padding: 5rem 1rem 3rem;
+  }
+
   .hero__title {
-    font-size: 4.5rem;
+    font-size: clamp(1.5rem, 7vw, 2.25rem);
+  }
+
+  .hero__actions {
+    gap: 0.65rem;
+  }
+
+  .hero__actions .btn {
+    padding: 0.75rem 1.25rem;
+    font-size: 0.72rem;
   }
 
   .about__stats {
