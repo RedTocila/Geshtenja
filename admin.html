@@ -74,7 +74,11 @@
             </div>
 
             <nav class="admin-sidebar__nav admin-tabs" role="tablist" data-i18n-aria="admin.sidebar.navAria">
-              <button type="button" class="admin-tab is-active" data-tab="products" role="tab" id="tab-btn-products" aria-selected="true" aria-controls="tab-products">
+              <button type="button" class="admin-tab is-active" data-tab="orders" role="tab" id="tab-btn-orders" aria-selected="true" aria-controls="tab-orders">
+                <span class="admin-tab__icon" aria-hidden="true">◎</span>
+                <span class="admin-tab__label" data-i18n="admin.tabs.orders">Orders</span>
+              </button>
+              <button type="button" class="admin-tab" data-tab="products" role="tab" id="tab-btn-products" aria-selected="false" aria-controls="tab-products">
                 <span class="admin-tab__icon" aria-hidden="true">◈</span>
                 <span class="admin-tab__label" data-i18n="admin.tabs.products">Products</span>
               </button>
@@ -90,10 +94,6 @@
                 <span class="admin-tab__icon" aria-hidden="true">◆</span>
                 <span class="admin-tab__label" data-i18n="admin.tabs.tags">Tags</span>
               </button>
-              <button type="button" class="admin-tab" data-tab="orders" role="tab" id="tab-btn-orders" aria-selected="false" aria-controls="tab-orders">
-                <span class="admin-tab__icon" aria-hidden="true">◎</span>
-                <span class="admin-tab__label" data-i18n="admin.tabs.orders">Orders</span>
-              </button>
             </nav>
 
             <div class="admin-sidebar__footer">
@@ -106,7 +106,7 @@
           <div class="admin-main">
             <header class="admin-main__topbar">
               <button type="button" class="admin-sidebar-toggle" id="sidebarToggle" data-i18n-aria="admin.sidebar.openMenu" aria-expanded="false" aria-controls="adminSidebar">☰</button>
-              <h1 class="admin-main__title" id="mainTopbarTitle" data-i18n="admin.tabs.products">Products</h1>
+              <h1 class="admin-main__title" id="mainTopbarTitle" data-i18n="admin.tabs.orders">Orders</h1>
               <div class="admin-main__actions">
                 <div class="lang-switch admin-lang-switch" role="group" data-i18n-aria="lang.switchAria">
                   <button type="button" class="lang-switch__btn is-active" data-lang="al" aria-pressed="true">AL</button>
@@ -117,8 +117,54 @@
 
             <div class="admin-main__body">
 
+        <!-- Orders -->
+        <div class="admin-tab-panel is-active" id="tab-orders" role="tabpanel" aria-labelledby="tab-btn-orders">
+          <div class="admin-section-head">
+            <h2 data-i18n="admin.orders.title">Orders</h2>
+            <p class="admin-muted" data-i18n="admin.orders.desc">Track revenue, fulfill orders, and update delivery status.</p>
+          </div>
+
+          <div class="admin-card admin-revenue-card">
+            <div class="admin-revenue-card__header">
+              <h2 data-i18n="admin.orders.revenue">Revenue</h2>
+              <div class="admin-pill-bar" id="revenuePeriodTabs" role="tablist" data-i18n-aria="admin.orders.revenuePeriodAria">
+                <button type="button" class="admin-pill-btn is-active" data-period="1d" data-i18n="admin.orders.periods.1d">1 Day</button>
+                <button type="button" class="admin-pill-btn" data-period="7d" data-i18n="admin.orders.periods.7d">7 Days</button>
+                <button type="button" class="admin-pill-btn" data-period="30d" data-i18n="admin.orders.periods.30d">30 Days</button>
+                <button type="button" class="admin-pill-btn" data-period="all" data-i18n="admin.orders.periods.all">All Time</button>
+              </div>
+            </div>
+            <div class="admin-metrics" id="orderMetrics"></div>
+          </div>
+
+          <div class="admin-card admin-orders-toolbar">
+            <label class="admin-search">
+              <span class="admin-search__icon" aria-hidden="true">⌕</span>
+              <input type="search" id="orderSearch" data-i18n-placeholder="admin.orders.searchPlaceholder" placeholder="Search by order #, name, email, or phone…" data-i18n-aria="admin.orders.searchAria" aria-label="Search orders" />
+            </label>
+            <div class="admin-pill-bar admin-pill-bar--inline" id="orderStatusTabs" role="tablist" data-i18n-aria="admin.orders.statusTabsAria">
+              <button type="button" class="admin-pill-btn is-active" data-order-tab="pending">
+                <span data-i18n="admin.orders.pending">Pending</span> <span class="admin-pill-btn__count" id="orderTabCountPending">0</span>
+              </button>
+              <button type="button" class="admin-pill-btn" data-order-tab="completed">
+                <span data-i18n="admin.orders.completed">Completed</span> <span class="admin-pill-btn__count" id="orderTabCountCompleted">0</span>
+              </button>
+              <button type="button" class="admin-pill-btn" data-order-tab="cancelled">
+                <span data-i18n="admin.orders.cancelled">Cancelled</span> <span class="admin-pill-btn__count" id="orderTabCountCancelled">0</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="admin-card admin-card--list">
+            <div class="admin-card__header">
+              <h3 id="orderListTitle" data-i18n="admin.orders.tabs.pending.title">Pending orders</h3>
+            </div>
+            <ul class="admin-list admin-list--orders" id="orderList"></ul>
+          </div>
+        </div>
+
         <!-- Products -->
-        <div class="admin-tab-panel is-active" id="tab-products" role="tabpanel" aria-labelledby="tab-btn-products">
+        <div class="admin-tab-panel" id="tab-products" role="tabpanel" aria-labelledby="tab-btn-products" hidden>
           <div class="admin-section-head">
             <p class="admin-muted" data-i18n="admin.products.desc">Manage shop items. Changes appear on the site immediately.</p>
           </div>
@@ -213,52 +259,6 @@
               <button type="button" class="admin-btn admin-btn--add" id="addWorkBtn" data-i18n-aria="admin.works.addAria" aria-label="Add portfolio work">+</button>
             </div>
             <ul class="admin-list" id="workList"></ul>
-          </div>
-        </div>
-
-        <!-- Orders -->
-        <div class="admin-tab-panel" id="tab-orders" role="tabpanel" aria-labelledby="tab-btn-orders" hidden>
-          <div class="admin-section-head">
-            <h2 data-i18n="admin.orders.title">Orders</h2>
-            <p class="admin-muted" data-i18n="admin.orders.desc">Track revenue, fulfill orders, and update delivery status.</p>
-          </div>
-
-          <div class="admin-card admin-revenue-card">
-            <div class="admin-revenue-card__header">
-              <h2 data-i18n="admin.orders.revenue">Revenue</h2>
-              <div class="admin-pill-bar" id="revenuePeriodTabs" role="tablist" data-i18n-aria="admin.orders.revenuePeriodAria">
-                <button type="button" class="admin-pill-btn is-active" data-period="1d" data-i18n="admin.orders.periods.1d">1 Day</button>
-                <button type="button" class="admin-pill-btn" data-period="7d" data-i18n="admin.orders.periods.7d">7 Days</button>
-                <button type="button" class="admin-pill-btn" data-period="30d" data-i18n="admin.orders.periods.30d">30 Days</button>
-                <button type="button" class="admin-pill-btn" data-period="all" data-i18n="admin.orders.periods.all">All Time</button>
-              </div>
-            </div>
-            <div class="admin-metrics" id="orderMetrics"></div>
-          </div>
-
-          <div class="admin-card admin-orders-toolbar">
-            <label class="admin-search">
-              <span class="admin-search__icon" aria-hidden="true">⌕</span>
-              <input type="search" id="orderSearch" data-i18n-placeholder="admin.orders.searchPlaceholder" placeholder="Search by order #, name, email, or phone…" data-i18n-aria="admin.orders.searchAria" aria-label="Search orders" />
-            </label>
-            <div class="admin-pill-bar admin-pill-bar--inline" id="orderStatusTabs" role="tablist" data-i18n-aria="admin.orders.statusTabsAria">
-              <button type="button" class="admin-pill-btn is-active" data-order-tab="pending">
-                <span data-i18n="admin.orders.pending">Pending</span> <span class="admin-pill-btn__count" id="orderTabCountPending">0</span>
-              </button>
-              <button type="button" class="admin-pill-btn" data-order-tab="completed">
-                <span data-i18n="admin.orders.completed">Completed</span> <span class="admin-pill-btn__count" id="orderTabCountCompleted">0</span>
-              </button>
-              <button type="button" class="admin-pill-btn" data-order-tab="cancelled">
-                <span data-i18n="admin.orders.cancelled">Cancelled</span> <span class="admin-pill-btn__count" id="orderTabCountCancelled">0</span>
-              </button>
-            </div>
-          </div>
-
-          <div class="admin-card admin-card--list">
-            <div class="admin-card__header">
-              <h3 id="orderListTitle" data-i18n="admin.orders.tabs.pending.title">Pending orders</h3>
-            </div>
-            <ul class="admin-list admin-list--orders" id="orderList"></ul>
           </div>
         </div>
             </div>

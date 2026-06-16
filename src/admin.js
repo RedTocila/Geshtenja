@@ -482,7 +482,7 @@ async function loadWorks() {
 async function loadAll() {
   try {
     await fetchTags();
-    await Promise.all([loadProducts(), loadWorks()]);
+    await Promise.all([loadProducts(), loadWorks(), loadOrderMetrics()]);
   } catch (err) {
     showToast(err.message, "error");
   }
