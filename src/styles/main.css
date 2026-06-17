@@ -1539,7 +1539,7 @@ body.is-lit .marquee__track {
   transform: scale(1.05);
 }
 
-@media (hover: none) {
+@media (hover: none) and (min-width: 901px) {
   .work-card__overlay,
   .work-card__type,
   .work-card__title,
@@ -2303,6 +2303,14 @@ body.is-lit select.form-control {
   .work-card:nth-child(5) {
     grid-column: span 12;
     aspect-ratio: 4/3;
+  }
+
+  .work-card__overlay {
+    display: none;
+  }
+
+  .work-card__play {
+    opacity: 1;
   }
 
   .about-grid,
