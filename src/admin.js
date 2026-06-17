@@ -2,7 +2,7 @@ import { supabase, isSupabaseConfigured, MEDIA_BUCKET } from "./lib/supabase.js"
 import { slugify } from "./lib/format.js";
 import { initLang, t, categoryLabel } from "./i18n.js";
 import { loadOrderMetrics, initOrdersTab, refreshOrdersUi } from "./admin-orders.js";
-import { initInventoryTab, renderInventory } from "./admin-inventory.js";
+import { initInventoryTab, renderInventory, renderInventoryTagFilters } from "./admin-inventory.js";
 import { showToast, showLoading, showEmpty, updateCount, openModal, closeModal, initModal, resetFormFileLabels } from "./admin-ui.js";
 import {
   fetchTags,
@@ -329,6 +329,7 @@ async function loadProducts() {
 
   productsCache = data || [];
   renderProductTagFilters();
+  renderInventoryTagFilters();
   renderProductList();
   renderInventory(productsCache);
 }
@@ -662,6 +663,7 @@ function refreshAdminDynamicUi() {
     workFormTitle.textContent = t("admin.works.addTitle");
   }
   renderProductTagFilters();
+  renderInventoryTagFilters();
   renderProductList();
   renderInventory(productsCache);
   loadWorks().catch(() => {});
@@ -679,6 +681,7 @@ initModal("workModal", { onClose: resetWorkForm });
 const loadTagsList = initTagsTab();
 setTagsChangedHandler(async () => {
   renderProductTagFilters();
+  renderInventoryTagFilters();
   renderProductTagPicker(productTagOptions, getSelectedTagIdsFromForm(productForm));
   try {
     await loadProducts();

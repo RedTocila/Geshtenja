@@ -200,9 +200,9 @@
           <div class="admin-card admin-inventory-toolbar">
             <label class="admin-search">
               <span class="admin-search__icon" aria-hidden="true">⌕</span>
-              <input type="search" id="inventorySearch" data-i18n-placeholder="admin.inventory.searchPlaceholder" placeholder="Search by name or product code…" data-i18n-aria="admin.inventory.searchAria" aria-label="Search inventory" />
+              <input type="search" id="inventorySearch" data-i18n-placeholder="admin.inventory.searchPlaceholder" placeholder="Search by name, SKU, category, or tag…" data-i18n-aria="admin.inventory.searchAria" aria-label="Search inventory" />
             </label>
-            <div class="admin-inventory-summary" id="inventorySummary"></div>
+            <div class="admin-inventory-tag-filters" id="inventoryTagFilters" data-i18n-aria="admin.inventory.filterAria" aria-label="Filter inventory by tag"></div>
           </div>
 
           <div class="admin-card admin-card--list">
@@ -214,8 +214,8 @@
                 <thead>
                   <tr>
                     <th data-i18n="admin.inventory.colProduct">Product</th>
-                    <th data-i18n="admin.inventory.colCode">Code</th>
-                    <th data-i18n="admin.inventory.colCategory">Category</th>
+                    <th data-i18n="admin.inventory.colCode">SKU</th>
+                    <th data-i18n="admin.inventory.colTags">Tags</th>
                     <th data-i18n="admin.inventory.colStatus">Status</th>
                     <th data-i18n="admin.inventory.colStock">Stock</th>
                     <th data-i18n="admin.inventory.colAdjust">Adjust</th>
