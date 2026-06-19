@@ -275,7 +275,7 @@ function openOrderModal(id) {
       ${modalActions(order)}
       <label class="admin-form admin-order-modal__status">
         <span>Change status</span>
-        <select id="orderStatusSelect">${STATUS_OPTIONS.map((s) => `<option value="${s}"${s === order.status ? " selected" : ""}>${statusLabel(s)}</option>`).join("")}</select>
+        <select id="orderStatusSelect" class="admin-select">${STATUS_OPTIONS.map((s) => `<option value="${s}"${s === order.status ? " selected" : ""}>${statusLabel(s)}</option>`).join("")}</select>
       </label>
       <button type="button" class="admin-btn admin-btn--ghost" id="saveOrderStatus">Update status</button>
     </div>

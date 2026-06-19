@@ -109,10 +109,6 @@ main,
   pointer-events: none;
 }
 
-.about__lamp-mini .light-projection {
-  display: none;
-}
-
 /* Header — always above hero lighting for clicks */
 .site-header {
   position: fixed;
@@ -1623,14 +1619,13 @@ body.is-lit .marquee__track {
   border-radius: 2px;
 }
 
-.about__lamp-mini {
-  width: 110px;
-  margin: 0 auto;
-}
-
-.about__lamp-mini .hero-lamp__svg {
+.about__image {
+  position: absolute;
+  inset: 0;
   width: 100%;
-  height: auto;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
 }
 
 .about__text p {

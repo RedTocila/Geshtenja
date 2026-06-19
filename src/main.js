@@ -517,7 +517,6 @@ async function init() {
 
   const contentReady = (async () => {
     injectPendantLamp(document.getElementById("lampFixture"), "hero");
-    injectPendantLamp(document.getElementById("aboutLamp"), "about");
     await loadContent();
     renderProducts();
     renderWorks();

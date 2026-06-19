@@ -16,6 +16,14 @@ import {
   setTagsChangedHandler,
 } from "./admin-tags.js";
 import { initAdminImagePreview } from "./lib/admin-image-preview.js";
+import { initProductImport, refreshProductImportUi } from "./admin-product-import.js";
+import {
+  initProductBulk,
+  refreshProductBulkUi,
+  productBulkCheckboxHtml,
+  bindProductListBulk,
+  isProductSelected,
+} from "./admin-product-bulk.js";
 
 const loginPanel = document.getElementById("loginPanel");
 const dashboardPanel = document.getElementById("dashboardPanel");
@@ -372,6 +380,7 @@ function renderProductList() {
       title: t("admin.products.emptyTitle"),
       hint: t("admin.products.emptyHint"),
     });
+    bindProductListBulk(productList, []);
     return;
   }
 
@@ -381,6 +390,7 @@ function renderProductList() {
       title: t("admin.products.noMatchTitle"),
       hint: t("admin.products.noMatchHint"),
     });
+    bindProductListBulk(productList, []);
     return;
   }
 
@@ -388,7 +398,8 @@ function renderProductList() {
     .map((p) => {
       const tags = (p.product_tags || []).map((row) => row.tag).filter(Boolean);
       return `
-      <li class="admin-list__item" data-id="${p.id}">
+      <li class="admin-list__item${isProductSelected(p.id) ? " admin-list__item--selected" : ""}" data-id="${p.id}">
+        ${productBulkCheckboxHtml(p.id)}
         <img class="admin-list__thumb" src="${p.image_url}" alt="" />
         <div class="admin-list__info">
           <p class="admin-list__title">${p.name}</p>
@@ -421,6 +432,11 @@ function renderProductList() {
       }
     });
   });
+
+  bindProductListBulk(
+    productList,
+    filtered.map((p) => p.id)
+  );
 }
 
 async function loadWorks() {
@@ -669,6 +685,8 @@ function refreshAdminDynamicUi() {
   loadWorks().catch(() => {});
   loadTagsList?.();
   refreshOrdersUi?.();
+  refreshProductImportUi?.();
+  refreshProductBulkUi?.();
 }
 
 window.addEventListener("languagechange", refreshAdminDynamicUi);
@@ -678,6 +696,12 @@ verifyConnection();
 initSidebar();
 initModal("productModal", { onClose: resetProductForm });
 initModal("workModal", { onClose: resetWorkForm });
+initProductImport(async () => {
+  await loadProducts();
+});
+initProductBulk({
+  onUpdated: loadProducts,
+});
 const loadTagsList = initTagsTab();
 setTagsChangedHandler(async () => {
   renderProductTagFilters();

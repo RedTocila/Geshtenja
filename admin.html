@@ -185,7 +185,29 @@
                 <h3 data-i18n="admin.products.heading">Products</h3>
                 <span class="admin-count" id="productCount" hidden></span>
               </div>
-              <button type="button" class="admin-btn admin-btn--add" id="addProductBtn" data-i18n-aria="admin.products.addAria" aria-label="Add product">+</button>
+              <div class="admin-card__header-actions">
+                <button type="button" class="admin-btn admin-btn--ghost admin-btn--small" id="importProductsBtn" data-i18n="admin.products.import.open">Import Excel</button>
+                <button type="button" class="admin-btn admin-btn--add" id="addProductBtn" data-i18n-aria="admin.products.addAria" aria-label="Add product">+</button>
+              </div>
+            </div>
+            <div class="admin-bulk-bar" id="productBulkBar" hidden>
+              <label class="admin-bulk-bar__select">
+                <input type="checkbox" id="productSelectAll" class="admin-check" />
+                <span id="productBulkCount" data-i18n="admin.products.bulk.selected">0 selected</span>
+              </label>
+              <div class="admin-bulk-bar__actions">
+                <label class="admin-bulk-bar__field">
+                  <span data-i18n="admin.products.bulk.category">Category</span>
+                  <select id="productBulkCategory" class="admin-select admin-select--compact"></select>
+                </label>
+                <button type="button" class="admin-btn admin-btn--ghost admin-btn--small" id="productBulkApplyCategory" data-i18n="admin.products.bulk.applyCategory">Apply</button>
+                <button type="button" class="admin-btn admin-btn--ghost admin-btn--small" id="productBulkInStock" data-i18n="admin.products.bulk.inStock">In stock</button>
+                <button type="button" class="admin-btn admin-btn--ghost admin-btn--small" id="productBulkOutStock" data-i18n="admin.products.bulk.outStock">Out of stock</button>
+                <button type="button" class="admin-btn admin-btn--ghost admin-btn--small" id="productBulkFeatured" data-i18n="admin.products.bulk.featured">Featured</button>
+                <button type="button" class="admin-btn admin-btn--ghost admin-btn--small" id="productBulkUnfeatured" data-i18n="admin.products.bulk.unfeatured">Not featured</button>
+                <button type="button" class="admin-btn admin-btn--danger admin-btn--small" id="productBulkDelete" data-i18n="admin.products.bulk.delete">Delete</button>
+                <button type="button" class="admin-btn admin-btn--ghost admin-btn--small" id="productBulkClear" data-i18n="admin.products.bulk.clear">Clear</button>
+              </div>
             </div>
             <ul class="admin-list" id="productList"></ul>
           </div>
@@ -295,7 +317,7 @@
               </label>
               <label>
                 <span>Category</span>
-                <select name="category" required>
+                <select name="category" class="admin-select" required>
                   <option value="pendant">Pendant</option>
                   <option value="sconce">Sconce</option>
                   <option value="chandelier">Chandelier</option>
@@ -324,11 +346,11 @@
                 </label>
               </div>
               <label class="admin-checkbox">
-                <input type="checkbox" name="in_stock" checked />
+                <input type="checkbox" class="admin-check" name="in_stock" checked />
                 <span>In stock</span>
               </label>
               <label class="admin-checkbox">
-                <input type="checkbox" name="is_featured" />
+                <input type="checkbox" class="admin-check" name="is_featured" />
                 <span>Featured product</span>
               </label>
               <fieldset class="admin-tag-picker">
@@ -361,6 +383,44 @@
               <div class="admin-form__actions">
                 <button type="submit" class="admin-btn admin-btn--primary" data-i18n="admin.products.save">Save product</button>
                 <button type="button" class="admin-btn admin-btn--ghost" id="productCancel" data-i18n="admin.common.cancel">Cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Product import modal -->
+        <div class="admin-modal" id="productImportModal" aria-hidden="true">
+          <div class="admin-modal__backdrop" data-close-modal="productImportModal"></div>
+          <div class="admin-modal__card admin-modal__card--wide" role="dialog" aria-labelledby="productImportTitle">
+            <div class="admin-modal__header">
+              <h2 id="productImportTitle" data-i18n="admin.products.import.title">Import products from Excel</h2>
+              <button type="button" class="admin-modal__close" id="productImportClose" data-close-modal="productImportModal" data-i18n-aria="admin.common.close" aria-label="Close">×</button>
+            </div>
+            <form id="productImportForm" class="admin-form">
+              <p class="admin-muted" data-i18n="admin.products.import.desc">
+                Upload an Excel (.xlsx) or CSV file with code, name, price, and stock per row.
+              </p>
+              <label class="admin-checkbox">
+                <input type="checkbox" class="admin-check" id="importUpdateExisting" name="update_existing" />
+                <span data-i18n="admin.products.import.updateExisting">Update existing products when SKU/code matches</span>
+              </label>
+              <div class="admin-form">
+                <span data-i18n="admin.products.import.fileLabel">Spreadsheet file</span>
+                <div class="admin-file">
+                  <input type="file" id="productImportFile" name="file" accept=".xlsx,.xls,.csv" class="admin-file__input" />
+                  <label for="productImportFile" class="admin-file__btn" data-i18n="admin.common.chooseFile">Choose file</label>
+                  <span class="admin-file__name" data-file-name data-i18n="admin.common.noFile">No file chosen</span>
+                </div>
+                <small class="admin-muted" data-i18n="admin.products.import.columnsHint">
+                  Columns: code, name, price, stock (or: kodi, emri, cmimi, stok). Set category later with bulk edit.
+                </small>
+              </div>
+              <p class="admin-import-summary" id="productImportSummary"></p>
+              <div id="productImportPreview" hidden></div>
+              <p class="admin-error" id="productImportError" hidden></p>
+              <div class="admin-form__actions">
+                <button type="submit" class="admin-btn admin-btn--primary" disabled data-i18n="admin.products.import.submit">Import products</button>
+                <button type="button" class="admin-btn admin-btn--ghost" id="productImportCancel" data-i18n="admin.common.cancel">Cancel</button>
               </div>
             </form>
           </div>

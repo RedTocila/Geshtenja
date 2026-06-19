@@ -141,7 +141,7 @@ export function renderProductTagPicker(container, selectedIds = []) {
     .map(
       (tag) => `
       <label class="admin-tag-option">
-        <input type="checkbox" name="tag_ids" value="${tag.id}" ${selected.has(tag.id) ? "checked" : ""} />
+        <input type="checkbox" class="admin-check admin-tag-option__input" name="tag_ids" value="${tag.id}" ${selected.has(tag.id) ? "checked" : ""} />
         <span>${tagDisplayName(tag)}</span>
       </label>`
     )
