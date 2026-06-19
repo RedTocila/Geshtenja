@@ -38,7 +38,6 @@ let heroSlideIndex = 0;
 let heroSlideTimer = null;
 const HERO_AUTO_SLIDE_MS = 5000;
 const HOME_PRODUCT_LIMIT = 12;
-let activeFilter = "all";
 
 async function loadContent() {
   if (!isSupabaseConfigured || !supabase) return;
@@ -59,11 +58,10 @@ async function loadContent() {
   }
 }
 
-function renderProducts(filter = "all") {
+function renderProducts() {
   const grid = document.getElementById("productGrid");
   const more = document.getElementById("productsMore");
-  const items = filter === "all" ? products : products.filter((p) => p.category === filter);
-  const visible = items.slice(0, HOME_PRODUCT_LIMIT);
+  const visible = products.slice(0, HOME_PRODUCT_LIMIT);
 
   grid.innerHTML = visible
     .map((p) => {
@@ -97,7 +95,7 @@ function renderProducts(filter = "all") {
     .join("");
 
   if (more) {
-    more.hidden = items.length <= HOME_PRODUCT_LIMIT;
+    more.hidden = products.length <= HOME_PRODUCT_LIMIT;
   }
 
   applyImageZoom(grid, ".product-card__img");
@@ -432,37 +430,6 @@ function handleScroll() {
   scheduleLampLayout();
 }
 
-function initFilters() {
-  document.querySelectorAll(".filter-btn").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      document.querySelectorAll(".filter-btn").forEach((b) => {
-        b.classList.remove("is-active");
-        b.setAttribute("aria-selected", "false");
-      });
-      btn.classList.add("is-active");
-      btn.setAttribute("aria-selected", "true");
-      activeFilter = btn.dataset.filter;
-      renderProducts(activeFilter);
-    });
-  });
-
-  document.querySelectorAll("[data-filter]").forEach((el) => {
-    if (el.classList.contains("filter-btn")) return;
-    el.addEventListener("click", (e) => {
-      const filter = el.dataset.filter;
-      if (!filter) return;
-      setTimeout(() => {
-        document.querySelectorAll(".filter-btn").forEach((b) => {
-          b.classList.toggle("is-active", b.dataset.filter === filter);
-          b.setAttribute("aria-selected", b.dataset.filter === filter ? "true" : "false");
-        });
-        activeFilter = filter;
-        renderProducts(filter);
-      }, 400);
-    });
-  });
-}
-
 function positionHeroLamp() {
   const hero = document.getElementById("hero");
   const lamp = document.getElementById("lamp");
@@ -580,14 +547,12 @@ async function init() {
 
   window.addEventListener("languagechange", () => {
     updateHeroSlide(heroSlideIndex, { animate: false });
-    renderProducts(activeFilter);
+    renderProducts();
     renderWorks();
     renderReviews();
     initContactMap();
     syncCloudText();
   });
-
-  initFilters();
 
   const updateHomeCart = () => {
     const n = cartCount();

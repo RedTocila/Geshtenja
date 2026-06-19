@@ -18,31 +18,44 @@
 
     <main class="shop-main">
       <div class="shop-hero">
-        <h1 class="shop-hero__title">Shop Lighting</h1>
-        <p class="shop-hero__desc">Curated fixtures for every space. Order with cash on delivery across Kosovo.</p>
+        <h1 class="shop-hero__title" data-i18n="shopPage.title">Shop Lighting</h1>
+        <p class="shop-hero__desc" data-i18n="shopPage.desc">Curated fixtures for every space. Order with cash on delivery across Kosovo.</p>
       </div>
 
       <div class="shop-toolbar">
         <label class="form-field shop-search">
-          <span>Search</span>
-          <input class="form-control" type="search" id="shopSearch" placeholder="Search products…" aria-label="Search products" />
+          <span data-i18n="shopPage.search">Search</span>
+          <input
+            class="form-control"
+            type="search"
+            id="shopSearch"
+            data-i18n-placeholder="shopPage.searchPlaceholder"
+            placeholder="Search products…"
+            data-i18n-aria="shopPage.searchAria"
+            aria-label="Search products"
+          />
         </label>
         <label class="form-field shop-select">
-          <span>Sort by</span>
-          <select class="form-control" id="shopSort" aria-label="Sort products">
-            <option value="newest">Newest</option>
-            <option value="featured">Featured</option>
-            <option value="price-asc">Price: Low to High</option>
-            <option value="price-desc">Price: High to Low</option>
+          <span data-i18n="shopPage.sort">Sort by</span>
+          <select
+            class="form-control"
+            id="shopSort"
+            data-i18n-aria="shopPage.sortAria"
+            aria-label="Sort products"
+          >
+            <option value="newest" data-i18n="shopPage.sortNewest">Newest</option>
+            <option value="featured" data-i18n="shopPage.sortFeatured">Featured</option>
+            <option value="price-asc" data-i18n="shopPage.sortPriceAsc">Price: Low to High</option>
+            <option value="price-desc" data-i18n="shopPage.sortPriceDesc">Price: High to Low</option>
           </select>
         </label>
       </div>
 
-      <div class="shop-filters filter-bar" id="shopFilters" role="tablist" aria-label="Filter by category"></div>
+      <div class="shop-filters filter-bar" id="shopFilters" role="tablist" data-i18n-aria="products.filterAria"></div>
 
       <div class="shop-grid" id="shopGrid"></div>
       <div class="shop-empty" id="shopEmpty" hidden>
-        <p>No products match your search.</p>
+        <p data-i18n="shopPage.empty">No products match your search.</p>
       </div>
     </main>
 

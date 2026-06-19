@@ -112,22 +112,11 @@ body.shop-page .ambient-glow {
   min-width: 180px;
 }
 
-/* Shop uses shared .form-control from main.css */
-body.shop-page input.form-control,
-body.shop-page textarea.form-control {
-  background: var(--bg);
-}
-
-body.shop-page select.form-control {
-  background-color: var(--bg);
-  background-repeat: no-repeat;
-  background-position: right 1rem center;
-}
-
 .shop-filters {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
+  margin-bottom: 2rem;
 }
 
 .shop-filters .filter-btn {
@@ -145,6 +134,39 @@ body.shop-page select.form-control {
   border-color: var(--accent);
   background: var(--accent-soft);
   color: var(--accent-dim);
+}
+
+.shop-filters .filter-btn--more {
+  border-style: dashed;
+  text-transform: none;
+  letter-spacing: 0.04em;
+  font-weight: 500;
+}
+
+.shop-card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-bottom: 0.35rem;
+}
+
+/* Shop uses shared .form-control from main.css */
+body.shop-page input.form-control,
+body.shop-page textarea.form-control {
+  background: var(--bg);
+}
+
+body.shop-page select.form-control {
+  background-color: var(--bg);
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+}
+
+.shop-card__badge--sale {
+  left: auto;
+  right: 0.75rem;
+  background: #1a1816;
+  color: #fff;
 }
 
 .shop-grid {

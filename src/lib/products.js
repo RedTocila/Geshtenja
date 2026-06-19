@@ -1,6 +1,7 @@
 import { supabase, isSupabaseConfigured } from "./supabase.js";
 import { effectivePrice } from "./format.js";
 import { FALLBACK_PRODUCTS } from "../data/fallback.js";
+import { extractProductTags, productHasTag, PRODUCT_TAG_SELECT } from "./tags.js";
 
 /** @typedef {import('../data/fallback.js').StoreProduct} StoreProduct */
 
@@ -20,7 +21,7 @@ export async function fetchProducts() {
 
   const { data, error } = await supabase
     .from("products")
-    .select("*, product_images(id, image_url, sort_order)")
+    .select(`*, product_images(id, image_url, sort_order), ${PRODUCT_TAG_SELECT}`)
     .order("sort_order");
 
   if (error || !data?.length) {
@@ -43,23 +44,29 @@ export async function fetchProductBySlug(slug) {
 
 /**
  * @param {StoreProduct[]} products
- * @param {{ search?: string, category?: string, sort?: string }} opts
+ * @param {{ search?: string, tagId?: string, category?: string, sort?: string }} opts
  */
-export function filterAndSortProducts(products, { search = "", category = "all", sort = "newest" } = {}) {
+export function filterAndSortProducts(products, { search = "", tagId = "all", category, sort = "newest" } = {}) {
   let list = [...products];
+  const filterTag = tagId !== "all" ? tagId : category;
 
-  if (category && category !== "all") {
-    list = list.filter((p) => p.category === category);
+  if (filterTag && filterTag !== "all") {
+    list = list.filter((product) => productHasTag(product, filterTag));
   }
 
   const q = search.trim().toLowerCase();
   if (q) {
-    list = list.filter(
-      (p) =>
-        p.name.toLowerCase().includes(q) ||
-        p.short_description?.toLowerCase().includes(q) ||
-        p.sku?.toLowerCase().includes(q)
-    );
+    list = list.filter((product) => {
+      const tagText = extractProductTags(product)
+        .map((tag) => tag.name)
+        .join(" ");
+      return (
+        product.name.toLowerCase().includes(q) ||
+        product.short_description?.toLowerCase().includes(q) ||
+        product.sku?.toLowerCase().includes(q) ||
+        tagText.toLowerCase().includes(q)
+      );
+    });
   }
 
   switch (sort) {

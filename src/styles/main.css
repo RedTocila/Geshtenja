@@ -51,7 +51,6 @@ body.is-lit {
 }
 
 html {
-  scroll-behavior: smooth;
   scrollbar-gutter: stable;
 }
 
@@ -1314,6 +1313,13 @@ body.is-lit .marquee__track {
   transition:
     background var(--transition-theme),
     border-color var(--transition-theme);
+}
+
+.product-card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-bottom: 0.35rem;
 }
 
 .product-card__category {

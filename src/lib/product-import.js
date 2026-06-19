@@ -1,10 +1,8 @@
 import * as XLSX from "xlsx";
 import { slugify } from "./format.js";
+import { IMPORT_DEFAULT_CATEGORY } from "./product-categories.js";
 
-export const PRODUCT_CATEGORIES = ["pendant", "sconce", "chandelier", "floor", "office"];
-
-/** Category assigned on import; use bulk edit to change after import. */
-export const IMPORT_DEFAULT_CATEGORY = "pendant";
+export { PRODUCT_CATEGORIES, IMPORT_DEFAULT_CATEGORY } from "./product-categories.js";
 
 export const DEFAULT_IMPORT_IMAGE =
   "https://images.unsplash.com/photo-1565818652107-397974f6bb0e?w=600&q=80";

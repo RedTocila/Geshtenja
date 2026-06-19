@@ -1,5 +1,5 @@
 import { t, categoryLabel } from "../i18n.js";
-import { PRODUCT_CATEGORIES } from "./product-import.js";
+import { PRODUCT_CATEGORIES } from "./product-categories.js";
 
 /** @param {HTMLElement | null} el @param {string} key */
 export function setAdminTitle(el, key) {

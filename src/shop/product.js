@@ -9,7 +9,7 @@ import {
 } from "../lib/products.js";
 import { formatPrice, effectivePrice } from "../lib/format.js";
 import { addToCart } from "../lib/cart.js";
-import { categoryLabel } from "../i18n.js";
+import { renderProductTagsHtml } from "../lib/tags.js";
 import { applyImageZoom } from "../lib/image-zoom.js";
 
 function getSlugFromPath() {
@@ -48,7 +48,7 @@ function renderProduct(product, all) {
         }
       </div>
       <div class="product-info">
-        <p class="shop-card__category">${categoryLabel(product.category)}</p>
+        <div class="shop-card__tags">${renderProductTagsHtml(product, "shop-card__category")}</div>
         <h1 class="product-info__title">${product.name}</h1>
         <p class="product-info__short">${product.short_description || ""}</p>
         <div class="product-info__price">
@@ -128,7 +128,7 @@ function renderProduct(product, all) {
       <a href="${productUrl(p.slug)}" class="shop-card">
         <div class="shop-card__media"><img src="${p.image_url}" alt="${p.name}" loading="lazy" /></div>
         <div class="shop-card__body">
-          <span class="shop-card__category">${categoryLabel(p.category)}</span>
+          <div class="shop-card__tags">${renderProductTagsHtml(p, "shop-card__category")}</div>
           <h2 class="shop-card__name">${p.name}</h2>
           <div class="shop-card__price"><span class="shop-price">${formatPrice(p.effective_price)}</span></div>
         </div>

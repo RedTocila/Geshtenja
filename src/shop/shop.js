@@ -1,58 +1,50 @@
 import { mountShopHeader, mountShopFooter, initShopPage } from "../lib/layout.js";
 import { setPageMeta } from "../lib/seo.js";
 import { fetchProducts, filterAndSortProducts, productUrl } from "../lib/products.js";
+import { fetchStoreTags, mountTagFilters, renderProductTagsHtml } from "../lib/tags.js";
 import { formatPrice } from "../lib/format.js";
-import { categoryLabel } from "../i18n.js";
+import { t } from "../i18n.js";
 import { applyImageZoom } from "../lib/image-zoom.js";
 
-const CATEGORIES = ["all", "pendant", "sconce", "chandelier", "floor", "office"];
-
 let allProducts = [];
-let activeCategory = "all";
+let storeTags = [];
+let activeTag = "all";
+let tagFiltersExpanded = false;
 
-function renderFilters() {
-  const el = document.getElementById("shopFilters");
-  el.innerHTML = CATEGORIES.map(
-    (cat) =>
-      `<button type="button" class="filter-btn${cat === activeCategory ? " is-active" : ""}" data-filter="${cat}" role="tab">${categoryLabel(cat)}</button>`
-  ).join("");
+const SHOP_TAG_VISIBLE_LIMIT = 7;
 
-  el.querySelectorAll("[data-filter]").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      activeCategory = btn.dataset.filter;
-      renderFilters();
-      renderGrid();
-    });
-  });
-}
+const shopFilters = document.getElementById("shopFilters");
+const shopSearch = document.getElementById("shopSearch");
+const shopSort = document.getElementById("shopSort");
 
 function renderProductCard(p) {
   const onSale = p.sale_price != null && p.sale_price < p.price;
   const priceHtml = onSale
     ? `<span class="shop-price shop-price--sale">${formatPrice(p.sale_price)}</span><span class="shop-price shop-price--old">${formatPrice(p.price)}</span>`
     : `<span class="shop-price">${formatPrice(p.effective_price)}</span>`;
+  const tagsHtml = renderProductTagsHtml(p, "shop-card__category");
 
   return `
     <a href="${productUrl(p.slug)}" class="shop-card">
       <div class="shop-card__media">
         <img src="${p.image_url}" alt="${p.name}" loading="lazy" width="600" height="750" />
-        ${p.is_featured ? '<span class="shop-card__badge">Featured</span>' : ""}
-        ${onSale ? '<span class="shop-card__badge" style="left:auto;right:0.75rem;background:#1a1816;color:#fff">Sale</span>' : ""}
+        ${p.is_featured ? `<span class="shop-card__badge">${t("shopPage.featured")}</span>` : ""}
+        ${onSale ? `<span class="shop-card__badge shop-card__badge--sale">${t("shopPage.sale")}</span>` : ""}
       </div>
       <div class="shop-card__body">
-        <span class="shop-card__category">${categoryLabel(p.category)}</span>
+        ${tagsHtml ? `<div class="shop-card__tags">${tagsHtml}</div>` : ""}
         <h2 class="shop-card__name">${p.name}</h2>
         <div class="shop-card__price">${priceHtml}</div>
-        <span class="shop-stock${p.in_stock ? "" : " is-out"}">${p.in_stock ? "In stock" : "Out of stock"}</span>
+        <span class="shop-stock${p.in_stock ? "" : " is-out"}">${p.in_stock ? t("shopPage.inStock") : t("shopPage.outStock")}</span>
       </div>
     </a>
   `;
 }
 
 function renderGrid() {
-  const search = document.getElementById("shopSearch").value;
-  const sort = document.getElementById("shopSort").value;
-  const list = filterAndSortProducts(allProducts, { search, category: activeCategory, sort });
+  const search = shopSearch?.value ?? "";
+  const sort = shopSort?.value ?? "newest";
+  const list = filterAndSortProducts(allProducts, { search, tagId: activeTag, sort });
   const grid = document.getElementById("shopGrid");
   const empty = document.getElementById("shopEmpty");
 
@@ -67,23 +59,56 @@ function renderGrid() {
   applyImageZoom(grid, ".shop-card__media img");
 }
 
+function setupTagFilters() {
+  mountTagFilters(
+    shopFilters,
+    storeTags,
+    activeTag,
+    (tagId) => {
+      activeTag = tagId;
+      renderGrid();
+    },
+    {
+      visibleLimit: SHOP_TAG_VISIBLE_LIMIT,
+      expanded: tagFiltersExpanded,
+      onExpandedChange: (expanded) => {
+        tagFiltersExpanded = expanded;
+      },
+    }
+  );
+}
+
+function refreshShopMeta() {
+  setPageMeta({
+    title: t("shopPage.metaTitle"),
+    description: t("shopPage.metaDesc"),
+    url: `${location.origin}/shop`,
+  });
+}
+
+async function refreshShopUi() {
+  storeTags = await fetchStoreTags(allProducts, { all: true });
+  setupTagFilters();
+  renderGrid();
+  refreshShopMeta();
+}
+
 async function init() {
   initShopPage();
   mountShopHeader(document.getElementById("siteHeader"), { active: "shop" });
   mountShopFooter(document.getElementById("siteFooter"));
 
-  setPageMeta({
-    title: "Shop — Geshtenja Light",
-    description: "Browse premium lighting — pendants, sconces, chandeliers and more. Cash on delivery.",
-    url: `${location.origin}/shop`,
-  });
+  refreshShopMeta();
 
   allProducts = await fetchProducts();
-  renderFilters();
+  storeTags = await fetchStoreTags(allProducts, { all: true });
+  setupTagFilters();
   renderGrid();
 
-  document.getElementById("shopSearch").addEventListener("input", renderGrid);
-  document.getElementById("shopSort").addEventListener("change", renderGrid);
+  shopSearch?.addEventListener("input", renderGrid);
+  shopSort?.addEventListener("change", renderGrid);
+
+  window.addEventListener("languagechange", refreshShopUi);
 }
 
 init();
