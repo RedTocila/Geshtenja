@@ -2,6 +2,7 @@ import { supabase } from "./lib/supabase.js";
 import { slugify } from "./lib/format.js";
 import { t, categoryLabel } from "./i18n.js";
 import { showToast, showLoading, showEmpty, updateCount, openModal, closeModal, initModal } from "./admin-ui.js";
+import { setAdminTitle } from "./lib/admin-i18n.js";
 
 const CATEGORY_TAG_SLUGS = new Set(["pendant", "sconce", "chandelier", "floor", "office"]);
 
@@ -128,7 +129,41 @@ export async function syncProductTags(productId, tagIds) {
   if (insertError) throw insertError;
 }
 
-export function renderProductTagPicker(container, selectedIds = []) {
+/** @param {string} productId @param {string[]} tagIds */
+export async function addProductTags(productId, tagIds) {
+  const uniqueIds = [...new Set(tagIds.filter(Boolean))];
+  if (!uniqueIds.length) return;
+
+  const { data: existing, error: fetchError } = await supabase
+    .from("product_tags")
+    .select("tag_id")
+    .eq("product_id", productId);
+  if (fetchError) throw fetchError;
+
+  const have = new Set((existing ?? []).map((row) => row.tag_id));
+  const toAdd = uniqueIds.filter((id) => !have.has(id));
+  if (!toAdd.length) return;
+
+  const { error: insertError } = await supabase.from("product_tags").insert(
+    toAdd.map((tag_id) => ({ product_id: productId, tag_id }))
+  );
+  if (insertError) throw insertError;
+}
+
+/** @param {string} productId */
+export async function clearProductTags(productId) {
+  const { error } = await supabase.from("product_tags").delete().eq("product_id", productId);
+  if (error) throw error;
+}
+
+/** @param {HTMLElement} container */
+export function getSelectedTagIdsFromContainer(container) {
+  if (!container) return [];
+  return [...container.querySelectorAll('input[name="bulk_tag_ids"]:checked')].map((input) => input.value);
+}
+
+/** @param {HTMLElement} container @param {string[]} [selectedIds] @param {string} [inputName] */
+export function renderProductTagPicker(container, selectedIds = [], inputName = "tag_ids") {
   if (!container) return;
   const selected = new Set(selectedIds);
 
@@ -141,7 +176,7 @@ export function renderProductTagPicker(container, selectedIds = []) {
     .map(
       (tag) => `
       <label class="admin-tag-option">
-        <input type="checkbox" class="admin-check admin-tag-option__input" name="tag_ids" value="${tag.id}" ${selected.has(tag.id) ? "checked" : ""} />
+        <input type="checkbox" class="admin-check admin-tag-option__input" name="${inputName}" value="${tag.id}" ${selected.has(tag.id) ? "checked" : ""} />
         <span>${tagDisplayName(tag)}</span>
       </label>`
     )
@@ -217,7 +252,7 @@ export function initTagsTab() {
     tagForm.reset();
     const recordField = tagForm.querySelector('[name="record_id"]');
     if (recordField) recordField.value = "";
-    tagFormTitle.textContent = t("admin.tags.addTitle");
+    setAdminTitle(tagFormTitle, "admin.tags.addTitle");
     tagError.hidden = true;
     tagError.textContent = "";
   }
@@ -234,7 +269,7 @@ export function initTagsTab() {
       tagForm.name.value = tag.name;
       const recordField = tagForm.querySelector('[name="record_id"]');
       if (recordField) recordField.value = tag.id;
-      tagFormTitle.textContent = t("admin.tags.editTitle");
+      setAdminTitle(tagFormTitle, "admin.tags.editTitle");
     }
     openModal("tagModal");
   }
@@ -357,5 +392,12 @@ export function initTagsTab() {
 
   initModal("tagModal", { onClose: resetTagForm });
 
-  return loadTagsList;
+  function refreshTagsUi() {
+    setAdminTitle(
+      tagFormTitle,
+      editingTag ? "admin.tags.editTitle" : "admin.tags.addTitle"
+    );
+  }
+
+  return { load: loadTagsList, refreshTagsUi };
 }

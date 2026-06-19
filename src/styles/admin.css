@@ -927,6 +927,7 @@ body {
 .admin-form input[type="number"],
 .admin-form input[type="search"],
 .admin-form input[type="tel"],
+.admin-form .admin-input,
 .admin-form textarea {
   width: 100%;
   background: #0f0f0f;
@@ -949,6 +950,7 @@ body {
 }
 
 .admin-form input:focus,
+.admin-form .admin-input:focus,
 .admin-form textarea:focus {
   outline: none;
   border-color: #f59e0b;
@@ -1399,6 +1401,44 @@ img.admin-list__thumb {
   justify-content: flex-end;
 }
 
+.admin-list__reorder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.15rem;
+  flex-shrink: 0;
+  padding: 0 0.15rem;
+}
+
+.admin-list__order {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--admin-text-muted);
+  min-width: 1.25rem;
+  text-align: center;
+  line-height: 1;
+}
+
+.admin-btn--icon {
+  width: 1.65rem;
+  height: 1.65rem;
+  min-width: 1.65rem;
+  padding: 0;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  line-height: 1;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.admin-btn--icon:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
 .admin-list--orders .admin-list__item {
   flex-wrap: wrap;
 }
@@ -1772,9 +1812,13 @@ img.admin-list__thumb {
   color: var(--admin-text-muted);
 }
 
-.admin-bulk-bar__field .admin-select {
-  width: auto;
-  min-width: 8.5rem;
+.admin-bulk-bar__actions .admin-btn--primary {
+  color: #1a1816;
+}
+
+.admin-bulk-bar__actions .admin-btn--primary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
 }
 
 .admin-list__check {

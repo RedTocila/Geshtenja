@@ -11,7 +11,30 @@ export const DEFAULT_IMPORT_IMAGE =
 
 const COLUMN_ALIASES = {
   sku: ["sku", "code", "kodi", "cod", "kod", "product code", "product_code", "productcode"],
-  name: ["name", "emri", "emër", "emer", "product", "product name", "product_name", "productname"],
+  name: [
+    "name",
+    "emri",
+    "emër",
+    "emer",
+    "emri i produktit",
+    "emri produktit",
+    "product",
+    "product name",
+    "product_name",
+    "productname",
+    "produkti",
+    "produkt",
+    "title",
+    "item",
+    "item name",
+    "item_name",
+    "artikulli",
+    "artikull",
+    "pershkrimi i produktit",
+    "label",
+    "model",
+    "modeli",
+  ],
   price: ["price", "cmimi", "çmimi", "cmim", "price eur", "price (€)", "price €"],
   sale_price: ["sale price", "sale_price", "saleprice", "sale", "cmimi i zbritur", "zbritje"],
   stock_quantity: [
@@ -51,7 +74,32 @@ function mapColumn(header) {
     if (aliases.includes(norm)) return field;
   }
   if (/\b(stok|stock|inventar|sasia|qty|quantity|gjendje)\b/.test(norm)) return "stock_quantity";
+  if (/\b(cmim|cmimi|price|çmim|cost)\b/.test(norm)) return "price";
+  if (/\b(emri|emer|name|title|artikull|item|model|label)\b/.test(norm)) return "name";
+  if (/\b(produkt|product)\b/.test(norm) && !/\b(code|kod|sku)\b/.test(norm)) return "name";
+  if (/\b(kod|kodi|sku|code|barcode)\b/.test(norm)) return "sku";
   return null;
+}
+
+/** Default column order when headers are missing or not recognized: code, name, price, stock */
+const DEFAULT_COLUMN_ORDER = ["sku", "name", "price", "stock_quantity"];
+
+/**
+ * @param {unknown[]} headerRow
+ * @param {(string | null)[]} columnMap
+ */
+function applyPositionalFallback(headerRow, columnMap) {
+  const mapped = new Set(columnMap.filter(Boolean));
+  if (mapped.has("name") && mapped.has("price")) return columnMap;
+
+  const recognized = columnMap.filter(Boolean).length;
+  const colCount = headerRow.length;
+  if (recognized >= 3 || colCount < 3) return columnMap;
+
+  return headerRow.map((_, i) => {
+    if (columnMap[i]) return columnMap[i];
+    return DEFAULT_COLUMN_ORDER[i] ?? null;
+  });
 }
 
 /** @param {unknown} value */
@@ -76,7 +124,8 @@ export function matrixToObjects(matrix) {
   if (!headerRow) return [];
 
   const headerIndex = matrix.indexOf(headerRow);
-  const columnMap = headerRow.map((h) => mapColumn(String(h ?? "")));
+  let columnMap = headerRow.map((h) => mapColumn(String(h ?? "")));
+  columnMap = applyPositionalFallback(headerRow, columnMap);
 
   return matrix.slice(headerIndex + 1).flatMap((row) => {
     if (!row?.some((cell) => String(cell ?? "").trim())) return [];

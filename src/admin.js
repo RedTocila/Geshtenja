@@ -16,6 +16,7 @@ import {
   setTagsChangedHandler,
 } from "./admin-tags.js";
 import { initAdminImagePreview } from "./lib/admin-image-preview.js";
+import { setAdminTitle, fillCategorySelect, refreshAdminFileLabels } from "./lib/admin-i18n.js";
 import { initProductImport, refreshProductImportUi } from "./admin-product-import.js";
 import {
   initProductBulk,
@@ -57,6 +58,7 @@ const productTagOptions = document.getElementById("productTagOptions");
 let editingProduct = null;
 let editingWork = null;
 let productsCache = [];
+let worksCache = [];
 let productFilterTag = "";
 
 function setFormRecordId(form, id) {
@@ -227,7 +229,7 @@ function resetProductForm() {
   productForm.stock_quantity.value = 10;
   productForm.in_stock.checked = true;
   setFormRecordId(productForm, "");
-  productFormTitle.textContent = t("admin.products.addTitle");
+  setAdminTitle(productFormTitle, "admin.products.addTitle");
   productPreview.hidden = true;
   showError(productError, "");
   resetFormFileLabels(productForm);
@@ -238,7 +240,7 @@ function resetWorkForm() {
   editingWork = null;
   workForm.reset();
   setFormRecordId(workForm, "");
-  workFormTitle.textContent = t("admin.works.addTitle");
+  setAdminTitle(workFormTitle, "admin.works.addTitle");
   workPreview.hidden = true;
   showError(workError, "");
   resetFormFileLabels(workForm);
@@ -256,6 +258,7 @@ function closeWorkModal() {
 
 function openProductModal(item = null) {
   resetProductForm();
+  fillCategorySelect(productForm.category, item?.category);
   if (item) {
     editingProduct = item;
     productForm.name.value = item.name;
@@ -270,7 +273,7 @@ function openProductModal(item = null) {
     productForm.in_stock.checked = item.in_stock !== false;
     productForm.is_featured.checked = !!item.is_featured;
     setFormRecordId(productForm, item.id);
-    productFormTitle.textContent = t("admin.products.editTitle");
+    setAdminTitle(productFormTitle, "admin.products.editTitle");
     productPreview.hidden = false;
     productPreview.querySelector("img").src = item.image_url;
     const tagIds = (item.product_tags || []).map((row) => row.tag?.id).filter(Boolean);
@@ -289,7 +292,7 @@ function openWorkModal(item = null) {
     workForm.type.value = item.type;
     workForm.location.value = item.location;
     setFormRecordId(workForm, item.id);
-    workFormTitle.textContent = t("admin.works.editTitle");
+    setAdminTitle(workFormTitle, "admin.works.editTitle");
     if (item.image_url) {
       workPreview.hidden = false;
       workPreview.querySelector("img").src = item.image_url;
@@ -444,9 +447,10 @@ async function loadWorks() {
   const { data, error } = await supabase.from("works").select("*").order("sort_order");
   if (error) throw error;
 
-  updateCount(document.getElementById("workCount"), data.length, "work");
+  worksCache = data || [];
+  updateCount(document.getElementById("workCount"), worksCache.length, "work");
 
-  if (!data.length) {
+  if (!worksCache.length) {
     showEmpty(workList, {
       icon: "◇",
       title: t("admin.works.emptyTitle"),
@@ -455,14 +459,21 @@ async function loadWorks() {
     return;
   }
 
-  workList.innerHTML = data
-    .map((w) => {
+  workList.innerHTML = worksCache
+    .map((w, index) => {
           const thumb = w.image_url
             ? `<img class="admin-list__thumb" src="${w.image_url}" alt="" />`
             : `<div class="admin-list__thumb admin-list__thumb--empty">${t("admin.works.noPhoto")}</div>`;
           const videoTag = w.video_url ? ` · ${t("admin.works.video")}` : "";
+          const isFirst = index === 0;
+          const isLast = index === worksCache.length - 1;
           return `
       <li class="admin-list__item" data-id="${w.id}">
+        <div class="admin-list__reorder">
+          <button type="button" class="admin-btn admin-btn--ghost admin-btn--icon" data-move-work-up="${w.id}" ${isFirst ? "disabled" : ""} aria-label="${t("admin.works.moveUp")}">↑</button>
+          <span class="admin-list__order" aria-hidden="true">${index + 1}</span>
+          <button type="button" class="admin-btn admin-btn--ghost admin-btn--icon" data-move-work-down="${w.id}" ${isLast ? "disabled" : ""} aria-label="${t("admin.works.moveDown")}">↓</button>
+        </div>
         ${thumb}
         <div class="admin-list__info">
           <p class="admin-list__title">${w.title}</p>
@@ -478,9 +489,17 @@ async function loadWorks() {
 
   workList.querySelectorAll("[data-edit-work]").forEach((btn) => {
     btn.addEventListener("click", () => {
-      const item = data.find((w) => w.id === btn.dataset.editWork);
+      const item = worksCache.find((w) => w.id === btn.dataset.editWork);
       if (item) openWorkModal(item);
     });
+  });
+
+  workList.querySelectorAll("[data-move-work-up]").forEach((btn) => {
+    btn.addEventListener("click", () => moveWork(btn.dataset.moveWorkUp, -1));
+  });
+
+  workList.querySelectorAll("[data-move-work-down]").forEach((btn) => {
+    btn.addEventListener("click", () => moveWork(btn.dataset.moveWorkDown, 1));
   });
 
   workList.querySelectorAll("[data-delete-work]").forEach((btn) => {
@@ -494,6 +513,30 @@ async function loadWorks() {
       }
     });
   });
+}
+
+/** @param {string} workId @param {-1 | 1} direction */
+async function moveWork(workId, direction) {
+  const index = worksCache.findIndex((w) => w.id === workId);
+  const target = index + direction;
+  if (index < 0 || target < 0 || target >= worksCache.length) return;
+
+  const reordered = [...worksCache];
+  [reordered[index], reordered[target]] = [reordered[target], reordered[index]];
+
+  try {
+    const results = await Promise.all(
+      reordered.map((work, i) =>
+        supabase.from("works").update({ sort_order: i + 1 }).eq("id", work.id)
+      )
+    );
+    const failed = results.find((r) => r.error);
+    if (failed?.error) throw failed.error;
+    await loadWorks();
+    showToast(t("admin.works.orderUpdated"), "success");
+  } catch (err) {
+    showToast(err.message, "error");
+  }
 }
 
 async function loadAll() {
@@ -613,7 +656,7 @@ workForm.addEventListener("submit", async (e) => {
   let videoUrl = editingWork?.video_url ?? null;
 
   submitBtn.disabled = true;
-  submitBtn.textContent = wasEditing ? t("admin.products.saving") : t("admin.products.adding");
+  submitBtn.textContent = wasEditing ? t("admin.works.saving") : t("admin.works.adding");
 
   try {
     if (imageFile?.size) {
@@ -665,19 +708,19 @@ function refreshAdminDynamicUi() {
   const activeTab = document.querySelector(".admin-tab.is-active")?.dataset.tab;
   const titleEl = document.getElementById("mainTopbarTitle");
   if (titleEl && activeTab) {
-    titleEl.textContent = t(`admin.tabs.${activeTab}`);
-    titleEl.dataset.i18n = `admin.tabs.${activeTab}`;
+    setAdminTitle(titleEl, `admin.tabs.${activeTab}`);
   }
-  if (editingProduct) {
-    productFormTitle.textContent = t("admin.products.editTitle");
-  } else if (!document.getElementById("productModal")?.classList.contains("is-open")) {
-    productFormTitle.textContent = t("admin.products.addTitle");
-  }
-  if (editingWork) {
-    workFormTitle.textContent = t("admin.works.editTitle");
-  } else if (!document.getElementById("workModal")?.classList.contains("is-open")) {
-    workFormTitle.textContent = t("admin.works.addTitle");
-  }
+
+  setAdminTitle(
+    productFormTitle,
+    editingProduct ? "admin.products.editTitle" : "admin.products.addTitle"
+  );
+  setAdminTitle(workFormTitle, editingWork ? "admin.works.editTitle" : "admin.works.addTitle");
+
+  fillCategorySelect(productForm?.category, productForm?.category?.value);
+  renderProductTagPicker(productTagOptions, getSelectedTagIdsFromForm(productForm));
+  refreshTagsUi?.();
+
   renderProductTagFilters();
   renderInventoryTagFilters();
   renderProductList();
@@ -687,6 +730,7 @@ function refreshAdminDynamicUi() {
   refreshOrdersUi?.();
   refreshProductImportUi?.();
   refreshProductBulkUi?.();
+  refreshAdminFileLabels();
 }
 
 window.addEventListener("languagechange", refreshAdminDynamicUi);
@@ -702,7 +746,7 @@ initProductImport(async () => {
 initProductBulk({
   onUpdated: loadProducts,
 });
-const loadTagsList = initTagsTab();
+const { load: loadTagsList, refreshTagsUi } = initTagsTab();
 setTagsChangedHandler(async () => {
   renderProductTagFilters();
   renderInventoryTagFilters();
@@ -728,12 +772,13 @@ function initFileFields() {
 
     const updateName = () => {
       if (!input.files?.length) {
-        nameEl.textContent = input.multiple ? "No files chosen" : "No file chosen";
+        nameEl.textContent = input.multiple ? t("admin.common.noFiles") : t("admin.common.noFile");
         return;
       }
       nameEl.textContent = [...input.files].map((f) => f.name).join(", ");
     };
 
+    updateName();
     input.addEventListener("change", updateName);
   });
 }

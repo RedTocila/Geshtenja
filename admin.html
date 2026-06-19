@@ -196,15 +196,7 @@
                 <span id="productBulkCount" data-i18n="admin.products.bulk.selected">0 selected</span>
               </label>
               <div class="admin-bulk-bar__actions">
-                <label class="admin-bulk-bar__field">
-                  <span data-i18n="admin.products.bulk.category">Category</span>
-                  <select id="productBulkCategory" class="admin-select admin-select--compact"></select>
-                </label>
-                <button type="button" class="admin-btn admin-btn--ghost admin-btn--small" id="productBulkApplyCategory" data-i18n="admin.products.bulk.applyCategory">Apply</button>
-                <button type="button" class="admin-btn admin-btn--ghost admin-btn--small" id="productBulkInStock" data-i18n="admin.products.bulk.inStock">In stock</button>
-                <button type="button" class="admin-btn admin-btn--ghost admin-btn--small" id="productBulkOutStock" data-i18n="admin.products.bulk.outStock">Out of stock</button>
-                <button type="button" class="admin-btn admin-btn--ghost admin-btn--small" id="productBulkFeatured" data-i18n="admin.products.bulk.featured">Featured</button>
-                <button type="button" class="admin-btn admin-btn--ghost admin-btn--small" id="productBulkUnfeatured" data-i18n="admin.products.bulk.unfeatured">Not featured</button>
+                <button type="button" class="admin-btn admin-btn--primary admin-btn--small" id="productBulkEdit" data-i18n="admin.products.bulk.edit">Edit selected</button>
                 <button type="button" class="admin-btn admin-btn--danger admin-btn--small" id="productBulkDelete" data-i18n="admin.products.bulk.delete">Delete</button>
                 <button type="button" class="admin-btn admin-btn--ghost admin-btn--small" id="productBulkClear" data-i18n="admin.products.bulk.clear">Clear</button>
               </div>
@@ -270,7 +262,7 @@
         <!-- Works -->
         <div class="admin-tab-panel" id="tab-works" role="tabpanel" aria-labelledby="tab-btn-works" hidden>
           <div class="admin-section-head">
-            <p class="admin-muted" data-i18n="admin.works.desc">Showcase completed projects on the portfolio page.</p>
+            <p class="admin-muted" data-i18n="admin.works.desc">Showcase completed projects on the portfolio page. Use the arrows to change display order.</p>
           </div>
           <div class="admin-card admin-card--list">
             <div class="admin-card__header">
@@ -300,23 +292,23 @@
             <form id="productForm" class="admin-form">
               <input type="hidden" name="record_id" />
               <label>
-                <span>Name</span>
-                <input type="text" name="name" required placeholder="e.g. Aurora Pendant" />
+                <span data-i18n="admin.products.fields.name">Name</span>
+                <input type="text" name="name" required data-i18n-placeholder="admin.products.fields.namePlaceholder" placeholder="e.g. Aurora Pendant" />
               </label>
               <label>
-                <span>Slug</span>
-                <input type="text" name="slug" placeholder="auto-generated from name" />
+                <span data-i18n="admin.products.fields.slug">Slug</span>
+                <input type="text" name="slug" data-i18n-placeholder="admin.products.fields.slugPlaceholder" placeholder="auto-generated from name" />
               </label>
               <label>
-                <span>Short description</span>
-                <input type="text" name="short_description" placeholder="Brief tagline for shop cards" />
+                <span data-i18n="admin.products.fields.shortDescription">Short description</span>
+                <input type="text" name="short_description" data-i18n-placeholder="admin.products.fields.shortDescriptionPlaceholder" placeholder="Brief tagline for shop cards" />
               </label>
               <label>
-                <span>Description</span>
-                <textarea name="description" rows="4" placeholder="Full product description"></textarea>
+                <span data-i18n="admin.products.fields.description">Description</span>
+                <textarea name="description" rows="4" data-i18n-placeholder="admin.products.fields.descriptionPlaceholder" placeholder="Full product description"></textarea>
               </label>
               <label>
-                <span>Category</span>
+                <span data-i18n="admin.products.fields.category">Category</span>
                 <select name="category" class="admin-select" required>
                   <option value="pendant">Pendant</option>
                   <option value="sconce">Sconce</option>
@@ -327,31 +319,31 @@
               </label>
               <div class="admin-form__row">
                 <label>
-                  <span>Price (€)</span>
+                  <span data-i18n="admin.products.fields.price">Price (€)</span>
                   <input type="number" name="price" step="0.01" min="0" required />
                 </label>
                 <label>
-                  <span>Sale price (€)</span>
-                  <input type="number" name="sale_price" step="0.01" min="0" placeholder="Optional" />
+                  <span data-i18n="admin.products.fields.salePrice">Sale price (€)</span>
+                  <input type="number" name="sale_price" step="0.01" min="0" data-i18n-placeholder="admin.products.fields.salePricePlaceholder" placeholder="Optional" />
                 </label>
               </div>
               <div class="admin-form__row">
                 <label>
-                  <span>SKU</span>
-                  <input type="text" name="sku" placeholder="Optional" />
+                  <span data-i18n="admin.products.fields.sku">SKU</span>
+                  <input type="text" name="sku" data-i18n-placeholder="admin.products.fields.skuPlaceholder" placeholder="Optional" />
                 </label>
                 <label>
-                  <span>Stock quantity</span>
+                  <span data-i18n="admin.products.fields.stockQuantity">Stock quantity</span>
                   <input type="number" name="stock_quantity" min="0" value="10" required />
                 </label>
               </div>
               <label class="admin-checkbox">
                 <input type="checkbox" class="admin-check" name="in_stock" checked />
-                <span>In stock</span>
+                <span data-i18n="admin.products.fields.inStock">In stock</span>
               </label>
               <label class="admin-checkbox">
                 <input type="checkbox" class="admin-check" name="is_featured" />
-                <span>Featured product</span>
+                <span data-i18n="admin.products.fields.featured">Featured product</span>
               </label>
               <fieldset class="admin-tag-picker">
                 <legend data-i18n="admin.products.tagsLegend">Tags</legend>
@@ -359,30 +351,104 @@
                 <div class="admin-tag-picker__list" id="productTagOptions"></div>
               </fieldset>
               <div class="admin-form">
-                <span>Main photo</span>
+                <span data-i18n="admin.products.fields.mainPhoto">Main photo</span>
                 <div class="admin-file">
                   <input type="file" name="image" accept="image/*" class="admin-file__input" id="productMainImage" />
-                  <label for="productMainImage" class="admin-file__btn">Choose file</label>
-                  <span class="admin-file__name" data-file-name>No file chosen</span>
+                  <label for="productMainImage" class="admin-file__btn" data-i18n="admin.common.chooseFile">Choose file</label>
+                  <span class="admin-file__name" data-file-name data-i18n="admin.common.noFile">No file chosen</span>
                 </div>
-                <small class="admin-muted">Leave empty to keep current image when editing.</small>
+                <small class="admin-muted" data-i18n="admin.products.fields.mainPhotoHint">Leave empty to keep current image when editing.</small>
               </div>
               <div class="admin-form">
-                <span>Gallery images</span>
+                <span data-i18n="admin.products.fields.gallery">Gallery images</span>
                 <div class="admin-file">
                   <input type="file" name="gallery" accept="image/*" multiple class="admin-file__input" id="productGallery" />
-                  <label for="productGallery" class="admin-file__btn">Choose files</label>
-                  <span class="admin-file__name" data-file-name>No files chosen</span>
+                  <label for="productGallery" class="admin-file__btn" data-i18n="admin.common.chooseFiles">Choose files</label>
+                  <span class="admin-file__name" data-file-name data-i18n="admin.common.noFiles">No files chosen</span>
                 </div>
-                <small class="admin-muted">Additional photos for product page.</small>
+                <small class="admin-muted" data-i18n="admin.products.fields.galleryHint">Additional photos for product page.</small>
               </div>
               <div class="admin-preview" id="productPreview" hidden>
-                <img alt="Preview" />
+                <img alt="" data-i18n-aria="admin.products.fields.mainPhoto" />
               </div>
               <p class="admin-error" id="productError" hidden></p>
               <div class="admin-form__actions">
                 <button type="submit" class="admin-btn admin-btn--primary" data-i18n="admin.products.save">Save product</button>
                 <button type="button" class="admin-btn admin-btn--ghost" id="productCancel" data-i18n="admin.common.cancel">Cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Bulk edit modal -->
+        <div class="admin-modal" id="productBulkModal" aria-hidden="true">
+          <div class="admin-modal__backdrop" data-close-modal="productBulkModal"></div>
+          <div class="admin-modal__card admin-modal__card--form" role="dialog" aria-labelledby="productBulkFormTitle">
+            <div class="admin-modal__header">
+              <h2 id="productBulkFormTitle">Edit selected products</h2>
+              <button type="button" class="admin-modal__close" data-close-modal="productBulkModal" data-i18n-aria="admin.common.close" aria-label="Close">×</button>
+            </div>
+            <form id="productBulkForm" class="admin-form">
+              <p class="admin-muted" data-i18n="admin.products.bulk.editHint">Only filled fields are updated. Leave blank to keep current values.</p>
+              <div class="admin-form__row">
+                <label>
+                  <span data-i18n="admin.products.bulk.category">Category</span>
+                  <select id="productBulkCategory" class="admin-select"></select>
+                </label>
+                <label>
+                  <span data-i18n="admin.products.bulk.code">SKU / Code</span>
+                  <input type="text" id="productBulkSku" class="admin-input" data-i18n-placeholder="admin.products.bulk.keepUnchanged" placeholder="Leave unchanged" />
+                </label>
+              </div>
+              <div class="admin-form__row">
+                <label>
+                  <span data-i18n="admin.products.bulk.price">Price (€)</span>
+                  <input type="number" id="productBulkPrice" class="admin-input" step="0.01" min="0" data-i18n-placeholder="admin.products.bulk.keepUnchanged" placeholder="Leave unchanged" />
+                </label>
+                <label>
+                  <span data-i18n="admin.products.bulk.salePrice">Sale price (€)</span>
+                  <input type="number" id="productBulkSalePrice" class="admin-input" step="0.01" min="0" data-i18n-placeholder="admin.products.bulk.keepUnchanged" placeholder="Leave unchanged" />
+                </label>
+              </div>
+              <label class="admin-checkbox">
+                <input type="checkbox" class="admin-check" id="productBulkClearSalePrice" />
+                <span data-i18n="admin.products.bulk.clearSalePrice">Remove sale price</span>
+              </label>
+              <div class="admin-form__row">
+                <label>
+                  <span data-i18n="admin.products.bulk.stockStatus">Stock status</span>
+                  <select id="productBulkInStock" class="admin-select">
+                    <option value="" data-i18n="admin.products.bulk.keepUnchanged">Keep unchanged</option>
+                    <option value="true" data-i18n="admin.products.bulk.inStock">In stock</option>
+                    <option value="false" data-i18n="admin.products.bulk.outStock">Out of stock</option>
+                  </select>
+                </label>
+                <label>
+                  <span data-i18n="admin.products.bulk.featuredLabel">Featured</span>
+                  <select id="productBulkFeatured" class="admin-select">
+                    <option value="" data-i18n="admin.products.bulk.keepUnchanged">Keep unchanged</option>
+                    <option value="true" data-i18n="admin.products.bulk.featured">Featured</option>
+                    <option value="false" data-i18n="admin.products.bulk.unfeatured">Not featured</option>
+                  </select>
+                </label>
+              </div>
+              <fieldset class="admin-tag-picker">
+                <legend data-i18n="admin.products.bulk.tagsLegend">Tags</legend>
+                <label>
+                  <span data-i18n="admin.products.bulk.tagMode">Tag action</span>
+                  <select id="productBulkTagMode" class="admin-select">
+                    <option value="unchanged" data-i18n="admin.products.bulk.tagsUnchanged">Keep tags unchanged</option>
+                    <option value="replace" data-i18n="admin.products.bulk.tagsReplace">Replace with selected tags</option>
+                    <option value="add" data-i18n="admin.products.bulk.tagsAdd">Add selected tags</option>
+                    <option value="clear" data-i18n="admin.products.bulk.tagsClear">Remove all tags</option>
+                  </select>
+                </label>
+                <div class="admin-tag-picker__list" id="productBulkTagOptions"></div>
+              </fieldset>
+              <p class="admin-error" id="productBulkFormError" hidden></p>
+              <div class="admin-form__actions">
+                <button type="submit" class="admin-btn admin-btn--primary" data-i18n="admin.products.bulk.apply">Apply changes</button>
+                <button type="button" class="admin-btn admin-btn--ghost" id="productBulkCancel" data-i18n="admin.common.cancel">Cancel</button>
               </div>
             </form>
           </div>
@@ -460,35 +526,35 @@
             <form id="workForm" class="admin-form">
               <input type="hidden" name="record_id" />
               <label>
-                <span>Title</span>
-                <input type="text" name="title" required placeholder="e.g. Meridian Hotel Lobby" />
+                <span data-i18n="admin.works.fields.title">Title</span>
+                <input type="text" name="title" required data-i18n-placeholder="admin.works.fields.titlePlaceholder" placeholder="e.g. Meridian Hotel Lobby" />
               </label>
               <label>
-                <span>Type</span>
-                <input type="text" name="type" required placeholder="e.g. Hospitality" />
+                <span data-i18n="admin.works.fields.type">Type</span>
+                <input type="text" name="type" required data-i18n-placeholder="admin.works.fields.typePlaceholder" placeholder="e.g. Hospitality" />
               </label>
               <label>
-                <span>Location & year</span>
-                <input type="text" name="location" required placeholder="e.g. Prishtinë, 2025" />
+                <span data-i18n="admin.works.fields.location">Location & year</span>
+                <input type="text" name="location" required data-i18n-placeholder="admin.works.fields.locationPlaceholder" placeholder="e.g. Prishtinë, 2025" />
               </label>
               <div class="admin-form">
-                <span>Photo</span>
+                <span data-i18n="admin.works.fields.photo">Photo</span>
                 <div class="admin-file">
                   <input type="file" name="image" accept="image/*" class="admin-file__input" id="workMainImage" />
-                  <label for="workMainImage" class="admin-file__btn">Choose file</label>
-                  <span class="admin-file__name" data-file-name>No file chosen</span>
+                  <label for="workMainImage" class="admin-file__btn" data-i18n="admin.common.chooseFile">Choose file</label>
+                  <span class="admin-file__name" data-file-name data-i18n="admin.common.noFile">No file chosen</span>
                 </div>
               </div>
               <div class="admin-form">
-                <span>Video (optional)</span>
+                <span data-i18n="admin.works.fields.video">Video (optional)</span>
                 <div class="admin-file">
                   <input type="file" name="video" accept="video/*" class="admin-file__input" id="workVideo" />
-                  <label for="workVideo" class="admin-file__btn">Choose file</label>
-                  <span class="admin-file__name" data-file-name>No file chosen</span>
+                  <label for="workVideo" class="admin-file__btn" data-i18n="admin.common.chooseFile">Choose file</label>
+                  <span class="admin-file__name" data-file-name data-i18n="admin.common.noFile">No file chosen</span>
                 </div>
               </div>
               <div class="admin-preview" id="workPreview" hidden>
-                <img alt="Preview" />
+                <img alt="" data-i18n-aria="admin.works.fields.photo" />
               </div>
               <p class="admin-error" id="workError" hidden></p>
               <div class="admin-form__actions">

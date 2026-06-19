@@ -1,19 +1,36 @@
 import { supabase } from "./lib/supabase.js";
-import { t, categoryLabel } from "./i18n.js";
-import { showToast } from "./admin-ui.js";
-import { PRODUCT_CATEGORIES } from "./lib/product-import.js";
+import { t } from "./i18n.js";
+import { showToast, openModal, closeModal, initModal } from "./admin-ui.js";
+import { fillCategorySelectWithUnchanged } from "./lib/admin-i18n.js";
+import {
+  fetchTags,
+  renderProductTagPicker,
+  getSelectedTagIdsFromContainer,
+  syncProductTags,
+  addProductTags,
+  clearProductTags,
+} from "./admin-tags.js";
 
 const bulkBar = document.getElementById("productBulkBar");
 const bulkCount = document.getElementById("productBulkCount");
 const selectAll = document.getElementById("productSelectAll");
-const bulkCategory = document.getElementById("productBulkCategory");
-const applyCategoryBtn = document.getElementById("productBulkApplyCategory");
-const inStockBtn = document.getElementById("productBulkInStock");
-const outStockBtn = document.getElementById("productBulkOutStock");
-const featuredBtn = document.getElementById("productBulkFeatured");
-const unfeaturedBtn = document.getElementById("productBulkUnfeatured");
+const editBtn = document.getElementById("productBulkEdit");
 const deleteBtn = document.getElementById("productBulkDelete");
 const clearBtn = document.getElementById("productBulkClear");
+
+const bulkForm = document.getElementById("productBulkForm");
+const bulkFormTitle = document.getElementById("productBulkFormTitle");
+const bulkFormError = document.getElementById("productBulkFormError");
+const bulkCategory = document.getElementById("productBulkCategory");
+const bulkPrice = document.getElementById("productBulkPrice");
+const bulkSalePrice = document.getElementById("productBulkSalePrice");
+const bulkClearSalePrice = document.getElementById("productBulkClearSalePrice");
+const bulkSku = document.getElementById("productBulkSku");
+const bulkTagOptions = document.getElementById("productBulkTagOptions");
+const bulkTagMode = document.getElementById("productBulkTagMode");
+const bulkInStock = document.getElementById("productBulkInStock");
+const bulkFeatured = document.getElementById("productBulkFeatured");
+const bulkCancel = document.getElementById("productBulkCancel");
 
 /** @type {Set<string>} */
 const selectedIds = new Set();
@@ -33,6 +50,17 @@ function tf(key, vars = {}) {
   return str;
 }
 
+function showBulkError(message) {
+  if (!bulkFormError) return;
+  if (!message) {
+    bulkFormError.hidden = true;
+    bulkFormError.textContent = "";
+    return;
+  }
+  bulkFormError.hidden = false;
+  bulkFormError.textContent = message;
+}
+
 export function isProductSelected(id) {
   return selectedIds.has(id);
 }
@@ -50,7 +78,7 @@ function updateBulkBar() {
   if (bulkCount) bulkCount.textContent = tf("admin.products.bulk.selected", { count });
 
   const disabled = count === 0;
-  for (const btn of [applyCategoryBtn, inStockBtn, outStockBtn, featuredBtn, unfeaturedBtn, deleteBtn]) {
+  for (const btn of [editBtn, deleteBtn]) {
     if (btn) btn.disabled = disabled;
   }
 
@@ -97,46 +125,155 @@ async function bulkDelete(ids) {
   if (error) throw error;
 }
 
-async function runBulkAction(action) {
+function fillCategorySelect() {
+  fillCategorySelectWithUnchanged(bulkCategory);
+}
+
+function resetBulkForm() {
+  bulkForm?.reset();
+  showBulkError("");
+  if (bulkCategory) bulkCategory.value = "";
+  if (bulkInStock) bulkInStock.value = "";
+  if (bulkFeatured) bulkFeatured.value = "";
+  if (bulkTagMode) bulkTagMode.value = "unchanged";
+  if (bulkClearSalePrice) bulkClearSalePrice.checked = false;
+  renderProductTagPicker(bulkTagOptions, [], "bulk_tag_ids");
+}
+
+async function openBulkEditModal() {
+  const count = selectedIds.size;
+  if (!count) return;
+
+  await fetchTags();
+  resetBulkForm();
+
+  if (bulkFormTitle) {
+    bulkFormTitle.textContent = tf("admin.products.bulk.editTitle", { count });
+  }
+
+  openModal("productBulkModal");
+}
+
+async function applyBulkEdit() {
   const ids = [...selectedIds];
   if (!ids.length) return;
 
+  /** @type {Record<string, unknown>} */
+  const payload = {};
+  let hasProductChange = false;
+  let hasTagChange = false;
+
+  const category = bulkCategory?.value;
+  if (category) {
+    payload.category = category;
+    hasProductChange = true;
+  }
+
+  const priceRaw = bulkPrice?.value.trim();
+  if (priceRaw !== "") {
+    const price = Number(priceRaw);
+    if (!Number.isFinite(price) || price < 0) {
+      showBulkError(t("admin.products.bulk.invalidPrice"));
+      return;
+    }
+    payload.price = price;
+    hasProductChange = true;
+  }
+
+  const saleRaw = bulkSalePrice?.value.trim();
+  if (bulkClearSalePrice?.checked) {
+    payload.sale_price = null;
+    hasProductChange = true;
+  } else if (saleRaw !== "") {
+    const sale = Number(saleRaw);
+    if (!Number.isFinite(sale) || sale < 0) {
+      showBulkError(t("admin.products.bulk.invalidPrice"));
+      return;
+    }
+    payload.sale_price = sale;
+    hasProductChange = true;
+  }
+
+  const skuRaw = bulkSku?.value.trim();
+  if (skuRaw !== "") {
+    payload.sku = skuRaw;
+    hasProductChange = true;
+  }
+
+  const inStock = bulkInStock?.value;
+  if (inStock === "true" || inStock === "false") {
+    payload.in_stock = inStock === "true";
+    hasProductChange = true;
+  }
+
+  const featured = bulkFeatured?.value;
+  if (featured === "true" || featured === "false") {
+    payload.is_featured = featured === "true";
+    hasProductChange = true;
+  }
+
+  const tagMode = bulkTagMode?.value || "unchanged";
+  const tagIds = getSelectedTagIdsFromContainer(bulkTagOptions);
+  if (tagMode !== "unchanged") hasTagChange = true;
+
+  if (!hasProductChange && !hasTagChange) {
+    showBulkError(t("admin.products.bulk.nothingToApply"));
+    return;
+  }
+
+  const submitBtn = bulkForm?.querySelector('button[type="submit"]');
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.textContent = t("admin.products.bulk.applying");
+  }
+
   try {
-    switch (action) {
-      case "category": {
-        const category = bulkCategory?.value;
-        if (!category) return;
-        await bulkUpdate(ids, { category });
-        showToast(tf("admin.products.bulk.updated", { count: ids.length }), "success");
-        break;
-      }
-      case "in_stock":
-        await bulkUpdate(ids, { in_stock: true });
-        showToast(tf("admin.products.bulk.updated", { count: ids.length }), "success");
-        break;
-      case "out_stock":
-        await bulkUpdate(ids, { in_stock: false });
-        showToast(tf("admin.products.bulk.updated", { count: ids.length }), "success");
-        break;
-      case "featured":
-        await bulkUpdate(ids, { is_featured: true });
-        showToast(tf("admin.products.bulk.updated", { count: ids.length }), "success");
-        break;
-      case "unfeatured":
-        await bulkUpdate(ids, { is_featured: false });
-        showToast(tf("admin.products.bulk.updated", { count: ids.length }), "success");
-        break;
-      case "delete":
-        if (!confirm(tf("admin.products.bulk.deleteConfirm", { count: ids.length }))) return;
-        await bulkDelete(ids);
-        showToast(tf("admin.products.bulk.deleted", { count: ids.length }), "success");
-        break;
-      default:
-        return;
+    if (hasProductChange) {
+      await bulkUpdate(ids, payload);
     }
 
+    if (hasTagChange) {
+      for (const productId of ids) {
+        if (tagMode === "clear") {
+          await clearProductTags(productId);
+        } else if (tagMode === "add") {
+          await addProductTags(productId, tagIds);
+        } else if (tagMode === "replace") {
+          await syncProductTags(productId, tagIds);
+        }
+      }
+    }
+
+    closeModal("productBulkModal");
     clearProductSelection();
+    document.querySelectorAll(".product-bulk-check").forEach((input) => {
+      input.checked = false;
+    });
     await onUpdated?.();
+    showToast(tf("admin.products.bulk.updated", { count: ids.length }), "success");
+  } catch (err) {
+    showBulkError(err.message);
+  } finally {
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = t("admin.products.bulk.apply");
+    }
+  }
+}
+
+async function runDelete() {
+  const ids = [...selectedIds];
+  if (!ids.length) return;
+  if (!confirm(tf("admin.products.bulk.deleteConfirm", { count: ids.length }))) return;
+
+  try {
+    await bulkDelete(ids);
+    clearProductSelection();
+    document.querySelectorAll(".product-bulk-check").forEach((input) => {
+      input.checked = false;
+    });
+    await onUpdated?.();
+    showToast(tf("admin.products.bulk.deleted", { count: ids.length }), "success");
   } catch (err) {
     showToast(err.message, "error");
   }
@@ -166,34 +303,43 @@ export function bindProductListBulk(list, ids) {
   });
 }
 
-function fillCategorySelect() {
-  if (!bulkCategory) return;
-  bulkCategory.innerHTML = PRODUCT_CATEGORIES.map(
-    (c) => `<option value="${c}">${categoryLabel(c)}</option>`
-  ).join("");
-}
-
 /** @param {{ onUpdated: () => Promise<void> }} options */
 export function initProductBulk(options) {
   onUpdated = options.onUpdated;
   fillCategorySelect();
+  initModal("productBulkModal", { onClose: resetBulkForm });
 
   selectAll?.addEventListener("change", () => toggleVisible(selectAll.checked));
-  applyCategoryBtn?.addEventListener("click", () => runBulkAction("category"));
-  inStockBtn?.addEventListener("click", () => runBulkAction("in_stock"));
-  outStockBtn?.addEventListener("click", () => runBulkAction("out_stock"));
-  featuredBtn?.addEventListener("click", () => runBulkAction("featured"));
-  unfeaturedBtn?.addEventListener("click", () => runBulkAction("unfeatured"));
-  deleteBtn?.addEventListener("click", () => runBulkAction("delete"));
+  editBtn?.addEventListener("click", () => openBulkEditModal());
+  deleteBtn?.addEventListener("click", () => runDelete());
   clearBtn?.addEventListener("click", () => {
     clearProductSelection();
     document.querySelectorAll(".product-bulk-check").forEach((input) => {
       input.checked = false;
     });
+    document.querySelectorAll(".admin-list__item--selected").forEach((item) => {
+      item.classList.remove("admin-list__item--selected");
+    });
+  });
+
+  bulkCancel?.addEventListener("click", () => closeModal("productBulkModal"));
+
+  bulkForm?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    showBulkError("");
+    applyBulkEdit();
   });
 }
 
 export function refreshProductBulkUi() {
   fillCategorySelect();
   updateBulkBar();
+  renderProductTagPicker(
+    bulkTagOptions,
+    getSelectedTagIdsFromContainer(bulkTagOptions),
+    "bulk_tag_ids"
+  );
+  if (bulkFormTitle && selectedIds.size) {
+    bulkFormTitle.textContent = tf("admin.products.bulk.editTitle", { count: selectedIds.size });
+  }
 }
